@@ -180,7 +180,6 @@ app.post('/register', (req, res) => {
       console.error(error);
     });
 
-
   // Redirect or render a success page
   res.render('RegistrationSuccess.ejs', { email });
 });
