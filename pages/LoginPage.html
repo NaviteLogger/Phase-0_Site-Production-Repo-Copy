@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Page</title>
+  <link rel="stylesheet" type="text/css" href="/styles/LoginPageStyles.css">
+  <meta charset="utf-8">
+</head>
+<body>
+  <div class="header">
+    <div>
+      <img src='/images/logo.png' alt="Logo" class="logo">
+    </div>
+    <div class="navigation">
+        <a href="/">
+            <button class="nav-button">STRONA GŁOWNA</button>
+        </a>
+        <a href="/pages/OfferPage.html">
+            <button class="nav-button">OFERTA</button>
+        </a>
+        <a href="/pages/LoginPage.html">
+            <button class="nav-button">PANEL KLIENTA</button>
+        </a>
+        <a href="/pages/ContactPage.html">
+            <button class="nav-button current">KONTAKT</button>
+        </a>
+        <div class="shopping-bag">
+            <img src='/images/torba.png' alt="Shopping Bag" class="shopping-bag">
+        </div>
+    </div>
+  </div>
+
+  <div class="login-form">
+    <h2>Witamy w panelu klienta</h2>
+    <br>
+    <!-- 
+    The follwing code is a form element that is used to submit user login credentials to the server. 
+    The form element has an action attribute that specifies the URL ('/login') where the form data will be submitted. 
+    The method attribute specifies the HTTP method ('post) that will be used to submit the form data. In this case, the method is set to "post". 
+    -->
+    <form action='/login' method="post"> 
+      <div class="form-group">
+        <label for="email">Podaj adres mailowy:</label>
+        <input type="email" id="email" name="email" placeholder="sample@sample.com">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="submit-button">Dalej</button>
+      </div>
+      <br>
+      <p>Nie posiadasz jeszcze konta? Po zatwierdzeniu adresu mailowego zostaniesz przekierowany do strony rejestracji.
+        Natomiast jeśli posiadasz już konto, zostaniesz przekierowany do strony logowania.</p>
+
+    </form>
+  </div>
+</body>
+</html>
