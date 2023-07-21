@@ -78,7 +78,8 @@ app.post('/login', (req, res) => {
 
         console.log('Query run successfully!');
 
-        if (results.length == 0) {
+        if (results.length == 0) 
+        {
           // Handle the case where the email does not exist in the database
           // You can redirect the user to a registration page or display an error message
           console.log('Email not found in database');
