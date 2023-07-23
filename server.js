@@ -54,6 +54,8 @@ app.post('/login', function(req, res) {
   const email = req.body.email;
   const password = req.body.password;
 
+  console.log('Email: ' + email);
+
   connection.query('SELECT * FROM users WHERE username = ?', [email], function (error, results, fields) {
     if (error) {
       res.status(500).json({ error: 'Internal Server Error', error});
