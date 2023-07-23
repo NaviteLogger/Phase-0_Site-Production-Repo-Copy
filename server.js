@@ -46,6 +46,14 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
+connection.connect((err) => {
+  if (err) {
+    console.error('An error occurred while connecting to the DB:', err);
+    throw err;
+  }
+  console.log('Connected to the DB!');
+});
+
 // Render the home page
 app.get('/', (req, res) => {
   res.render('index');
