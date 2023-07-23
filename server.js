@@ -49,7 +49,7 @@ connection.connect((err) => {
 
 // Render the home page
 app.get('/', (req, res) => {
-  res.render('index');
+  res.redirect('/index.html');
   console.log('Home page rendered');
 });
 
@@ -77,7 +77,7 @@ app.post('/login', function(req, res) {
     {
       res.status(404).json({ error: 'User Not Found' });
     } else {
-      res.render('index');
+      res.redirect('/');
     }
   });
 });
