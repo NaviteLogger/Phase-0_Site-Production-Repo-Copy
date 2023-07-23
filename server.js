@@ -58,3 +58,22 @@ connection.connect((err) => {
 app.get('/', (req, res) => {
   res.render('index');
 });
+
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const sql = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
+  
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.error('An error occurred while executing the query:', err);
+      throw err;
+    }
+    if (result.length > 0) {
+      res.render('success', { email: email });
+    } else {
+      res.render('error', { message: 'Invalid email or password' });
+    }
+  });
+});
