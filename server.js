@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql2');
-const { pool } = require('./database/databaseConnection.js');
 const bodyParser = require('body-parser');
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
