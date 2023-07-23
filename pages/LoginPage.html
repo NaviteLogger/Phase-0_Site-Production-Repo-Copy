@@ -38,10 +38,11 @@
     The form element has an action attribute that specifies the URL ('/login') where the form data will be submitted. 
     The method attribute specifies the HTTP method ('post) that will be used to submit the form data. In this case, the method is set to "post". 
     -->
-    <form action='/login' method="post" onsubmit="return validateEmail()"> 
+    <form action='/login' method="post"> 
       <div class="form-group">
         <label for="email">Podaj adres mailowy:</label>
         <input type="email" id="email" name="email" placeholder="sample@sample.com">
+        <br>
         <label for="email" id="email-error">Podaj kod autoryzacyjny:</label>
         <input type="password" id="password" name="password" placeholder="Hasło">
         <label for="password" id="password-error"></label>
