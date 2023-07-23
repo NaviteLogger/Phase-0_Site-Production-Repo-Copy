@@ -59,21 +59,34 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  const sql = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
-  
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.error('An error occurred while executing the query:', err);
-      throw err;
-    }
+  try {
+    const query = 'SELECT * FROM users WHERE email = ? AND password = ?';
+    const result = await executeQuery(query, [email, password]);
+
     if (result.length > 0) {
       res.render('success', { email: email });
     } else {
       res.render('error', { message: 'Invalid email or password' });
     }
-  });
+  } catch (err) {
+    console.error('An error occurred while executing the query:', err);
+    res.render('error', { message: 'An error occurred while processing your request' });
+  }
 });
+
+// Helper function to execute the SQL query
+function executeQuery(query, params) {
+  return new Promise((resolve, reject) => {
+    connection.query(query, params, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
