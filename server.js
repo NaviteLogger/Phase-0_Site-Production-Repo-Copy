@@ -18,17 +18,14 @@ const connection = mysql.createConnection({
   database: process.env.DB_DATABASE
 });
 
-// Set the view engine to EJS
-app.set('view engine', 'ejs');
+// // Set the view engine to EJS
+// app.set('view engine', 'ejs');
 
-// Set the views directory
-app.set('views', path.join(__dirname, 'views'));
+// // Set the views directory
+// app.set('views', path.join(__dirname, 'views'));
 
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
-
-// Parse URL-encoded bodies (as sent by HTML forms)
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));
@@ -38,13 +35,6 @@ app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 // Serve static files from the 'photos' directory
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
-
-// Start the server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log('Server is starting');
-  console.log(`Server is running on port ${port}`);
-});
 
 connection.connect((err) => {
   if (err) {
@@ -57,36 +47,31 @@ connection.connect((err) => {
 // Render the home page
 app.get('/', (req, res) => {
   res.render('index');
+  console.log('Home page rendered');
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', function(req, res) {
   const email = req.body.email;
   const password = req.body.password;
 
-  try {
-    const query = 'SELECT * FROM users WHERE email = ? AND password = ?';
-    const result = await executeQuery(query, [email, password]);
-
-    if (result.length > 0) {
-      res.render('success', { email: email });
-    } else {
-      res.render('error', { message: 'Invalid email or password' });
+  connection.query('SELECT * FROM users WHERE username = ?', [email], function (error, results, fields) {
+    if (error) {
+      res.status(500).json({ error: 'Internal Server Error', error});
+      return;
     }
-  } catch (err) {
-    console.error('An error occurred while executing the query:', err);
-    res.render('error', { message: 'An error occurred while processing your request' });
-  }
+
+    if (results.length == 0) 
+    {
+      res.status(404).json({ error: 'User Not Found' });
+    } else {
+      res.render('index');
+    }
+  });
 });
 
-// Helper function to execute the SQL query
-function executeQuery(query, params) {
-  return new Promise((resolve, reject) => {
-    connection.query(query, params, (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
-    });
-  });
-}
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log('Server is starting');
+  console.log(`Server is running on port ${port}`);
+});

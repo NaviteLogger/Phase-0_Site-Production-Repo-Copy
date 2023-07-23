@@ -1,14 +1,28 @@
-fetch('/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json' // Set the Content-Type header to indicate JSON data
-    },
-    body: JSON.stringify({ email: 'user@example.com', password: 'secret' })
-  })
-  .then(response => response.json())
-  .then(data => {
-    // Handle response data
-  })
-  .catch(error => {
-    // Handle error
-  });
+document.getElementById('login-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+  
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+  
+    fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+        } else {
+            window.location.href = '/';
+        }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+});
