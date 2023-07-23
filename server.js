@@ -27,6 +27,9 @@ const connection = mysql.createConnection({
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
 
+// Parse URL-encoded bodies (as sent by HTML forms)
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));
 
