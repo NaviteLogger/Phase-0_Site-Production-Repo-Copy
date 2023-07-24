@@ -79,10 +79,11 @@ app.post('/login', function(req, res) {
     if (results.length === 0) 
     {
       console.log('User not found in the database');
-      res.status(404).send('Podany email nie został zarejestrowany, proszę utworzyć konto');
+      res.status(404).json({ status: 'not_found', message: 'Your email has not been registered yet' });
     }
-    else 
+    else
     {
+      
       console.log('User found in the database');
       res.status(200).json({ status: 'success', message: 'User found in the database' });
     }
