@@ -28,6 +28,7 @@ document.getElementById('login-form').addEventListener('submit', (event) => {
   //The Promise returned from fetch() is resolved with the Response object
   .then((response) => {
     //The Response object has a json() method that returns a Promise
+    console.log(response);
     return response.json();
   })
   //The Promise returned from the json() method is resolved with the JSON data from the response body
