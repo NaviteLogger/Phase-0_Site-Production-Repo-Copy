@@ -78,7 +78,7 @@ app.post('/login', function(req, res) {
 
     if (results.length == 0) 
     {
-      alert('Podany adres e-mail nie istnieje w bazie danych, proszę się zarejestrować');
+      alert("Podany adres e-mail nie istnieje w bazie danych, proszę się zarejestrować");
     } 
     else 
     {
