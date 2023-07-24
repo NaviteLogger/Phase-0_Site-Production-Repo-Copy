@@ -36,26 +36,9 @@ document.getElementById('login-form').addEventListener('submit', (event) => {
     return response.json();
   })
   //The Promise returned from the json() method is resolved with the JSON data from the response body
-  .then((data) => {
-    console.log(data.status);
-    //Checks if the user does not exist
-    if (data.status == 'not_found') 
-    {
-      // Display a message to the client indicating that their email has not been registered yet
-      alert('Your email has not been registered yet');
-    } 
-    else if (data.status === 'success')
-    {
-      alert('Pomyślnie zalogowano');
-      //wait 3 seconds and then redirect to the main page
-      setTimeout(function() {
-        window.location.href = '/index.html';
-      }, 3000);
-    } 
-    else
-    {
-      alert('An error occurred during verification');
-    }
+  .then(function () {
+    //If the login is successful, redirect the user to the 'index.html' page
+    window.location.href = '/index.html';
   })
   //The Promise returned from the json() method is rejected with an error object
   .catch(function(error) {
