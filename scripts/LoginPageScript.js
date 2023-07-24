@@ -1,7 +1,7 @@
 //The following function is used to validate the login form
 //The .getElementById() method is used to get values from the login form,
 //The .addEventListener() method is used to add an event listener to the login form - a function that will be executed when the form is submitted
-document.getElementById('login-form').addEventListener('submit', function (event) {
+document.getElementById('login-form').addEventListener('submit', (event) => {
   event.preventDefault();
 
   //Get the values: email and password from the login form
@@ -26,14 +26,12 @@ document.getElementById('login-form').addEventListener('submit', function (event
   }) 
   //The fetch() method returns a Promise
   //The Promise returned from fetch() is resolved with the Response object
-  .then(function(response) 
-  {
+  .then((response) => {
     //The Response object has a json() method that returns a Promise
     return response.json();
   })
   //The Promise returned from the json() method is resolved with the JSON data from the response body
-  .then(function(data) 
-  {
+  .then( (data) => {
     console.log(data.status);
     //Checks if the user does not exist
     if (data.status == 'not_found') 
