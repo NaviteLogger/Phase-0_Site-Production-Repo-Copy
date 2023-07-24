@@ -14,34 +14,19 @@ document.getElementById('login-form').addEventListener('submit', function (event
       password: password
     })
   })
-  .then((response) => {
-    // Check if the response status is 404 (Not Found)
-    if (response.status === 404) 
-      {
-        throw new Error('User not found');
-      }
+  .then(function(response) {
     return response.json();
   })
-  .then((data) => {
-    // Check the status property in the response data
-    if (data.status === 'success') 
-      {
-        alert(data.message); // Display the success message from the server
-      } 
-    else 
-      {
-        alert('An error occurred during verification.');
-      }
+  .then(function(data) {
+    console.log(data);
+    if (data.status === 'not_found') {
+      // Display a message to the client indicating that their email has not been registered yet
+      alert('Your email has not been registered yet');
+    } else {
+      // Handle the response from the server here
+    }
   })
-  .catch((error) => {
-    if (error.message === 'User not found') 
-      {
-        alert('User not found in the database');
-      } 
-    else 
-      {
-        alert('An error occurred during verification.');
-        console.error('Error:', error);
-      }
+  .catch(function(error) {
+    console.error(error);
   });
 });
