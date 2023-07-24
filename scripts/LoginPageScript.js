@@ -21,12 +21,13 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     })
     .then((response) => {
       // Check if the response status is not in the 2xx range
-      if (!response.ok) {
+      if (!response.ok) 
+      {
         // If the status code is not 2xx, it's an error response
-        return response.json().then((data) => {
-          alert(data.error); // Display the error message from the server
-        });
-      } else {
+        return response.json().then((data) => Promise.reject(data));
+      } 
+      else 
+      {
         // If the status code is in the 2xx range, it's a success response
         return response.json();
       }
@@ -35,12 +36,10 @@ document.getElementById('login-form').addEventListener('submit', function(event)
       // Handle the success response (if needed)
       // For example, you can redirect the user to another page here
       // response.redirect('/');
-      if (response.status == 200) 
-      {
-        window.location.href = '/index.html';
-      }
+      response.redirect('/index.html');
     })
     .catch((error) => {
+      alert(error.error);
       console.error("Error:", error);
     })
 });
