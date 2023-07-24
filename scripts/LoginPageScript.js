@@ -41,9 +41,17 @@ document.getElementById('login-form').addEventListener('submit', function (event
       // Display a message to the client indicating that their email has not been registered yet
       alert('Your email has not been registered yet');
     } 
-    else 
+    else if (data.status === 'success')
     {
-      // Handle the response from the server here
+      alert('Pomyślnie zalogowano');
+      //wait 3 seconds and then redirect to the main page
+      setTimeout(function() {
+        window.location.href = '/index.html';
+      }, 3000);
+    } 
+    else
+    {
+      alert('An error occurred during verification');
     }
   })
   //The Promise returned from the json() method is rejected with an error object
