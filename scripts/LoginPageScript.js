@@ -1,9 +1,12 @@
+//the script for the login page
 document.getElementById('login-form').addEventListener('submit', function(event) {
+    // Prevent the default behavior of the form
     event.preventDefault();
   
     var email = document.getElementById('email').value;
     var password = document.getElementById('password').value;
   
+    // Send a POST request to the server
     fetch('/login', {
       method: 'POST',
       headers: {
@@ -13,7 +16,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
         email: email,
         password: password
       })
-    })
+    }) // Parse the response as JSON
     .then(response => response.json())
     .then(data => {
         if (data.error) {
