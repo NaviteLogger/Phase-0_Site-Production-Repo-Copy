@@ -78,12 +78,13 @@ app.post('/login', function(req, res) {
 
     if (results.length == 0) 
     {
-      console.log('User not found in the database'); 
-      res.status(404).json({ error: 'User not found in the database.' });
+      console.log('User not found in the database');
+      res.status(404).json({ error: 'User not found in the database' });
     } 
     else 
     {
-      res.redirect('/');
+      console.log('User found in the database');
+      res.status(200).json({ message: 'User found in the database' });
     }
   });
 });
