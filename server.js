@@ -1,3 +1,4 @@
+// Import required modules
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql2');
@@ -5,11 +6,13 @@ const bodyParser = require('body-parser');
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
+// Set SendGrid API key
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Create the Express application
 const app = express();
 
+// Create a connection to the MySQL database
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -17,12 +20,6 @@ const connection = mysql.createConnection({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE
 });
-
-// // Set the view engine to EJS
-// app.set('view engine', 'ejs');
-
-// // Set the views directory
-// app.set('views', path.join(__dirname, 'views'));
 
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
@@ -39,6 +36,7 @@ app.use('/styles', express.static(path.join(__dirname, 'styles')));
 // Serve static files from the 'photos' directory
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
 
+// Connect to the MySQL database
 connection.connect((err) => {
   if (err) {
     console.error('An error occurred while connecting to the DB:', err);
@@ -53,22 +51,27 @@ app.get('/', (req, res) => {
   console.log('Home page rendered');
 });
 
+// Handle login requests
 app.post('/login', function(req, res) {
   const email = req.body.email;
   const password = req.body.password;
 
   console.log('Email: ' + email);
 
+  // Select the 'CosmeticsLawDB' database
   connection.query('USE CosmeticsLawDB', function (error, results, fields) {
-    if (error) {
+    if (error) 
+    {
       res.status(500).json({ error: 'Internal Server Error', error});
       return;
     }
     console.log(' "Clients" database selected');
   });
 
+  // Check if the user exists in the 'Clients' table
   connection.query(`SELECT * FROM Clients WHERE email = '${email}'`, function (error, results, fields) {
-    if (error) {
+    if (error) 
+    {
       res.status(500).json({ error: 'Internal Server Error', error});
       return;
     }
@@ -76,7 +79,9 @@ app.post('/login', function(req, res) {
     if (results.length == 0) 
     {
       res.status(404).json({ error: 'User Not Found' });
-    } else {
+    } 
+    else 
+    {
       res.redirect('/');
     }
   });
