@@ -18,25 +18,23 @@ document.getElementById('login-form').addEventListener('submit', function(event)
         email: email,
         password: password
       })
-    }) // Parse the response as JSON
+    })
+    .then(response => response.json())
     .then((response) => {
-      // Check the status code of the response
-      if (response.ok) {
-        // If the status code is 200, the email exists in the database and verification email has been sent.
-        return response.json().then((data) => {
-          alert(data.message); // Display the success message from the server
-        });
-      } else if (response.status === 404) {
-        // If the status code is 404, the user does not exist in the database.
-        return response.json().then((data) => {
-          alert(data.error); // Display the error message from the server
-        });
-      } else {
-        // Handle other error cases
-        alert("An error occurred during verification.");
+      if (response.status == 404) 
+      {
+        alert(response.error);
+      } 
+      else if (response.status == 500) 
+      {
+        alert(response.error);
+      } 
+      else 
+      {
+        response.redirect('/');
       }
     })
     .catch((error) => {
-      console.error("Error:", error);
+      console.error('Error:', error);
     });
 });
