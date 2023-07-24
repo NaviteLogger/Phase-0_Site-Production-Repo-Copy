@@ -34,9 +34,9 @@ document.getElementById('login-form').addEventListener('submit', function (event
   //The Promise returned from the json() method is resolved with the JSON data from the response body
   .then(function(data) 
   {
-    console.log(data);
+    console.log(data.status);
     //Checks if the user does not exist
-    if (data.status === 'not_found') 
+    if (data.status == 'not_found') 
     {
       // Display a message to the client indicating that their email has not been registered yet
       alert('Your email has not been registered yet');
