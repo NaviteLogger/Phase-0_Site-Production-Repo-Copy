@@ -14,27 +14,34 @@ document.getElementById('login-form').addEventListener('submit', function (event
       password: password
     })
   })
-    .then((response) => {
-      // Check if the response status is 404 (Not Found)
-      if (response.status === 404) {
+  .then((response) => {
+    // Check if the response status is 404 (Not Found)
+    if (response.status === 404) 
+      {
         throw new Error('User not found');
       }
-      return response.json();
-    })
-    .then((data) => {
-      // Check the status property in the response data
-      if (data.status === 'success') {
+    return response.json();
+  })
+  .then((data) => {
+    // Check the status property in the response data
+    if (data.status === 'success') 
+      {
         alert(data.message); // Display the success message from the server
-      } else {
+      } 
+    else 
+      {
         alert('An error occurred during verification.');
       }
-    })
-    .catch((error) => {
-      if (error.message === 'User not found') {
+  })
+  .catch((error) => {
+    if (error.message === 'User not found') 
+      {
         alert('User not found in the database');
-      } else {
+      } 
+    else 
+      {
         alert('An error occurred during verification.');
         console.error('Error:', error);
       }
-    });
+  });
 });

@@ -73,18 +73,18 @@ app.post('/login', function(req, res) {
     if (error) 
     {
       console.error('Error executing database query:', err);
-      return res.status(500).json({ error: 'An error occurred during verification' });
+      res.status(500).json({ error: 'An error occurred during verification' });
     }
 
     if (results.length === 0) 
     {
       console.log('User not found in the database');
-      return res.status(404).json({ status: 'user_not_found', message: 'User not found in the database' });
+      res.status(404).json({ status: 'user_not_found', message: 'User not found in the database' });
     }
     else 
     {
       console.log('User found in the database');
-      return res.status(200).json({ status: 'success', message: 'User found in the database' });
+      res.status(200).json({ status: 'success', message: 'User found in the database' });
     }
   });
 });
