@@ -21,18 +21,22 @@ document.getElementById('login-form').addEventListener('submit', (event) => {
     //The body is a JSON string
     body: JSON.stringify({
       email: email,
-      password: password
+      password: password,
     })
-  }) 
+  })
   //The fetch() method returns a Promise
   //The Promise returned from fetch() is resolved with the Response object
   .then((response) => {
+    // Check if the response is valid
+    if (!response.ok) 
+    {
+      throw new Error('Network response was not ok');
+    }
     //The Response object has a json() method that returns a Promise
-    console.log(response);
     return response.json();
   })
   //The Promise returned from the json() method is resolved with the JSON data from the response body
-  .then( (data) => {
+  .then((data) => {
     console.log(data.status);
     //Checks if the user does not exist
     if (data.status == 'not_found') 
@@ -56,5 +60,6 @@ document.getElementById('login-form').addEventListener('submit', (event) => {
   //The Promise returned from the json() method is rejected with an error object
   .catch(function(error) {
     console.error(error);
+    alert('An error occurred during verification');
   });
 });
