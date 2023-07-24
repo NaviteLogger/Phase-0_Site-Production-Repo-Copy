@@ -79,7 +79,7 @@ app.post('/login', function(req, res) {
     if (results.length === 0) 
     {
       console.log('User not found in the database');
-      res.sendStatus(404).send('User not found in the database');
+      res.status(404).send('User not found in the database');
     }
     else 
     {
