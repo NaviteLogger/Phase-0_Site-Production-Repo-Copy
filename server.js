@@ -78,7 +78,7 @@ app.post('/login', function(req, res) {
 
     if (results.length == 0) 
     {
-      alert("Podany adres e-mail nie istnieje w bazie danych, proszę się zarejestrować");
+      res.status(404).json({ error: 'User not found in the database.' });
     } 
     else 
     {
