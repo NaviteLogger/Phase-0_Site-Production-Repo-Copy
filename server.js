@@ -79,7 +79,7 @@ app.post('/login', function(req, res) {
     if (results.length === 0) 
     {
       console.log('User not found in the database');
-      return res.status(404).json({ status: 'not_found', message: 'Your email has not been registered yet' });
+      res.status(404).json({ status: 'not_found', message: 'Your email has not been registered yet' });
     }
     else
     {
