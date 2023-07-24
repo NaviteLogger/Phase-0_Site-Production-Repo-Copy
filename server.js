@@ -72,19 +72,19 @@ app.post('/login', function(req, res) {
   connection.query(`SELECT * FROM Clients WHERE email = '${email}'`, function (error, results, fields) {
     if (error) 
     {
-      res.status(500).json({ error: 'Internal Server Error', error});
-      return;
+      console.error('Error executing database query:', err);
+      return res.status(500).json({ error: 'An error occurred during verification' });
     }
 
-    if (results.length == 0) 
+    if (results.length === 0) 
     {
       console.log('User not found in the database');
-      res.status(404).json({ error: 'User not found in the database' });
-    } 
+      return res.status(200).json({ status: 'user_not_found', message: 'User not found in the database' });
+    }
     else 
     {
       console.log('User found in the database');
-      res.status(200).json({ message: 'User found in the database' });
+      return res.redirect('/index.html');
     }
   });
 });

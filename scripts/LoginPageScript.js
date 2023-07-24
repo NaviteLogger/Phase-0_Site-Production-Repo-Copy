@@ -19,24 +19,21 @@ document.getElementById('login-form').addEventListener('submit', function(event)
         password: password
       })
     })
-    .then((response) => {
-      // Check if the response status is not in the 2xx range
-      if (!response.ok) 
+    .then((response) => response.json())
+    .then((data) => {
+      // Check the status property in the response data
+      if (data.status === 'user_not_found') 
       {
-        // If the status code is not 2xx, it's an error response
-        return response.json().then((data) => Promise.reject(data));
+        alert(data.message); // Display the error message from the server
+      } 
+      else if (data.status === 'success') 
+      {
+        alert(data.message); // Display the success message from the server
       } 
       else 
       {
-        // If the status code is in the 2xx range, it's a success response
-        return response.json();
+        alert("An error occurred during verification.");
       }
-    })
-    .then((data) => {
-      // Handle the success response (if needed)
-      // For example, you can redirect the user to another page here
-      // response.redirect('/');
-      response.redirect('/index.html');
     })
     .catch((error) => {
       alert(error.error);
