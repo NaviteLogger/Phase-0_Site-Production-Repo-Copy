@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel = "stylesheet" type = "text/css" href = "/styles/RegistrationPageStyles.css">
+    <script src="../scripts/RegistrationPageScript.js" defer></script>
     <title>Formularz rejestracji</title>
 </head>
 <body>
@@ -30,14 +31,15 @@
         </div>
       </div>
     
-    <h2>Witamy w rejesracji do naszego serwisu internetowego</h2>
+    <h2>Witamy w rejestracji do naszego serwisu internetowego</h2>
   
-    <form id="register-form" action='/register' method="post">
+    <form id="register-form">
       <div class="form-group">
         <label for="terms">Akceptuję warunku regulaminu:</label>
         <input type="checkbox" id="terms" name="terms" required>
         <label for="terms">Akceptuję <a href="#">warunki regulaminu</a>.</label>
       </div>
+      <br>
       <div class="form-group">
         <button type="submit">Zarejestruj się</button>
       </div>
