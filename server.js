@@ -98,7 +98,7 @@ app.post('/login', async (req, res) => {
     if (results.length === 0) 
     {
       console.log('User not found in the database');
-      res.redirect('/index.html');
+      res.status(404).json({ status: 404, message: 'Your email has not been registered yet' });
     } 
       else if (results[0].password !== password) 
     {

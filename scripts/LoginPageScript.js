@@ -24,9 +24,11 @@ loginForm.addEventListener('submit', (event) => {
     },
     body: JSON.stringify(requestBody) //Indicate that we are sending JSON data in the request body
   })
-    .then ((response) => response.text())
-    .then ((text) => {
-      console.log('Response from server:', text);
+    .then ((response) => response.json())
+    .then ((data) => {
+      console.log(data);
+      console.log(data.message);
+      console.log(data.status);
   })
     .catch ((error) => {
       console.error('Error:', error);
