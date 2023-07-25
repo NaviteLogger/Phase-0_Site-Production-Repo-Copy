@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 //Get the reference to the registration form
 const registrationForm = document.getElementById('registration-form');
 
