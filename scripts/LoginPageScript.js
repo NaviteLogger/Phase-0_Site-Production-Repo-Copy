@@ -21,7 +21,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
   });
 
   //Get the response status
-  var incomingResponse = await response.json();
+  var incomingResponse = await JSON.parse(response.text());
   var status = incomingResponse.status;
 
   console.log('Status: ' + status);
