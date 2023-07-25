@@ -24,15 +24,12 @@ loginForm.addEventListener('submit', (event) => {
     },
     body: JSON.stringify(requestBody) //Indicate that we are sending JSON data in the request body
   })
-    .then ((response) {
-      if (!response.ok) {
-        throw new Error('An error occurred while trying to log in');
-      }
+    .then (function (response) {
       return response.json();
   })
     .then ((data) => {
       const messageElement = document.getElementById('message');
-      messageElement.textContent = data.message;
+      messageElement.innerHTML = data.message;
   })
     .catch ((error) => {
       console.error('Error:', error);

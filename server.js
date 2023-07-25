@@ -21,9 +21,6 @@ const connection = mysql.createConnection({
   database: process.env.DB_DATABASE
 });
 
-// Parse JSON bodies (as sent by API clients)
-app.use(bodyParser.json());
-
 // Parse JSON bodies (as sent by HTML forms)
 app.use(express.json());
 
@@ -98,7 +95,8 @@ app.post('/login', async (req, res) => {
     if (results.length === 0) 
     {
       console.log('User not found in the database');
-      res.status(404).json({ status: 404, message: 'Your email has not been registered yet' });
+      res.json({ message: 'Your email has not been registered yet' });
+      console.log(res);
     } 
       else if (results[0].password !== password) 
     {
