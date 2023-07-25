@@ -12,7 +12,7 @@ registrationForm.addEventListener('submit', (event) => {
     const repeatedPassword = document.getElementById('repeatedPassword').value;
 
     //Regular expression for email validation
-    let regexEmail = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    let emailRegularExpression = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
     //Regular expression for SQL Injection prevention
     let sqlInjectionPrevention = /[\=\*\/\\:\?\*'"><|]/g;
