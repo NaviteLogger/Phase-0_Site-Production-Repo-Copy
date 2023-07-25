@@ -51,22 +51,66 @@ app.get('/', (req, res) => {
   console.log('Home page rendered');
 });
 
-app.post('/login', function (req, res) {
-  const email = req.body.email;
-  const password = req.body.password;
+// Handle login requests
+app.post('/login', async (req, res) => {
+  try {
 
-  // Here, you should implement your user authentication logic.
-  // In this example, I'm simply checking if the email and password are not empty.
-  if(email && password) {
-    // In a real application, you should check the provided credentials against a database.
-    res.json({ success: true });
-  } else {
-    res.json({ success: false, message: 'Invalid email or password' });
+    //Convert the incoming request body to JSON and extract the email and password values
+    const { email, password } = req.body;
+
+    console.log('Email: ' + email);
+
+    // Select the 'CosmeticsLawDB' database
+    await new Promise((resolve, reject) => {
+      connection.query('USE CosmeticsLawDB', (error, results, fields) => {
+        if (error) 
+        {
+          // The promise is rejected if an error occurs
+          reject(error);
+        } 
+          else 
+        {
+          //The promise is resolved if the database is successfully selected
+          console.log('"Clients" database selected');
+          resolve();
+        }
+      });
+    });
+
+    // Check if the user exists in the 'Clients' table
+    const results = await new Promise((resolve, reject) => {
+      connection.query(`SELECT * FROM Clients WHERE email = '${email}'`, function (error, results, fields) {
+        if (error) 
+        {
+          reject(error);
+        } 
+          else 
+        {
+          console.log('The query was successful');
+          resolve(results);
+        }
+      });
+    });
+
+    if (results.length === 0) 
+    {
+      console.log('User not found in the database');
+      res.json({ message: 'Your email has not been registered yet' });
+    } 
+      else if (results[0].password !== password) 
+    {
+      console.log('Incorrect password');
+      res.status(401).json({ status: 401, message: 'Incorrect password' });
+    } 
+      else 
+    {
+      console.log('Login successful');
+      res.status(200).json({ status: 'success', message: 'Login successful' });
+    }
+  } catch (error) {
+    console.error('An error occurred during login:', error);
+    res.status(500).json({ status: 'error', message: 'An error occurred during login' });
   }
-});
-
-app.listen(3000, function () {
-  console.log('Server is running on port 3000');
 });
 
 // Start the server
