@@ -88,6 +88,7 @@ app.post('/login', async (req, res) => {
         } 
           else 
         {
+          console.log('The query was successful');
           resolve(results);
         }
       });
