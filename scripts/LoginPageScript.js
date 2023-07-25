@@ -21,14 +21,22 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
   });
 
   //Get the response status
-  var status = response.status;
+  var incomingResponse = await response.json();
+  var status = incomingResponse.status;
+
+  console.log('Status: ' + status);
 
   //Display a message based on the response status
-  if (status === 200) {
+  if (status === 200) 
+  {
     alert('Login successful!');
-  } else if (status === 401) {
+  } 
+    else if (status === 401) 
+  {
     alert('Invalid email or password.');
-  } else {
+  } 
+    else 
+  {
     alert('An error occurred. Please try again later.');
   }
 });

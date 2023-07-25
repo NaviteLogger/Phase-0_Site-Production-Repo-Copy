@@ -55,41 +55,63 @@ app.get('/', (req, res) => {
 });
 
 // Handle login requests
-app.post('/login', function(req, res) {
-  const email = req.body.email;
-  const password = req.body.password;
+app.post('/login', async (req, res) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
 
-  console.log('Email: ' + email);
+    console.log('Email: ' + email);
 
-  // Select the 'CosmeticsLawDB' database
-  connection.query('USE CosmeticsLawDB', function (error, results, fields) {
-    if (error) 
-    {
-      res.status(500).json({ error: 'Internal Server Error', error});
-      return;
-    }
-    console.log(' "Clients" database selected');
-  });
+    // Select the 'CosmeticsLawDB' database
+    await new Promise((resolve, reject) => {
+      connection.query('USE CosmeticsLawDB', (error, results, fields) => {
+        if (error) 
+        {
+          // The promise is rejected if an error occurs
+          reject(error);
+        } 
+          else 
+        {
+          //The promise is resolved if the database is successfully selected
+          console.log('"Clients" database selected');
+          resolve();
+        }
+      });
+    });
 
-  // Check if the user exists in the 'Clients' table
-  connection.query(`SELECT * FROM Clients WHERE email = '${email}'`, function (error, results, fields) {
-    if (error) 
-    {
-      console.error('Error executing database query:', err);
-      res.status(500).json({ error: 'An error occurred during verification' });
-    }
+    // Check if the user exists in the 'Clients' table
+    const results = await new Promise((resolve, reject) => {
+      connection.query(`SELECT * FROM Clients WHERE email = '${email}'`, function (error, results, fields) {
+        if (error) 
+        {
+          reject(error);
+        } 
+          else 
+        {
+          resolve(results);
+        }
+      });
+    });
 
     if (results.length === 0) 
     {
       console.log('User not found in the database');
       res.status(404).json({ status: 'not_found', message: 'Your email has not been registered yet' });
-    }
-    else
+    } 
+      else if (results[0].password !== password) 
     {
-      console.log('User found in the database');
-      res.status(200).json({ status: 'success', message: 'User found in the database' });
+      console.log('Incorrect password');
+      res.status(401).json({ status: 'unauthorized', message: 'Incorrect password' });
+    } 
+      else 
+    {
+      console.log('Login successful');
+      res.status(200).json({ status: 'success', message: 'Login successful' });
     }
-  });
+  } catch (error) {
+    console.error('An error occurred during login:', error);
+    res.status(500).json({ status: 'error', message: 'An error occurred during login' });
+  }
 });
 
 // Start the server
