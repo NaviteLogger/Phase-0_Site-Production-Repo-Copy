@@ -203,21 +203,21 @@ app.post('/register', async (req, res) => {
       });
 
       // Send a confirmation email to the user
-      //First we need to generate a random 6-digit number that will serve as a confirmation code
-      let confirmationCode = Math.floor(100000 + Math.random() * 900000);
+      //First we need to generate a random 6-digit number that will serve as a verification code
+      let verificationCode = Math.floor(100000 + Math.random() * 900000);
       //The tinyint(1) variable will be responsible for handling the email verification status
       let isVerified = 0;  
       
       //Insert the client_id into the 'EmailVerifications' table
       await new Promise((resolve, reject) => {
-        connection.query('INSERT INTO EmailVerifications (client_id, confirmation_code, is_verified) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?)', [email, confirmationCode, isVerified], function (error, results, fields) {
+        connection.query('INSERT INTO EmailVerifications (client_id, verification_code, is_verified) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?)', [email, verificationCode, isVerified], function (error, results, fields) {
           if (error)
           {
             reject(error);
           }
             else
           {
-            console.log('The query was successful: client_id, confirmation_code and is_verified inserted into the EmailVerifications table');
+            console.log('The query was successful: client_id, verification_code and is_verified inserted into the EmailVerifications table');
             resolve();
           }
         });
@@ -228,8 +228,8 @@ app.post('/register', async (req, res) => {
         to: email,
         from: 'pomoc@prawokosmetyczne.pl',
         subject: 'Potwierdzenie rejestracji adresu email',
-        text: 'Twój kod potwierdzający adres email to: ' + confirmationCode,
-        html: '<strong>Twój kod potwierdzający adres email to: ' + confirmationCode + '</strong>',
+        text: 'Twój kod potwierdzający adres email to: ' + verificationCode,
+        html: '<strong>Twój kod potwierdzający adres email to: ' + verificationCode + '</strong>',
       };
 
       //Now it is time to send the email
