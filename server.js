@@ -24,6 +24,9 @@ const connection = mysql.createConnection({
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
 
+// Parse JSON bodies (as sent by HTML forms)
+app.use(express.json());
+
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -83,7 +86,6 @@ app.post('/login', function(req, res) {
     }
     else
     {
-      
       console.log('User found in the database');
       res.status(200).json({ status: 'success', message: 'User found in the database' });
     }
