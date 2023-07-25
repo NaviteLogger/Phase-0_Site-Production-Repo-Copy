@@ -37,13 +37,13 @@ registrationForm.addEventListener('submit', (event) => {
         return false;
     }
 
-    if(!sqlInjectionPrevention.test(password))
+    if(sqlInjectionPrevention.test(password))
     {
         messageElement.innerText = 'Hasło zawiera niedozwolone znaki';
         return false;
     }
 
-    if(!sqlInjectionPrevention.test(repeatedPassword))
+    if(sqlInjectionPrevention.test(repeatedPassword))
     {
         messageElement.innerText = 'Powtórzony hasło zawiera niedozwolone znaki';
         return false;
