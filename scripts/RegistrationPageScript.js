@@ -37,18 +37,6 @@ registrationForm.addEventListener('submit', (event) => {
         return false;
     }
 
-    if(!sqlInjectionPrevention.test(email))
-    {
-        messageElement.innerText = 'Adres email zawiera niedozwolone znaki';
-        return false;
-    }
-
-    if(!sqlInjectionPrevention.test(repeatedEmail))
-    {
-        messageElement.innerText = 'Powtórzony adres email zawiera niedozwolone znaki';
-        return false;
-    }
-
     if(!sqlInjectionPrevention.test(password))
     {
         messageElement.innerText = 'Hasło zawiera niedozwolone znaki';
