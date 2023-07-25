@@ -95,7 +95,7 @@ app.post('/login', async (req, res) => {
     if (results.length === 0) 
     {
       console.log('User not found in the database');
-      res.json({ message: 'Your email has not been registered yet' });
+      res.json({ message: 'Twój adres mailowy nie został jeszcze zarejestrowany.' });
     } 
       else if (results[0].password !== password) 
     {
