@@ -15,7 +15,7 @@ registrationForm.addEventListener('submit', (event) => {
     let emailRegularExpression = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
     //Regular expression for SQL Injection prevention
-    let sqlInjectionPrevention = /[\=\*\/\\:\?\*'"><|]/g;
+    let sqlInjectionPrevention = /[=\\?'*"><|]/g;
 
     const messageElement = document.getElementById('message');
 
