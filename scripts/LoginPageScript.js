@@ -27,9 +27,9 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
   console.log('Status: ' + status);
 
   //Display a message based on the response status
-  if (status === 200) 
+  if (status === 404) 
   {
-    alert('Login successful!');
+    alert('Twój adres e-mail nie został jeszcze zarejestrowany. Proszę się zarejestrować.');
   } 
     else if (status === 401) 
   {

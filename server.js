@@ -96,12 +96,12 @@ app.post('/login', async (req, res) => {
     if (results.length === 0) 
     {
       console.log('User not found in the database');
-      res.status(404).json({ status: 'not_found', message: 'Your email has not been registered yet' });
+      res.status(404).json({ status: 404, message: 'Your email has not been registered yet' });
     } 
       else if (results[0].password !== password) 
     {
       console.log('Incorrect password');
-      res.status(401).json({ status: 'unauthorized', message: 'Incorrect password' });
+      res.status(401).json({ status: 401, message: 'Incorrect password' });
     } 
       else 
     {
