@@ -133,14 +133,14 @@ app.post('/register', async (req, res) => {
     if (!regexEmail.test(email)) 
     {
       // Send error message
-      res.status(400).json({ error: "Invalid email format." });
+      res.json({ error: "Podano nieprawidłowy format adresu email: proszę spróbować innego adresu email" });
       return;
     }
 
     if (sqlInjectionPrevention.test(email) || sqlInjectionPrevention.test(password)) 
     {
       // Send error message
-      res.status(400).json({ error: "Invalid characters used!" });
+      res.json({ error: "Hasło zawiera niedozwolone znaki: proszę spróbować innego hasła" });
       return;
     }
 
@@ -196,7 +196,7 @@ app.post('/register', async (req, res) => {
           } 
             else 
           {
-            console.log('The query was successful: email and password inserted into the database');
+            console.log('The query was successful: email and password inserted into the Clients table');
             resolve();
           }
         });
@@ -205,17 +205,19 @@ app.post('/register', async (req, res) => {
       // Send a confirmation email to the user
       //First we need to generate a random 6-digit number that will serve as a confirmation code
       let confirmationCode = Math.floor(100000 + Math.random() * 900000);
-
-      //Insert the confirmation code into the 'Clients' table
+      //The tinyint(1) variable will be responsible for handling the email verification status
+      let isVerified = 0;  
+      
+      //Insert the client_id into the 'EmailVerifications' table
       await new Promise((resolve, reject) => {
-        connection.query('UPDATE Clients SET confirmationCode = ? WHERE email = ?', [confirmationCode, email], function (error, results, fields) {
-          if (error) 
+        connection.query('INSERT INTO EmailVerifications (client_id, confirmation_code, is_verified) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?)', [email, confirmationCode, isVerified], function (error, results, fields) {
+          if (error)
           {
             reject(error);
-          } 
-            else 
+          }
+            else
           {
-            console.log('The query was successful: confirmation code inserted into the database');
+            console.log('The query was successful: client_id, confirmation_code and is_verified inserted into the EmailVerifications table');
             resolve();
           }
         });
@@ -234,7 +236,7 @@ app.post('/register', async (req, res) => {
       sgMail.send(msg);
 
       res.json({ message: 'Rejestracja przebiegła pomyślnie, sprawdź swoją skrzynkę pocztową w celu potwierdzenia adresu email' });
-      
+
     }
   } catch (error) {
     console.error('An error occurred during registration:', error);
