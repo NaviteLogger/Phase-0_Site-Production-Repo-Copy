@@ -1,42 +1,34 @@
-//The following function is used to validate the login form
-//The .getElementById() method is used to get values from the login form,
-//The .addEventListener() method is used to add an event listener to the login form - a function that will be executed when the form is submitted
-document.getElementById('login-form').addEventListener('submit', async (event) => {
+//Get the reference to the login form
+const loginForm = document.getElementById('login-form');
+
+//Add an event listener to the login form
+loginForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  //Get the values: email and password from the login form
-  var email = document.getElementById('email').value;
-  var password = document.getElementById('password').value;
+  //Get the email and password values from the form
+  const formData = new FormData(loginForm);
+  const email = formData.get('email');
+  const password = formData.get('password');
 
-  //Create an object with the email and password
-  var data = { email: email, password: password };
+  //Create an object to send as JSON data in the request body
+  const requestBody = {
+    email: email,
+    password: password
+  };
 
-  //Send a POST request to the server with the data in JSON format
-  var response = await fetch('/login', {
+  //Send a POST request to the server
+  fetch('/login', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(requestBody) //Indicate that we are sending JSON data in the request body
+  })
+    .then ((response) => response.text())
+    .then ((text) => {
+      console.log('Response from server:', text);
+  })
+    .catch ((error) => {
+      console.error('Error:', error);
   });
-
-  //Get the response status
-  var incomingResponse = await JSON.parse(response.text());
-  var status = incomingResponse.status;
-
-  console.log('Status: ' + status);
-
-  //Display a message based on the response status
-  if (status === 404) 
-  {
-    alert('Twój adres e-mail nie został jeszcze zarejestrowany. Proszę się zarejestrować.');
-  } 
-    else if (status === 401) 
-  {
-    alert('Invalid email or password.');
-  } 
-    else 
-  {
-    alert('An error occurred. Please try again later.');
-  }
 });
