@@ -196,9 +196,8 @@ function checkAuthentication(req, res, next) {
   {
     console.log('User is not authenticated');
     res.redirect('/pages/LoginPage.html');
-    )
   }
-}
+});
 
 app.get('/clientsPortalProtected', checkAuthentication, function (req, res) {
   console.log('Received a request to the clients portal');
