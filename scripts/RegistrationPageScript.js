@@ -161,7 +161,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
         .then(data => {
           if (data.status === 'not_logged_in') 
           {
-            window.location.href = '/LoginPage.html';
+            window.location.href = '/pages/LoginPage.html';
           }
         })
         .catch(error => console.error(error));
