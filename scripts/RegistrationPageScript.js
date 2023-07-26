@@ -15,7 +15,7 @@ registrationForm.addEventListener('submit', (event) => {
     let emailRegularExpression = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/i;
 
     //Regular expression for SQL Injection prevention
-    let sqlInjectionPrevention = /^[^<>"'\/\\|?=*]{8,}$/g;
+    let sqlInjectionPrevention = /[<>"'/\\|?=*]/;
 
     //Define max length of the email and password
     const MaxLength = 50;
@@ -44,7 +44,7 @@ registrationForm.addEventListener('submit', (event) => {
     }
 
     //Check if the password is valid
-    if (!sqlInjectionPrevention.test(password) || !sqlInjectionPrevention.test(repeatedPassword))
+    if (sqlInjectionPrevention.test(password) || sqlInjectionPrevention.test(repeatedPassword))
     {
         messageElement.innerHTML = 'Hasło zawiera niedozwolone znaki!';
         return false;
