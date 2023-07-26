@@ -64,7 +64,7 @@ connection.connect((err) => {
 
 //Render the home page
 app.get('/', (req, res) => {
-  res.redirect('/index.html');
+  res.redirect('/index');
   console.log('Home page rendered');
 });
 
