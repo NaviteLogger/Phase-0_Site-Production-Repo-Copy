@@ -16,7 +16,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //Create the Express application
 const app = express();
-middleware
+
 //Create a connection to the MySQL database
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
