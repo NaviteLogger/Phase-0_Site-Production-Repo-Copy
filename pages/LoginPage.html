@@ -2,37 +2,27 @@
 <html>
 <head>
   <title>Login Page</title>
-  <link rel="stylesheet" type="text/css" href="/styles/LoginPageStyles.css">
+  <link rel="stylesheet" type="text/css" href="../styles/LoginPageStyles.css">
   <script src="../scripts/LoginPageScript.js" defer></script>
   <meta charset="utf-8">
 </head>
 <body>
-  <div class="header">
-    <div>
-      <img src='/images/logo.png' alt="Logo" class="logo">
+  <header>
+    <div class="left">
+        <a href="./index.html" class="nav-link">STRONA GŁÓWNA</a>
+        <a href="./pages/OfferPage.html" class="nav-link">OFERTA</a>
+        <a href="./pages/AboutUsPage.html" class="nav-link">O NAS</a>
     </div>
-    <div class="navigation">
-        <a href="../index.html">
-            <button class="nav-button">STRONA GŁOWNA</button>
+    <div class="middle">
+        <a href="./index.html" class="nav-link">
+            <img src="./images/logo.png" alt="Logo" id="logo">
         </a>
-        <a href="/pages/OfferPage.html">
-            <button class="nav-button">OFERTA</button>
-        </a>
-        <a href="/pages/LoginPage.html">
-            <button class="nav-button current">PANEL KLIENTA</button>
-        </a>
-        <a href="/pages/ContactPage.html">
-            <button class="nav-button">KONTAKT</button>
-        </a>
-        <div class="shopping-bag">
-            <img src='/images/torba.png' alt="Shopping Bag" class="shopping-bag">
-        </div>
     </div>
-  </div>
-
-  <div>
-    <button id="temp-button">Temp</button>
-  </div>
+    <div class="right">
+        <a href="./pages/ContactPage.html" class="nav-link">KONTAKT</a>
+        <button class="client-panel">PANEL KLIENTA</button>
+    </div>
+</header>
 
   <div class="login-form">
     <h2>Witamy w panelu klienta</h2>
@@ -62,7 +52,7 @@
   </div>
     <div>
       <br>
-      <a href="/pages/RegistrationPage.html">
+      <a href="./RegistrationPage.html">
         <button class="register-button">Nie posiadasz jeszcze konta? Zarejestruj się</button>
       </a>
     </div>

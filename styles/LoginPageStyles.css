@@ -1,57 +1,60 @@
+@font-face {
+  font-family: 'Futura';
+  src: url(./fonts/futuraFont.ttf) format('truetype');
+  font-weight: normal;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .logo {
-    height: 50px;
-    width: 80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #14054B;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 2px solid black;
-  }
-  
-  .navigation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .navigation .current {
-    font-weight: bold;
-  }
-  
-  .nav-button {
-    margin: 0 10px;
-    padding: 10px 20px;
-    border: none;
-    background-color: white;
-    color: black;
-    transition: background-color 0.3s ease;
-    width: 165px; /* Adjust this value as needed */
-    text-align: center;
-    text-decoration: none;
-  }
-  
-  .nav-button:hover {
-    background-color: #ddd;
-    font-weight: bold;
-  }
-  
-  .shopping-bag {
-    width: 50px;
-    height: 50px;
-  }
+  font-family: 'Futura', sans-serif;
+  margin: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: black;
+  margin: 10px;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.nav-link.active {
+  font-weight: bold;
+}
+
+#logo {
+  width: 100px; /* Adjust as needed */
+  height: auto;
+  margin: 5px;
+}
+
+.client-panel {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.client-panel:hover {
+  text-decoration: underline;
+}
+
+/*This is where the body of the page begins*/
 
   .login-form {
     text-align: center;

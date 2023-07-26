@@ -1,8 +1,14 @@
+@font-face {
+  font-family: 'Futura';
+  src: url(./fonts/futuraFont.ttf) format('truetype');
+  font-weight: normal;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
+  font-family: 'Futura', sans-serif;
+  margin: 0;
+  padding: 0;
+}
   
   .logo {
     height: 50px;

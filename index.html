@@ -1,40 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl-PL">
 <head>
-    <title>Main Page</title>
-    <link rel="stylesheet" type="text/css" href='/styles/MainPageStyles.css'>
-    <link rel="stylesheet" href="https://use.typekit.net/oov2wcw.css">
+    <link rel="stylesheet" type="text/css" href="./styles/MainPageStyles.css">
     <meta charset="utf-8">
 </head>
 <body>
-    <div class="header">
-        <div>
-          <img src='/images/logo.png' alt="Logo" class="logo">
+    <header>
+        <div class="left">
+            <a href="./index.html" class="nav-link">STRONA GŁÓWNA</a>
+            <a href="./pages/OfferPage.html" class="nav-link">OFERTA</a>
+            <a href="./pages/AboutUsPage.html" class="nav-link">O NAS</a>
         </div>
-        <div class="navigation">
-            <a href="/index.html">
-                <button class="nav-button current">STRONA GŁOWNA</button>
+        <div class="middle">
+            <a href="./index.html" class="nav-link">
+                <img src="./images/logo.png" alt="Logo" id="logo">
             </a>
-            <a href="/pages/OfferPage.html">
-                <button class="nav-button">OFERTA</button>
-            </a>
-            <a href="/pages/LoginPage.html">
-                <button class="nav-button">PANEL KLIENTA</button>
-            </a>
-            <a href="/pages/ContactPage.html">
-                <button class="nav-button">KONTAKT</button>
-            </a>
-            <div class="shopping-bag">
-              <img src='/images/torba.png' alt="Shopping Bag" class="shopping-bag">
+        </div>
+        <div class="right">
+            <a href="./pages/ContactPage.html" class="nav-link">KONTAKT</a>
+            <button class="client-panel">PANEL KLIENTA</button>
+        </div>
+    </header>
+    <main>
+        <div class="grid">
+            <div class="grid-item large">
+                <img class="grid-photo-large" src="./images/GRANAT.jpg" alt="Image 1">
+            </div>
+            <div class="grid-item">
+                <img class="grid-photo" src="./images/GRANAT.jpg" alt="Image 2">
+            </div>
+            <div class="grid-item">
+                <a href="./pages/AboutUsPage.html" class="nav-link">O NAS</a>
+                <p>Tutaj mozna wstawić paragraf o naszej firmie</p>             
             </div>
         </div>
-    </div>
-    <div class="ads">
-        <button class="arrow left-arrow">&lt;</button>
-        <div class="ad-image">
-            <img src='/images/GRANAT.jpg' class="ad-image">
-        </div>
-        <button class="arrow right-arrow">&gt;</button>
-    </div>
+    </main>
 </body>
 </html>

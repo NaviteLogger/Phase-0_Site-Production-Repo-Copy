@@ -1,95 +1,102 @@
 @font-face {
-  font-family: 'Futura'; /* Replace 'CustomFont' with the name you want to give to your font */
-  src: url('/Futura\ font/.woff') format('woff2'), /* Modern browsers */
-       url('/Futura\ font/.woff') format('woff'), /* Modern browsers */
+  font-family: 'Futura';
+  src: url(./fonts/futuraFont.ttf) format('truetype');
+  font-weight: normal;
 }
-
 
 body {
-  /* add century gothic font */
-  font-family: 'Futura';
+  font-family: 'Futura', sans-serif;
   margin: 0;
-  padding: 0;
-  font-size: 50px; /* add this line to make the font bigger */
 }
 
-.logo {
-  height: 50px;
-  width: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.header {
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   padding: 20px;
-  border-bottom: 2px solid black;
-  background-color: lightgray;
 }
 
-.navigation {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 50px;
+.nav-link {
+  text-decoration: none;
+  color: black;
+  margin: 10px;
 }
 
-.navigation .current {
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.nav-link.active {
   font-weight: bold;
 }
 
-.nav-button {
-  font-size: 20px;
-  margin: 0 10px;
-  padding: 10px 20px;
+#logo {
+  width: 100px; /* Adjust as needed */
+  height: auto;
+  margin: 5px;
+}
+
+.client-panel {
+  background-color: black;
+  color: white;
   border: none;
-  background-color: lightgray;
-  color: black;
-  transition: background-color 0.3s ease;
-  width: 250px; /* Adjust this value as needed */
+  padding: 10px 20px;
   text-align: center;
   text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
 }
 
-.nav-button:hover {
-  background-color: #ddd;
+.client-panel:hover {
+  text-decoration: underline;
 }
 
-.shopping-bag {
-  width: 50px;
-  height: 50px;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  gap: 10px;
 }
 
-.ads {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
+.grid-item {
+  background: #ddd; /* Placeholder background */
+  padding: 20px;
+  text-align: center;
+  height: 50%;
+}
+
+.grid-photo {
   width: 100%;
   height: 100%;
 }
 
-.arrow {
-  padding: 10px 20px;
-  border: none;
-  background-color: white;
-  color: black;
-  transition: background-color 0.3s ease;
-  font-weight: bold;
+.grid-item.large {
+  grid-column: span 2;
 }
 
-.arrow:hover {
-  background-color: #ddd;
+/* For tablets and larger screens */
+@media (min-width: 768px) {
+  .grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+  }
+
+  .grid-item.large {
+      grid-column: span 2;
+  }
 }
 
-.ad-image {
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  background-color: #f0f0f0;
-  margin: 0 10px;
+/* For desktops and larger screens */
+@media (min-width: 1024px) {
+  .grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+  }
+
+  .grid-item.large {
+      grid-column: span 2;
+  }
 }
