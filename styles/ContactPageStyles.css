@@ -37,7 +37,7 @@ header {
   margin: 5px;
 }
 
-.client-panel {
+.clients-portal {
   background-color: black;
   color: white;
   border: none;
@@ -50,7 +50,7 @@ header {
   cursor: pointer;
 }
 
-.client-panel:hover {
+.clients-portal:hover {
   text-decoration: underline;
 }
 
