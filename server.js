@@ -195,7 +195,7 @@ function checkAuthentication(req, res, next) {
     else 
   {
     console.log('User is not authenticated');
-    res.redirect('/pages/LoginPage.html');
+    res.json({ status: 'not_logged_in', message: 'User is not authenticated' });
   }
 }
 
