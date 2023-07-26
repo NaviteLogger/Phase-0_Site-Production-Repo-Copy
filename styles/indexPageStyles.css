@@ -74,7 +74,16 @@ header {
 }
 
 .grid-item.large {
+  width: auto;
+  height: auto;
   grid-column: span 2;
+}
+
+.grid-photo-large {
+  width: 98%;
+  height: auto;
+  max-width: auto;
+  height: 100%;
 }
 
 /* For tablets and larger screens */
