@@ -42,6 +42,9 @@ app.use('/styles', express.static(path.join(__dirname, 'styles')));
 //Serve static files from the 'photos' directory
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
 
+//Serve static files from the 'pages' directory
+app.use('/pages', express.static(path.join(__dirname, 'pages')));
+
 //Include the session middleware
 app.use(
   session({
@@ -190,7 +193,7 @@ function checkAuthentication(req, res, next) {
   }
     else 
   {
-    res.redirect("./pages/NotLoggedInPage.html");
+    res.redirect('./pages/NotLoggedInPage.html');
   }
 }
 
