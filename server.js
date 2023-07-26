@@ -64,8 +64,12 @@ connection.connect((err) => {
 
 //Render the home page
 app.get('/', (req, res) => {
-  res.redirect('/index');
   console.log('Home page rendered');
+  res.redirect('/main'); // Redirect to main page
+});
+
+app.get('/main', (req, res) => {
+  res.render('index.html');
 });
 
 //Handle login requests
@@ -198,7 +202,7 @@ function checkAuthentication(req, res, next) {
 }
 
 app.get('/clientsPortalProtected', checkAuthentication, function (req, res) {
-  res.redirect('./pages/ClientsPortalPage.html');  
+  res.redirect('/pages/ClientsPanelPage.html');
 });
 
 //Handle registration requests
