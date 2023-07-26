@@ -219,7 +219,7 @@ app.post('/register', async (req, res) => {
     let regexEmail = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
     //Regular expression for SQL Injection prevention
-    let sqlInjectionPrevention = /^[^<>;=|*?&'"]+$/i;
+    let sqlInjectionPrevention = /^[^<>;=|*?&'"]+$/i; //THIS REGEX IS NOT WORKING PROPERLY, IT NEEDS TO BE FIXED
 
     if (regexEmail.test(email)) 
     {

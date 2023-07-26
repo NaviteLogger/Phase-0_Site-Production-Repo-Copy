@@ -1,35 +1,29 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl-PL">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel = "stylesheet" type = "text/css" href = "/styles/RegistrationPageStyles.css">
+    <link rel = "stylesheet" type = "text/css" href = "../styles/RegistrationPageStyles.css">
     <script src="../scripts/RegistrationPageScript.js" defer></script>
     <title>Formularz rejestracji</title>
 </head>
 <body>
-    <div class="header">
-        <div>
-          <img src='/images/logo.png' alt="Logo" class="logo">
-        </div>
-        <div class="navigation">
-            <a href="../index.html">
-                <button class="nav-button">STRONA GŁOWNA</button>
-            </a>
-            <a href="/pages/OfferPage.html">
-                <button class="nav-button">OFERTA</button>
-            </a>
-            <a href="/pages/LoginPage.html">
-                <button class="nav-button">PANEL KLIENTA</button>
-            </a>
-            <a href="/pages/ContactPage.html">
-                <button class="nav-button current">KONTAKT</button>
-            </a>
-            <div class="shopping-bag">
-                <img src='/images/torba.png' alt="Shopping Bag" class="shopping-bag">
-            </div>
-        </div>
-      </div>
+  <header>
+    <div class="left">
+        <a href="../index.html" class="nav-link">STRONA GŁÓWNA</a>
+        <a href="./OfferPage.html" class="nav-link">OFERTA</a>
+        <a href="./AboutUsPage.html" class="nav-link">O NAS</a>
+    </div>
+    <div class="middle">
+        <a href="../index.html" class="nav-link">
+            <img src="../images/logo.png" alt="Logo" id="logo">
+        </a>
+    </div>
+    <div class="right">
+        <a href="./ContactPage.html" class="nav-link">KONTAKT</a>
+        <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
+    </div>
+  </header>
     
     <h2>Witamy w rejestracji do naszego serwisu internetowego</h2>
   

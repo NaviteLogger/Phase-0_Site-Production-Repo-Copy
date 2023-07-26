@@ -47,7 +47,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
       .then(data => {
         if (data.status === 'not_logged_in') 
         {
-          window.location.href = '/pages/LoginPage.html';
+          window.location.href = '/LoginPage.html';
         }
       })
       .catch(error => console.error(error));
