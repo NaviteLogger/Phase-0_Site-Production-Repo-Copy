@@ -219,21 +219,9 @@ app.post('/register', async (req, res) => {
     let regexEmail = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
     //Regular expression for SQL Injection prevention
-    let sqlInjectionPrevention = /^[^<>;=|*?&'"]+$/i; //THIS REGEX IS NOT WORKING PROPERLY, IT NEEDS TO BE FIXED
+    let sqlInjectionPrevention = /^[^<>"'\/\\|?=*]{8,}$/g; //THIS REGEX IS NOT WORKING PROPERLY, IT NEEDS TO BE FIXED
 
-    if (regexEmail.test(email)) 
-    {
-      //Send error message
-      res.json({ error: "Podano nieprawidłowy format adresu email: proszę spróbować innego adresu email" });
-      return;
-    }
-
-    if (sqlInjectionPrevention.test(email) || sqlInjectionPrevention.test(password)) 
-    {
-      //Send error message
-      res.json({ error: "Hasło lub email zawierają niedozwolone znaki: proszę spróbować ponownie" });
-      return;
-    }
+    
 
     //At this point the email and password are valid
     //We are ready to insert email and password into the database here

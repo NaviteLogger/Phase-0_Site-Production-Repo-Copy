@@ -15,118 +15,56 @@ registrationForm.addEventListener('submit', (event) => {
     let emailRegularExpression = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
     //Regular expression for SQL Injection prevention
-    let sqlInjectionPrevention = /[=\\?'*"><|]/g;
+    let sqlInjectionPrevention = /^[^<>"'\/\\|?=*]{8,}$/g;
 
     //Define max length of the email and password
     const MaxLength = 50;
 
     const messageElement = document.getElementById('message');
 
-    //In the followin two logic blocks we check if the email and repeatedEmail values are in the correct format
-    if(!emailRegularExpression.test(email))
+    //Check if the email is valid
+    if (!emailRegularExpression.test(email) || !emailRegularExpression.test(repeatedEmail))
     {
-        messageElement.innerText = 'Niepoprawny adres email';
+        messageElement.innerHTML = 'Adres email zawiera niedozwolone znaki!';
         return false;
     }
 
-    if(!emailRegularExpression.test(repeatedEmail))
+    //Check if the password is valid
+    if (!sqlInjectionPrevention.test(password) || !sqlInjectionPrevention.test(repeatedPassword))
     {
-        messageElement.innerText = 'Niepoprawny potwórzony adres email';
+        messageElement.innerHTML = 'Hasło zawiera niedozwolone znaki!';
         return false;
     }
 
-    //In the following two logic blocks we check if the email and repeatedEmal are not empty
-    if(email === '')
+    //Check if the email is within acceptable length
+    if (email.length > MaxLength || email.length < 1 || repeatedEmail.length > MaxLength || repeatedEmail.length < 1) 
     {
-        messageElement.innerText = 'Adres email nie może być pusty';
+        messageElement.innerHTML = 'Email must be between 1 and 50 characters long!';
         return false;
     }
 
-    if(repeatedEmail === '')
+    //Check if the password is within acceptable length
+    if (password.length > MaxLength || password.length < 1 || repeatedPassword.length > MaxLength || repeatedPassword.length < 1)
     {
-        messageElement.innerText = 'Powtórzony adres email nie może być pusty';
+        messageElement.innerHTML = 'Password must be between 1 and 50 characters long!';
         return false;
     }
 
-    //In the following logic block we check if the password and repeatedPassword are not empty
-    if(password === '')
+    //Check if the email and repeated email are the same
+    if (email !== repeatedEmail)
     {
-        messageElement.innerText = 'Hasło nie może być puste';
+        messageElement.innerHTML = 'Podano różne adresy email!';
         return false;
     }
 
-    if(repeatedPassword === '')
+    //Check if the password and repeated password are the same
+    if (password !== repeatedPassword)
     {
-        messageElement.innerText = 'Powtórzone hasło nie może być pusty';
+        messageElement.innerHTML = 'Podano różne hasła!';
         return false;
     }
 
-    //In the following two logic blocks we check if the email and repeatedEmail are not too long
-    if(email.length > MaxLength)
-    {
-        messageElement.innerText = 'Adres email jest za długi';
-        return false;
-    }
-
-    if(repeatedEmail.length > MaxLength)
-    {
-        messageElement.innerText = 'Powtórzony adres email jest za długi';
-        return false;
-    }
-
-    //In the following two logic blocks we check if the password and repeatedPassword are not too long
-    if(password.length > MaxLength)
-    {
-        messageElement.innerText = 'Hasło jest za długie';
-        return false;
-    }
-
-    if(repeatedPassword.length > MaxLength)
-    {
-        messageElement.innerText = 'Powtórzone hasło jest za długie';
-        return false;
-    }
-
-    //In the following logic block we check if the email and repeatedEmail are identical
-    if(email !== repeatedEmail)
-    {
-        messageElement.innerText = 'Adresy email nie są identyczne';
-        return false;
-    }
-
-    //In the following two logic blocks we check if the email and repeatedEmail do not contain prohibited characters
-    if(sqlInjectionPrevention.test(email))
-    {
-        messageElement.innerText = 'Adres email zawiera niedozwolone znaki';
-        return false;
-    }
-
-    if(sqlInjectionPrevention.test(repeatedEmail))
-    {
-        messageElement.innerText = 'Powtórzony adres email zawiera niedozwolone znaki';
-        return false;
-    }
-
-    //In the following two logic blocks we check if the password and repeatedPassword do not contain prohibited characters
-    if(sqlInjectionPrevention.test(password))
-    {
-        messageElement.innerText = 'Hasło zawiera niedozwolone znaki';
-        return false;
-    }
-
-    if(sqlInjectionPrevention.test(repeatedPassword))
-    {
-        messageElement.innerText = 'Powtórzony hasło zawiera niedozwolone znaki';
-        return false;
-    }
-
-    //In the following logic block we check if the password and repeatedPassword are identical
-    if(password !== repeatedPassword)
-    {
-        messageElement.innerText = 'Hasła nie są identyczne';
-        return false;
-    }
-
+    //Create a request body object
     const requestBody = {
         email: email,
         password: password
