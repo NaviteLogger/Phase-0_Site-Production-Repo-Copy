@@ -10,7 +10,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
         .then(data => {
           if (data.status === 'not_logged_in') 
           {
-            window.location.href = '/login';
+            window.location.href = '/LoginPage';
           }
         })
         .catch(error => console.error(error));
