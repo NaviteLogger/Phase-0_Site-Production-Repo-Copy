@@ -221,7 +221,7 @@ app.post('/register', async (req, res) => {
     //Regular expression for SQL Injection prevention
     let sqlInjectionPrevention = /^[^<>;=|*?&'"]+$/i;
 
-    if (!regexEmail.test(email)) 
+    if (regexEmail.test(email)) 
     {
       //Send error message
       res.json({ error: "Podano nieprawidłowy format adresu email: proszę spróbować innego adresu email" });
