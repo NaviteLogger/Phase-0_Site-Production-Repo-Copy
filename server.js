@@ -5,6 +5,7 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const sgMail = require('@sendgrid/mail');
 const session = require('express-session');
+const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 
