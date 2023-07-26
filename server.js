@@ -186,26 +186,16 @@ function checkAuthentication(req, res, next) {
   if (req.isAuthenticated()) 
   {
     //if user is looged in, req.isAuthenticated() will return true 
-    //return next();
-    return true;
+    return next();
   }
     else 
   {
-    //res.redirect("./pages/NotLoggedInPage.html");
-    return false;
+    res.redirect("./pages/NotLoggedInPage.html");
   }
 }
 
-app.get('/clientsPortalProtected', function (req, res) {
-  if (checkAuthentication(req, res, next)) 
-  {
-    res.redirect('/pages/ClientsPortal.html');
-  }
-    else
-  {
-    res.redirect('/pages/NotLoggedInPage.html');
-  }
-  
+app.get('/clientsPortalProtected', checkAuthentication, function (req, res) {
+  res.redirect('./pages/ClientsPortalPage.html');  
 });
 
 //Handle registration requests
