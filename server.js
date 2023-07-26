@@ -215,13 +215,52 @@ app.post('/register', async (req, res) => {
 
     //This section of the code will deal with email and password validation from the server side:
 
-    //Regular expression for email
-    let regexEmail = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    //Regular expression for email validation
+    let emailRegularExpression = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/i;
 
     //Regular expression for SQL Injection prevention
-    let sqlInjectionPrevention = /^[^<>"'\/\\|?=*]{8,}$/g; //THIS REGEX IS NOT WORKING PROPERLY, IT NEEDS TO BE FIXED
+    let sqlInjectionPrevention = /[<>"'/\\|?=*]/;
 
-    
+    //Define max length of the email and password
+    const MaxLength = 50;
+
+    const messageElement = document.getElementById('message');
+
+    //Check if the email is valid
+    if (!emailRegularExpression.test(email) || !emailRegularExpression.test(repeatedEmail))
+    {
+      res.json({ message: 'Adres email zawiera niedozwolone znaki!' });
+    }
+
+    //Check if the email is within acceptable length
+    if (email.length > MaxLength || email.length < 1 || repeatedEmail.length > MaxLength || repeatedEmail.length < 1) 
+    {
+      res.json({ message: 'Email must be between 1 and 50 characters long!' }); 
+    }
+
+    //Check if the password is within acceptable length
+    if (password.length > MaxLength || password.length < 1 || repeatedPassword.length > MaxLength || repeatedPassword.length < 1)
+    {
+      res.json({ message: 'Password must be between 1 and 50 characters long!' });
+    }
+
+    //Check if the password is valid
+    if (sqlInjectionPrevention.test(password) || sqlInjectionPrevention.test(repeatedPassword))
+    {
+      res.json({ message: 'Hasło zawiera niedozwolone znaki!' });
+    }    
+
+    //Check if the email and repeated email are the same
+    if (email !== repeatedEmail)
+    {
+      res.json({ message: 'Podano różne adresy email!' });
+    }
+
+    //Check if the password and repeated password are the same
+    if (password !== repeatedPassword)
+    {
+      res.json({ message: 'Podano różne hasła!' });
+    }
 
     //At this point the email and password are valid
     //We are ready to insert email and password into the database here
