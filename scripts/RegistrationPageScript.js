@@ -29,13 +29,6 @@ registrationForm.addEventListener('submit', (event) => {
         return false;
     }
 
-    //Check if the password is valid
-    if (!sqlInjectionPrevention.test(password) || !sqlInjectionPrevention.test(repeatedPassword))
-    {
-        messageElement.innerHTML = 'Hasło zawiera niedozwolone znaki!';
-        return false;
-    }
-
     //Check if the email is within acceptable length
     if (email.length > MaxLength || email.length < 1 || repeatedEmail.length > MaxLength || repeatedEmail.length < 1) 
     {
@@ -49,6 +42,13 @@ registrationForm.addEventListener('submit', (event) => {
         messageElement.innerHTML = 'Password must be between 1 and 50 characters long!';
         return false;
     }
+
+    //Check if the password is valid
+    if (!sqlInjectionPrevention.test(password) || !sqlInjectionPrevention.test(repeatedPassword))
+    {
+        messageElement.innerHTML = 'Hasło zawiera niedozwolone znaki!';
+        return false;
+    }    
 
     //Check if the email and repeated email are the same
     if (email !== repeatedEmail)
