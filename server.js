@@ -4,6 +4,9 @@ const path = require('path');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const sgMail = require('@sendgrid/mail');
+const LocalStrategy = require('passport-local').Strategy;
+
+// Load environment variables from the .env file
 require('dotenv').config();
 
 // Set SendGrid API key
