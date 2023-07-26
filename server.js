@@ -65,11 +65,7 @@ connection.connect((err) => {
 //Render the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
-  res.redirect('/main'); // Redirect to main page
-});
-
-app.get('/main', (req, res) => {
-  res.render('index.html');
+  res.redirect('/'); // Redirect to main page
 });
 
 //Handle login requests
@@ -193,10 +189,12 @@ function checkAuthentication(req, res, next) {
   if (req.isAuthenticated()) 
   {
     //if user is looged in, req.isAuthenticated() will return true 
+    console.log('User is authenticated');
     return next();
   }
     else 
   {
+    console.log('User is not authenticated');
     res.redirect('./pages/NotLoggedInPage.html');
   }
 }
