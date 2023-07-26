@@ -200,6 +200,7 @@ function checkAuthentication(req, res, next) {
 }
 
 app.get('/clientsPortalProtected', checkAuthentication, function (req, res) {
+  console.log('Received a request to the clients portal');
   res.redirect('/pages/ClientsPanelPage.html');
 });
 
