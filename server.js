@@ -156,7 +156,7 @@ app.post('/register', async (req, res) => {
     if (sqlInjectionPrevention.test(email) || sqlInjectionPrevention.test(password)) 
     {
       // Send error message
-      res.json({ error: "Hasło zawiera niedozwolone znaki: proszę spróbować innego hasła" });
+      res.json({ error: "Hasło lub email zawierają niedozwolone znaki: proszę spróbować ponownie" });
       return;
     }
 
