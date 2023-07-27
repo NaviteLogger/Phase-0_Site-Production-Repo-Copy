@@ -41,15 +41,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));
 
-//Serve static files from the 'styles' directory
-app.use('/styles', express.static(path.join(__dirname, 'styles')));
-
-//Serve static files from the 'photos' directory
-app.use('/photos', express.static(path.join(__dirname, 'photos')));
-
-//Serve static files from the 'pages' directory
-app.use('/pages', express.static(path.join(__dirname, 'pages')));
-
 //Include the session middleware for user's session management
 app.use(
   session({
@@ -367,7 +358,18 @@ app.post('/register', async (req, res) => {
   } catch (error) {
     console.error('An error occurred during registration:', error);
   }
-});   
+});  
+
+//Serving static files
+
+//Serve static files from the 'styles' directory
+app.use('/styles', express.static(path.join(__dirname, 'styles')));
+
+//Serve static files from the 'photos' directory
+app.use('/photos', express.static(path.join(__dirname, 'photos')));
+
+//Serve static files from the 'pages' directory
+app.use('/pages', express.static(path.join(__dirname, 'pages')));
 
 //Start the server
 const port = 80;
