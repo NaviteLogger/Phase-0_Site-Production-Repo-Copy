@@ -106,23 +106,25 @@ passport.use(
           console.log('Podany adres email: ' + email + ' nie istnieje w bazie danych.');
           return done(null, false, { message: 'Podany adres email nie istnieje w bazie danych.' });
         }
-
-        console.log('Podany adres email: ' + email + ' istnieje w bazie danych.');
-        bcrypt.compare(password, results[0].password, function (error, response) {
-          if (error)
-          {
-            return done(error);
-          }
+          else
+        {
+          console.log('Podany adres email: ' + email + ' istnieje w bazie danych.');
+          bcrypt.compare(password, results[0].password, function (error, response) {
+            if (error)
+            {
+              return done(error);
+            }
             else if (response)
-          {
-            return done(null, results[0]);
-          }
+            {
+              return done(null, results[0]);
+            }
             else
-          {
-            console.log('Użytkownik wprowadził niepoprawne hasło');
-            return done(null, false, { message: 'Nieprawidłowe hasło.' });
-          }
-        });
+            {
+              console.log('Użytkownik wprowadził niepoprawne hasło');
+              return done(null, false, { message: 'Nieprawidłowe hasło.' });
+            }        
+          });
+        }
       });
     }
   )
@@ -148,7 +150,7 @@ app.post('/login', (req, res, next) => {
 
     if (!user)
     {
-      console.log('User' + user + 'was not found in the database');
+      console.log('User was not found in the database');
       return res.json({ status: 'not_found', message: 'User not found' });
     }
 
