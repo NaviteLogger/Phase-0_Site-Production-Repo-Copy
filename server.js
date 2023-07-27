@@ -179,6 +179,7 @@ app.post('/login', (req, res, next) => {
 
 function checkAuthentication(req, res, next) {
   console.log('Checking authentication, calling checkAuthentication');
+  console.log('User is authenticated: ' + req.isAuthenticated());
   if (req.isAuthenticated()) 
   {
     //if user is looged in, req.isAuthenticated() will return true 
