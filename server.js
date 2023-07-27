@@ -103,12 +103,12 @@ passport.use(
 
         if (results.length === 0)
         {
-          console.log('Podany adres email: ' + email + ' nie istnieje w bazie danych.');
-          return done(null, false, { message: 'Podany adres email nie istnieje w bazie danych.' });
+          console.log('Given email: ' + email + ' does not exist in the database.');
+          return done(null, false, { message: 'Given email does not exist in the database.' });
         }
           else
         {
-          console.log('Podany adres email: ' + email + ' istnieje w bazie danych.');
+          console.log('Given email: ' + email + ' exists in the database.');
           bcrypt.compare(password, results[0].password, function (error, response) {
             console.log(results[0]);
             if (error)
@@ -121,8 +121,8 @@ passport.use(
             }
             else
             {
-              console.log('Użytkownik wprowadził niepoprawne hasło');
-              return done(null, false, { message: 'Nieprawidłowe hasło.' });
+              console.log('User entered an incorrect password');
+              return done(null, false, { message: 'Incorrect password entered.' });
             }        
           });
         }
