@@ -80,7 +80,7 @@ registrationForm.addEventListener('submit', (event) => {
         },
         body: JSON.stringify(requestBody) //Indicate that we are sending JSON data in the request body
     })
-        .then (response => response.json())
+        .then ((response) => response.json())
         .then ((data) => {
             messageElement.innerHTML = data.message;
     })
@@ -97,8 +97,8 @@ document.getElementById('clients-portal').addEventListener('click', function() {
             'Content-Type': 'application/json'
           }
         })
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           if (data.status === 'logged_in')
           {
             window.location.href = '/protected/ClientsPortalPage.html';
@@ -108,5 +108,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
             window.location.href = '/pages/LoginPage.html';
           }
         })
-        .catch(error => console.error(error));
+        .catch((error) => {
+            console.error(error)
+        });
   });

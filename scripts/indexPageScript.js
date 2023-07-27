@@ -6,8 +6,8 @@ document.getElementById('clients-portal').addEventListener('click', function() {
           'Content-Type': 'application/json'
         }
       })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.status == 'logged_in')
         {
           window.location.href = '/protected/ClientsPortalPage.html';
@@ -17,5 +17,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
           window.location.href = '/pages/LoginPage.html';
         }
       })
-      .catch(error => console.error(error));
+      .catch((error) => {
+        console.error(error)
+      });
 });
