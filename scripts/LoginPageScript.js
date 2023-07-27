@@ -42,7 +42,7 @@ loginForm.addEventListener('submit', (event) => {
 
 document.getElementById('clients-portal').addEventListener('click', function() {
 
-  fetch('/pages/ClientsPortalProtected.html', {
+  fetch('/pages/ClientsPortalPage.html', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
