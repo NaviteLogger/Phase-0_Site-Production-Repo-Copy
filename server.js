@@ -93,6 +93,11 @@ app.get('/', (req, res) => {
   res.redirect('/pages/indexPage.html'); // Redirect to main page
 });
 
+app.get('/pages/indexPage.html', (req, res) => {
+  console.log('Home page rendered');
+  res.redirect('/pages/indexPage.html'); // Redirect to main page
+});
+
 passport.use(
   new LocalStrategy(
     {
@@ -203,8 +208,13 @@ function checkAuthentication(req, res, next) {
 //Always make sure that the route does not contain .html extension
 app.get('/protected/ClientsPortalPage.html', checkAuthentication, (req, res) => {
   console.log("Received a request to the client's portal");
-  res.json({ status: 'logged_in', message: 'User is authenticated' });
+  res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
   //res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
+});
+
+app.get('checkIfAuthenticated', checkAuthentication,(req, res) => {
+  console.log('Checking if the user is authenticated');
+  res.json({ status: 'logged_in', message: 'User is authenticated' });
 });
 
 //Handle registration requests
