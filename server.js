@@ -1,9 +1,13 @@
 //Import required modules
 const express = require('express');
 const path = require('path');
+// For connecting to the MySQL database
 const mysql = require('mysql2');
+// For parsing the request body
 const bodyParser = require('body-parser');
+// For sending emails
 const sgMail = require('@sendgrid/mail');
+// For authentication
 const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
@@ -45,7 +49,7 @@ app.use('/photos', express.static(path.join(__dirname, 'photos')));
 //Serve static files from the 'pages' directory
 app.use('/pages', express.static(path.join(__dirname, 'pages')));
 
-//Include the session middleware
+//Include the session middleware for user's session management
 app.use(
   session({
     secret: 'secret', //This is to be changed in production: we need a more secure secret
@@ -53,13 +57,17 @@ app.use(
     saveUninitialized: false,
 }));
 
+//Passport initialization
+app.use(passport.initialize());
+app.use(passport.session());
+
 //Connect to the MySQL database
 connection.connect((err) => {
   if (err) {
     console.error('An error occurred while connecting to the DB:', err);
     throw err;
   }
-  console.log('Connected to the DB!');
+  console.log('Successfully connected to the MYSQL database!');
 });
 
 //Render the home page
@@ -136,8 +144,8 @@ passport.use(
       usernameField: 'email',
       passwordField: 'password',
     },
-    function (username, password, done) {
-      connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results, fields) {
+    (username, password, done) => {
+      connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results) {
         if (error)
         {
           return done(error);
@@ -145,19 +153,21 @@ passport.use(
 
         if (results.length === 0)
         {
-          return done(null, false);
+          return done(null, false, { message: 'Podany adres email nie istnieje w bazie danych.' });
         }
 
-        const hash = results[0].password.toString();
-
-        bcrypt.compare(password, hash, function (err, response) {
-          if (response === true)
+        bcrypt.compare(password, results[0].password, function (error, response) {
+          if (error)
           {
-            return done(null, { user_id: results[0].user_id });
+            return done(error);
+          }
+            else if (response)
+          {
+            return done(null, results[0]);
           }
             else
           {
-            return done(null, false);
+            return done(null, false, { message: 'Nieprawidłowe hasło.' });
           }
         });
       });
@@ -165,25 +175,23 @@ passport.use(
   )
 );
 
-passport.serializeUser(function (user, done) {
-  done(null, user.user_id);
+passport.serializeUser((user, done) => {
+  done(null, user.id);
 });
 
-passport.deserializeUser(function (id, done) {
-  connection.query('SELECT * FROM Clients WHERE client_id = ?', [id], function (error, rows) {
+passport.deserializeUser((id, done) =>{
+  connection.query('SELECT * FROM Clients WHERE client_id = ?', [id], (error, rows) => {
     done(error, rows[0]);
   });
 });
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.post('/login',
-  passport.authenticate('local', { failureRedirect: '/login' }),
-  function (req, res) {
-    res.redirect('/');
-  }
-);
+app.post('/login', (req, res, next) => {
+  passport.authenticate('local', { 
+    successRedirect: '/pages/ClientsPortalProtected.html',
+    failureRedirect: '/pages/LoginPage.html',
+    failureFlash: true,
+  })(req, res, next);
+});
 
 function checkAuthentication(req, res, next) {
   if (req.isAuthenticated()) 
@@ -224,8 +232,6 @@ app.post('/register', async (req, res) => {
     //Define max length of the email and password
     const MaxLength = 50;
 
-    const messageElement = document.getElementById('message');
-
     //Check if the email is valid
     if (!emailRegularExpression.test(email) || !emailRegularExpression.test(repeatedEmail))
     {
@@ -264,7 +270,6 @@ app.post('/register', async (req, res) => {
 
     //At this point the email and password are valid
     //We are ready to insert email and password into the database here
-    //First, we need to generate a salt and hash the password
 
     //Select the 'CosmeticsLawDB' database
     await new Promise((resolve, reject) => {
@@ -282,6 +287,8 @@ app.post('/register', async (req, res) => {
         }
       });
     });
+    
+    //First, we need to check if the user already exists in the database
 
     //Check if the user exists in the 'Clients' table
     const results = await new Promise((resolve, reject) => {
@@ -292,7 +299,7 @@ app.post('/register', async (req, res) => {
         } 
           else 
         {
-          console.log('The query was successful');
+          console.log("The user's lookup query was successful");
           resolve(results);
         }
       });
@@ -306,16 +313,33 @@ app.post('/register', async (req, res) => {
     }
       else
     {
-      //Insert the user into the 'Clients' table
+      console.log('User ' + email + ' does not exist in the database');
+      //At this point we are ready to insert the user into the database
+      //First we need to generate salt and hash the password
+      async function hashPassword(plainPassword) {
+        //Generate a salt
+        const salt = await bcrypt.genSalt(10);
+
+        //Hash the password
+        const hashedPassword = await bcrypt.hash(plainPassword, salt);
+
+        console.log('The password has been hashed');
+        return hashedPassword;
+      }
+
+      //Generate salt and hash the password
+      const hashedPassword = await hashPassword(password);
+
+      //Let's insert the email and hashed password into the 'Clients' table
       await new Promise((resolve, reject) => {
-        connection.query('INSERT INTO Clients (email, password) VALUES (?, ?)', [email, password], function (error, results, fields) {
-          if (error) 
+        connection.query('INSERT INTO Clients (email, password) VALUES (?, ?)', [email, hashedPassword], function (error, results, fields) {
+          if (error)
           {
             reject(error);
-          } 
-            else 
+          }
+            else
           {
-            console.log('The query was successful: email and password inserted into the Clients table');
+            console.log("The query was successful: email and hashed password were inserted into the Clients table");
             resolve();
           }
         });
@@ -326,10 +350,21 @@ app.post('/register', async (req, res) => {
       let verificationCode = Math.floor(100000 + Math.random() * 900000);
       //The tinyint(1) variable will be responsible for handling the email verification status
       let isVerified = 0;  
+
+      //Also, we need to insert the current date into the Email_Verifications table
+      const currentDate = new Date();
+
+      //Format it so that it can be inserted into the mysql database
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+      const day = String(currentDate.getDate()).padStart(2, '0'); //.padStart() method is used to add a leading zero if the day is a single digit number
       
+      const mysqlFormattedDate = `${year}-${month}-${day}`;
+      console.log("Today's date is: " + mysqlFormattedDate + " (in the mysql date format");
+
       //Insert the client_id into the 'EmailVerifications' table
       await new Promise((resolve, reject) => {
-        connection.query('INSERT INTO EmailVerifications (client_id, verification_code, is_verified) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?)', [email, verificationCode, isVerified], function (error, results, fields) {
+        connection.query('INSERT INTO Email_Verifications (client_id, verification_code, is_verified, account_created_date) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?, ?)', [email, verificationCode, isVerified, mysqlFormattedDate], function (error, results, fields) {
           if (error)
           {
             reject(error);
@@ -342,17 +377,17 @@ app.post('/register', async (req, res) => {
         });
       });
 
-      //Send the confirmation email to the user
-      const msg = {
-        to: email,
-        from: 'pomoc@prawokosmetyczne.pl',
-        subject: 'Potwierdzenie rejestracji adresu email',
-        text: 'Twój kod potwierdzający adres email to: ' + verificationCode,
-        html: '<strong>Twój kod potwierdzający adres email to: ' + verificationCode + '</strong>',
-      };
+      // //Send the confirmation email to the user
+      // const msg = {
+      //   to: email,
+      //   from: 'pomoc@prawokosmetyczne.pl',
+      //   subject: 'Potwierdzenie rejestracji adresu email',
+      //   text: 'Twój kod potwierdzający adres email to: ' + verificationCode,
+      //   html: '<strong>Twój kod potwierdzający adres email to: ' + verificationCode + '</strong>',
+      // };
 
-      //Now it is time to send the email
-      sgMail.send(msg);
+      // //Now it is time to send the email
+      // sgMail.send(msg);
 
       res.json({ message: 'Rejestracja przebiegła pomyślnie, sprawdź swoją skrzynkę pocztową w celu potwierdzenia adresu email' });
 

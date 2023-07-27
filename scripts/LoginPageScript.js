@@ -6,13 +6,13 @@ loginForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
   //Get the email and password values from the form
-  const email = loginForm.email.value;
-  const password = loginForm.password.value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
   //Create an object to send as JSON data in the request body
   const requestBody = {
     email: email,
-    password: password
+    password: password,
   };
 
   //Send a POST request to the server
@@ -23,9 +23,7 @@ loginForm.addEventListener('submit', (event) => {
     },
     body: JSON.stringify(requestBody) //Indicate that we are sending JSON data in the request body
   })
-    .then (function (response) {
-      return response.json();
-  })
+    .then ((response) => response.json())
     .then ((data) => {
       const messageElement = document.getElementById('message');
       messageElement.innerHTML = data.message;
