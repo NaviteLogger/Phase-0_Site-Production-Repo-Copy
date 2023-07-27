@@ -67,7 +67,9 @@ registrationForm.addEventListener('submit', (event) => {
     //Create a request body object
     const requestBody = {
         email: email,
-        password: password
+        repeatedEmail: repeatedEmail,
+        password: password,
+        repeatedPassword: repeatedPassword
     };
 
     //Send a POST request to the server

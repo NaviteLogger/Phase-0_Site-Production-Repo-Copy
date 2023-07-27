@@ -209,7 +209,7 @@ app.post('/register', async (req, res) => {
   try {
 
     //Convert the incoming request body to JSON and extract the email and password values
-    const { email, password } = req.body;
+    const { email, repeatedEmail, password, repeatedPassword } = req.body;
 
     console.log('Incoming registration email: ' + email);
 
@@ -264,6 +264,12 @@ app.post('/register', async (req, res) => {
 
     //At this point the email and password are valid
     //We are ready to insert email and password into the database here
+    //First, we need to generate a salt and hash the password
+
+    //Generate a salt
+    async function hashPassword(password) {
+
+
 
     //Select the 'CosmeticsLawDB' database
     await new Promise((resolve, reject) => {
