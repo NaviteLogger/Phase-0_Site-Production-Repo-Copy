@@ -144,7 +144,7 @@ passport.use(
       usernameField: 'email',
       passwordField: 'password',
     },
-    (username, password, done) => {
+    (email, password, done) => {
       connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results) {
         if (error)
         {
