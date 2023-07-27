@@ -1,6 +1,6 @@
 document.getElementById('clients-portal').addEventListener('click', function() {
 
-  fetch('/pages/ClientsPortalPage.html', {
+  fetch('/pages/ClientsPortalPage', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -17,7 +17,5 @@ document.getElementById('clients-portal').addEventListener('click', function() {
           window.location.href = '/pages/LoginPage.html';
         }
       })
-      .catch((error) => {
-        console.error(error)
-      });
+      .catch(error => console.error(error));
 });
