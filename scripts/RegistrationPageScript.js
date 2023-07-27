@@ -91,7 +91,7 @@ registrationForm.addEventListener('submit', (event) => {
 
 document.getElementById('clients-portal').addEventListener('click', function() {
 
-    fetch('/clientsPortalProtected', {
+    fetch('/pages/ClientsPortalPage.html', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -105,4 +105,4 @@ document.getElementById('clients-portal').addEventListener('click', function() {
           }
         })
         .catch(error => console.error(error));
-});
+  });
