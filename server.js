@@ -195,7 +195,7 @@ function checkAuthentication(req, res, next) {
 
 app.get('/pages/ClientsPortalPage.html', checkAuthentication, function (req, res) {
   console.log("Received a request to the client's portal");
-  res.redirect('/pages/ClientsPortalPage.html');
+  res.json({ status: 'logged_in', message: 'User is logged in' });
 });
 
 //Handle registration requests
