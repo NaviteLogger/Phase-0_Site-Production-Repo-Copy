@@ -39,7 +39,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Serve static files from the root directory
-app.use(express.static(path.join(__dirname)));
+//app.use(express.static(path.join(__dirname)));
 
 //Serve static files from the 'styles' directory
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
