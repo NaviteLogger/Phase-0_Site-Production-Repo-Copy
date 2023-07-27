@@ -119,7 +119,7 @@ passport.use(
           }
             else
           {
-            console.log('Użytkownik wprowadził podane hasło');
+            console.log('Użytkownik wprowadził niepoprawne hasło');
             return done(null, false, { message: 'Nieprawidłowe hasło.' });
           }
         });
@@ -140,10 +140,25 @@ passport.deserializeUser((id, done) =>{
 
 app.post('/login', (req, res, next) => {
   console.log('Received a request to login, calling passport.authenticate');
-  passport.authenticate('local', { 
-    successRedirect: '/pages/ClientsPortalProtected.html',
-    failureRedirect: '/pages/LoginPage.html',
-    failureFlash: true,
+  passport.authenticate('local', (error, user, info) => {
+    if (error)
+    {
+      return next(error);
+    }
+
+    if (!user)
+    {
+      console.log('User' + user + 'was not found in the database');
+      return res.json({ status: 'not_found', message: 'User not found' });
+    }
+
+    req.logIn(user, (error) => {
+      if (error)
+      {
+        return next(error);
+      }
+      return res.json({ status: 'ok', message: 'Zalogowano do serwisu' });
+    });
   })(req, res, next);
 });
 
