@@ -8,7 +8,6 @@ const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const { Pool } = require('mysql2/typings/mysql/lib/Pool');
 
 //Load environment variables from the .env file
 require('dotenv').config();
