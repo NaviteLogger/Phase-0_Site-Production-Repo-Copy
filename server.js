@@ -8,6 +8,7 @@ const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const bcrypt = require('bcrypt');
+const { Pool } = require('mysql2/typings/mysql/lib/Pool');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -264,9 +265,6 @@ app.post('/register', async (req, res) => {
 
     //At this point the email and password are valid
     //We are ready to insert email and password into the database here
-    //First, we need to generate a salt and hash the password
-
-    //Generate a salt
 
     //Select the 'CosmeticsLawDB' database
     await new Promise((resolve, reject) => {
@@ -284,6 +282,8 @@ app.post('/register', async (req, res) => {
         }
       });
     });
+    
+    //First, we need to check if the user already exists in the database
 
     //Check if the user exists in the 'Clients' table
     const results = await new Promise((resolve, reject) => {
@@ -294,7 +294,7 @@ app.post('/register', async (req, res) => {
         } 
           else 
         {
-          console.log('The query was successful');
+          console.log("The user's lookup query was successful");
           resolve(results);
         }
       });
@@ -308,16 +308,33 @@ app.post('/register', async (req, res) => {
     }
       else
     {
-      //Insert the user into the 'Clients' table
+      console.log('User ' + email + ' does not exist in the database');
+      //At this point we are ready to insert the user into the database
+      //First we need to generate salt and hash the password
+      async function hashPassword(plainPassword) {
+        //Generate a salt
+        const salt = await bcrypt.genSalt(10);
+
+        //Hash the password
+        const hashedPassword = await bcrypt.hash(plainPassword, salt);
+
+        console.log('The password has been hashed');
+        return hashedPassword;
+      }
+
+      //Generate salt and hash the password
+      const hashedPassword = await hashPassword(password);
+
+      //Let's insert the email and hashed password into the 'Clients' table
       await new Promise((resolve, reject) => {
-        connection.query('INSERT INTO Clients (email, password) VALUES (?, ?)', [email, password], function (error, results, fields) {
-          if (error) 
+        connection.query('INSERT INTO Clients (email, password) VALUES (?, ?)', [email, hashedPassword], function (error, results, fields) {
+          if (error)
           {
             reject(error);
-          } 
-            else 
+          }
+            else
           {
-            console.log('The query was successful: email and password inserted into the Clients table');
+            console.log("The query was successful: email and hashed password were inserted into the Clients table");
             resolve();
           }
         });
@@ -344,17 +361,17 @@ app.post('/register', async (req, res) => {
         });
       });
 
-      //Send the confirmation email to the user
-      const msg = {
-        to: email,
-        from: 'pomoc@prawokosmetyczne.pl',
-        subject: 'Potwierdzenie rejestracji adresu email',
-        text: 'Twój kod potwierdzający adres email to: ' + verificationCode,
-        html: '<strong>Twój kod potwierdzający adres email to: ' + verificationCode + '</strong>',
-      };
+      // //Send the confirmation email to the user
+      // const msg = {
+      //   to: email,
+      //   from: 'pomoc@prawokosmetyczne.pl',
+      //   subject: 'Potwierdzenie rejestracji adresu email',
+      //   text: 'Twój kod potwierdzający adres email to: ' + verificationCode,
+      //   html: '<strong>Twój kod potwierdzający adres email to: ' + verificationCode + '</strong>',
+      // };
 
-      //Now it is time to send the email
-      sgMail.send(msg);
+      // //Now it is time to send the email
+      // sgMail.send(msg);
 
       res.json({ message: 'Rejestracja przebiegła pomyślnie, sprawdź swoją skrzynkę pocztową w celu potwierdzenia adresu email' });
 
