@@ -10,11 +10,11 @@ document.getElementById('clients-portal').addEventListener('click', function() {
       .then(data => {
         if (data.status === 'logged_in')
         {
-          window.location.href = '/pages/ClientsPortalPage.html';
+          window.location.href = '/ClientsPortalPage.html';
         }
         else 
         {
-          window.location.href = '/pages/LoginPage.html';
+          window.location.href = '/LoginPage.html';
         }
       })
       .catch(error => console.error(error));
