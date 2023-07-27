@@ -212,7 +212,7 @@ app.get('/protected/ClientsPortalPage.html', checkAuthentication, (req, res) => 
   //res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
 });
 
-app.get('checkIfAuthenticated', checkAuthentication,(req, res) => {
+app.get('/checkIfAuthenticated', checkAuthentication,(req, res) => {
   console.log('Checking if the user is authenticated');
   res.json({ status: 'logged_in', message: 'User is authenticated' });
 });
