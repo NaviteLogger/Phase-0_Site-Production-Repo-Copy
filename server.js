@@ -224,8 +224,6 @@ app.post('/register', async (req, res) => {
     //Define max length of the email and password
     const MaxLength = 50;
 
-    const messageElement = document.getElementById('message');
-
     //Check if the email is valid
     if (!emailRegularExpression.test(email) || !emailRegularExpression.test(repeatedEmail))
     {
