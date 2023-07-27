@@ -31,7 +31,7 @@ loginForm.addEventListener('submit', (event) => {
       if (data.status === 'logged_in')
       {
         setTimeout(() => {
-          window.location.href = '/pages/ClientsPortalPage.html';
+          window.location.href = '/protected/ClientsPortalPage.html';
         }, 1500); //Redirect to the clients portal page after 3 seconds
       }
   })
