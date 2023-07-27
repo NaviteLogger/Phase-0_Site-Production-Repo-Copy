@@ -193,6 +193,7 @@ function checkAuthentication(req, res, next) {
   }
 }
 
+//Always make sure that the route does not contain .html extension
 app.get('/pages/ClientsPortalPage', checkAuthentication, function (req, res) {
   console.log("Received a request to the client's portal");
   res.json({ status: 'logged_in', message: 'User is authenticated' });

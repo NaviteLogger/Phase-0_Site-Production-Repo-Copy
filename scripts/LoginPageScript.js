@@ -32,7 +32,7 @@ loginForm.addEventListener('submit', (event) => {
       {
         setTimeout(() => {
           window.location.href = '/pages/ClientsPortalPage.html';
-        }, 3000); //Redirect to the clients portal page after 3 seconds
+        }, 1500); //Redirect to the clients portal page after 3 seconds
       }
   })
     .catch ((error) => {
