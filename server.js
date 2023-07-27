@@ -188,11 +188,12 @@ function checkAuthentication(req, res, next) {
     else 
   {
     console.log('User is not authenticated');
-    res.json({ status: 'not_logged_in', message: 'User is not authenticated' });
+    //res.json({ status: 'not_logged_in', message: 'User is not authenticated' });
+    res.redirect('/pages/NotLoggerdInPage.html');
   }
 }
 
-app.get('/clientsPortalProtected', checkAuthentication, function (req, res) {
+app.get('/pages/ClientsPortalPage.html', checkAuthentication, function (req, res) {
   console.log("Received a request to the client's portal");
   res.redirect('/pages/ClientsPanelPage.html');
 });
