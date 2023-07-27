@@ -267,9 +267,6 @@ app.post('/register', async (req, res) => {
     //First, we need to generate a salt and hash the password
 
     //Generate a salt
-    async function hashPassword(password) {
-
-
 
     //Select the 'CosmeticsLawDB' database
     await new Promise((resolve, reject) => {
