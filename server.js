@@ -70,6 +70,15 @@ connection.connect((err) => {
   console.log('Successfully connected to the MYSQL database!');
 });
 
+//Select the 'CosmeticsLawDB' database
+connection.query('USE CosmeticsLawDB', (error, results, fields) => {
+  if (error)
+  {
+    return done(error);
+  }
+  console.log('Selecting CosmeticsLawDB by default wass suffessful');
+});
+
 //Render the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
@@ -145,6 +154,7 @@ passport.use(
       passwordField: 'password',
     },
     (email, password, done) => {
+
       connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results) {
         if (error)
         {
