@@ -266,11 +266,6 @@ app.post('/register', async (req, res) => {
     //We are ready to insert email and password into the database here
     //First, we need to generate a salt and hash the password
 
-    //Generate a salt
-    async function hashPassword(password) {
-
-
-
     //Select the 'CosmeticsLawDB' database
     await new Promise((resolve, reject) => {
       connection.query('USE CosmeticsLawDB', (error, results, fields) => {
