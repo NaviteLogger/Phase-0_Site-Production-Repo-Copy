@@ -342,10 +342,21 @@ app.post('/register', async (req, res) => {
       let verificationCode = Math.floor(100000 + Math.random() * 900000);
       //The tinyint(1) variable will be responsible for handling the email verification status
       let isVerified = 0;  
+
+      //Also, we need to insert the current date into the Email_Verifications table
+      const currentDate = new Date();
+
+      //Format it so that it can be inserted into the mysql database
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+      const day = String(currentDate.getDate()).padStart(2, '0'); //.padStart() method is used to add a leading zero if the day is a single digit number
       
+      const mysqlFormattedDate = `${year}-${month}-${day}`;
+      console.log("Today's date is: " + mysqlFormattedDate + " (in the mysql date format");
+
       //Insert the client_id into the 'EmailVerifications' table
       await new Promise((resolve, reject) => {
-        connection.query('INSERT INTO Email_Verifications (client_id, verification_code, is_verified) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?)', [email, verificationCode, isVerified], function (error, results, fields) {
+        connection.query('INSERT INTO Email_Verifications (client_id, verification_code, is_verified, account_created_date) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?, ?)', [email, verificationCode, isVerified, mysqlFormattedDate], function (error, results, fields) {
           if (error)
           {
             reject(error);
