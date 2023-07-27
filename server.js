@@ -45,10 +45,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 //Serve static files from the 'photos' directory
-app.use('/photos', express.static(path.join(__dirname, 'photos')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //Serve static files from the 'pages' directory
 app.use('/pages', express.static(path.join(__dirname, 'pages')));
+
+//Serve static files from the 'scripts' directory
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+
+//Serve static files from the 'fonts' directory
+app.use('/fonts', express.static(path.join(__dirname, 'fonts')));
 
 //Include the session middleware for user's session management
 app.use(
