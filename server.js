@@ -152,7 +152,19 @@ app.post('/login', (req, res, next) => {
     if (!user)
     {
       console.log('Info: ' + info.message); // Log the info.message containing the error message
-      return res.json({ status: 'not_found', message: 'Podany adres mailowy nie został jeszcze zarejestrowany' });
+
+      if(info.message === 'Given email does not exist in the database.')
+      {
+        return res.json({ status: 'not_found', message: 'Podany adres email nie istnieje w bazie danych' });
+      }
+        else if(info.message === 'Incorrect password entered.')
+      {
+        return res.json({ status: 'incorrect_password', message: 'Podano niepoprawne hasło' });
+      }
+        else
+      {
+          return res.json({ status: 'unknown_error', message: info.message });
+      }
     }
 
     req.logIn(user, (error) => {
