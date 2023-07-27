@@ -110,6 +110,7 @@ passport.use(
         {
           console.log('Podany adres email: ' + email + ' istnieje w bazie danych.');
           bcrypt.compare(password, results[0].password, function (error, response) {
+            console.log(results[0]);
             if (error)
             {
               return done(error);
@@ -151,7 +152,7 @@ app.post('/login', (req, res, next) => {
     if (!user)
     {
       console.log('User was not found in the database');
-      return res.json({ status: 'not_found', message: 'User not found' });
+      return res.json({ status: 'not_found', message: 'Podany adres mailowy nie został jeszcze zarejestrowany' });
     }
 
     req.logIn(user, (error) => {
