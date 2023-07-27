@@ -1,9 +1,13 @@
 //Import required modules
 const express = require('express');
 const path = require('path');
+// For connecting to the MySQL database
 const mysql = require('mysql2');
+// For parsing the request body
 const bodyParser = require('body-parser');
+// For sending emails
 const sgMail = require('@sendgrid/mail');
+// For authentication
 const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
@@ -45,7 +49,7 @@ app.use('/photos', express.static(path.join(__dirname, 'photos')));
 //Serve static files from the 'pages' directory
 app.use('/pages', express.static(path.join(__dirname, 'pages')));
 
-//Include the session middleware
+//Include the session middleware for user's session management
 app.use(
   session({
     secret: 'secret', //This is to be changed in production: we need a more secure secret
@@ -53,13 +57,17 @@ app.use(
     saveUninitialized: false,
 }));
 
+//Passport initialization
+app.use(passport.initialize());
+app.use(passport.session());
+
 //Connect to the MySQL database
 connection.connect((err) => {
   if (err) {
     console.error('An error occurred while connecting to the DB:', err);
     throw err;
   }
-  console.log('Connected to the DB!');
+  console.log('Successfully connected to the MYSQL database!');
 });
 
 //Render the home page
@@ -136,8 +144,8 @@ passport.use(
       usernameField: 'email',
       passwordField: 'password',
     },
-    function (username, password, done) {
-      connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results, fields) {
+    (username, password, done) => {
+      connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results) {
         if (error)
         {
           return done(error);
@@ -145,19 +153,21 @@ passport.use(
 
         if (results.length === 0)
         {
-          return done(null, false);
+          return done(null, false, { message: 'Podany adres email nie istnieje w bazie danych.' });
         }
 
-        const hash = results[0].password.toString();
-
-        bcrypt.compare(password, hash, function (err, response) {
-          if (response === true)
+        bcrypt.compare(password, results[0].password, function (error, response) {
+          if (error)
           {
-            return done(null, { user_id: results[0].user_id });
+            return done(error);
+          }
+            else if (response)
+          {
+            return done(null, results[0]);
           }
             else
           {
-            return done(null, false);
+            return done(null, false, { message: 'Nieprawidłowe hasło.' });
           }
         });
       });
@@ -165,25 +175,23 @@ passport.use(
   )
 );
 
-passport.serializeUser(function (user, done) {
-  done(null, user.user_id);
+passport.serializeUser((user, done) => {
+  done(null, user.id);
 });
 
-passport.deserializeUser(function (id, done) {
-  connection.query('SELECT * FROM Clients WHERE client_id = ?', [id], function (error, rows) {
+passport.deserializeUser((id, done) =>{
+  connection.query('SELECT * FROM Clients WHERE client_id = ?', [id], (error, rows) => {
     done(error, rows[0]);
   });
 });
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.post('/login',
-  passport.authenticate('local', { failureRedirect: '/login' }),
-  function (req, res) {
-    res.redirect('/');
-  }
-);
+app.post('/login', (req, res, next) => {
+  passport.authenticate('local', { 
+    successRedirect: '/pages/ClientsPortalProtected.html',
+    failureRedirect: '/pages/LoginPage.html',
+    failureFlash: true,
+  })(req, res, next);
+});
 
 function checkAuthentication(req, res, next) {
   if (req.isAuthenticated()) 
