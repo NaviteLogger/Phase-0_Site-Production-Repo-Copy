@@ -84,7 +84,7 @@ connection.query('USE CosmeticsLawDB', (error, results, fields) => {
 //Render the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
-  res.redirect('/'); // Redirect to main page
+  res.redirect('/pages/indexPage.html'); // Redirect to main page
 });
 
 passport.use(
