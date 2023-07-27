@@ -1,6 +1,6 @@
 document.getElementById('clients-portal').addEventListener('click', function() {
 
-  fetch('/pages/ClientsPortalPage.html', {
+  fetch('/pages/ClientsPortalPage', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

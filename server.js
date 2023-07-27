@@ -193,7 +193,7 @@ function checkAuthentication(req, res, next) {
   }
 }
 
-app.get('/pages/ClientsPortalPage.html', checkAuthentication, function (req, res) {
+app.get('/pages/ClientsPortalPage', checkAuthentication, function (req, res) {
   console.log("Received a request to the client's portal");
   res.json({ status: 'logged_in', message: 'User is authenticated' });
 });
