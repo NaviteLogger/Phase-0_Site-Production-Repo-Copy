@@ -76,7 +76,7 @@ connection.query('USE CosmeticsLawDB', (error, results, fields) => {
   {
     return done(error);
   }
-  console.log('Selecting CosmeticsLawDB by default wass suffessful');
+  console.log('Selecting CosmeticsLawDB by default was suffessful');
 });
 
 //Render the home page
@@ -281,22 +281,22 @@ app.post('/register', async (req, res) => {
     //At this point the email and password are valid
     //We are ready to insert email and password into the database here
 
-    //Select the 'CosmeticsLawDB' database
-    await new Promise((resolve, reject) => {
-      connection.query('USE CosmeticsLawDB', (error, results, fields) => {
-        if (error) 
-        {
-          //The promise is rejected if an error occurs
-          reject(error);
-        } 
-          else 
-        {
-          //The promise is resolved if the database is successfully selected
-          console.log('"Clients" database selected');
-          resolve();
-        }
-      });
-    });
+    // //Select the 'CosmeticsLawDB' database
+    // await new Promise((resolve, reject) => {
+    //   connection.query('USE CosmeticsLawDB', (error, results, fields) => {
+    //     if (error) 
+    //     {
+    //       //The promise is rejected if an error occurs
+    //       reject(error);
+    //     } 
+    //       else 
+    //     {
+    //       //The promise is resolved if the database is successfully selected
+    //       console.log('"Clients" database selected');
+    //       resolve();
+    //     }
+    //   });
+    // });
     
     //First, we need to check if the user already exists in the database
 
