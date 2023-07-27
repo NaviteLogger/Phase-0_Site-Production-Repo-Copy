@@ -151,7 +151,7 @@ app.post('/login', (req, res, next) => {
 
     if (!user)
     {
-      console.log('User was not found in the database');
+      console.log(info.message); // Log the info.message containing the error message
       return res.json({ status: 'not_found', message: 'Podany adres mailowy nie został jeszcze zarejestrowany' });
     }
 
