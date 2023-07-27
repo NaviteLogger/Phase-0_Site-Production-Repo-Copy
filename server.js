@@ -345,7 +345,7 @@ app.post('/register', async (req, res) => {
       
       //Insert the client_id into the 'EmailVerifications' table
       await new Promise((resolve, reject) => {
-        connection.query('INSERT INTO EmailVerifications (client_id, verification_code, is_verified) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?)', [email, verificationCode, isVerified], function (error, results, fields) {
+        connection.query('INSERT INTO Email_Verifications (client_id, verification_code, is_verified) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?)', [email, verificationCode, isVerified], function (error, results, fields) {
           if (error)
           {
             reject(error);
