@@ -27,6 +27,11 @@ loginForm.addEventListener('submit', (event) => {
     .then ((data) => {
       const messageElement = document.getElementById('message');
       messageElement.innerHTML = data.message;
+
+      if (data.status === 'logged_in')
+      {
+        window.location.href = '/pages/ClientsPortalPage.html';
+      }
   })
     .catch ((error) => {
       console.error('Error:', error);

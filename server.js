@@ -160,7 +160,7 @@ app.post('/login', (req, res, next) => {
       {
         return next(error);
       }
-      return res.json({ status: 'ok', message: 'Zalogowano do serwisu' });
+      return res.json({ status: 'logged_in', message: 'Zalogowano do serwisu' });
     });
   })(req, res, next);
 });
