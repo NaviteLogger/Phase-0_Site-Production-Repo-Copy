@@ -12,6 +12,7 @@ const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const bcrypt = require('bcrypt');
+const flash = require('connect-flash');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -60,6 +61,7 @@ app.use(
 //Passport initialization
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 //Connect to the MySQL database
 connection.connect((err) => {
