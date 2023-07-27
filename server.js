@@ -87,68 +87,6 @@ app.get('/', (req, res) => {
   res.redirect('/'); // Redirect to main page
 });
 
-//Handle login requests
-// app.post('/login', async (req, res) => {
-//   try {
-
-//     //Convert the incoming request body to JSON and extract the email and password values
-//     const { email, password } = req.body;
-
-//     console.log('Incoming login email: ' + email);
-
-//     //Select the 'CosmeticsLawDB' database
-//     await new Promise((resolve, reject) => {
-//       connection.query('USE CosmeticsLawDB', (error, results, fields) => {
-//         if (error) 
-//         {
-//           //The promise is rejected if an error occurs
-//           reject(error);
-//         } 
-//           else 
-//         {
-//           //The promise is resolved if the database is successfully selected
-//           console.log('"Clients" database selected');
-//           resolve();
-//         }
-//       });
-//     });
-
-//     //Check if the user exists in the 'Clients' table
-//     const results = await new Promise((resolve, reject) => {
-//       connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results, fields) {
-//         if (error) 
-//         {
-//           reject(error);
-//         } 
-//           else 
-//         {
-//           console.log('The query was successful');
-//           resolve(results);
-//         }
-//       });
-//     });
-
-//     if (results.length === 0) 
-//     {
-//       console.log('User not found in the database');
-//       res.json({ message: 'Jeszcze nie posiadasz konta na naszym portalu' });
-//     } 
-//       else if (results[0].password !== password) 
-//     {
-//       console.log('Incorrect password');
-//       res.status(401).json({ status: 401, message: 'Incorrect password' });
-//     } 
-//       else 
-//     {
-//       console.log('Login successful');
-//       res.status(200).json({ status: 'success', message: 'Login successful' });
-//     }
-//   } catch (error) {
-//     console.error('An error occurred during login:', error);
-//     res.status(500).json({ status: 'error', message: 'An error occurred during login' });
-//   }
-// });
-
 passport.use(
   new LocalStrategy(
     {
@@ -165,9 +103,11 @@ passport.use(
 
         if (results.length === 0)
         {
+          console.log('Podany adres email: ' + email + ' nie istnieje w bazie danych.');
           return done(null, false, { message: 'Podany adres email nie istnieje w bazie danych.' });
         }
 
+        console.log('Podany adres email: ' + email + ' istnieje w bazie danych.');
         bcrypt.compare(password, results[0].password, function (error, response) {
           if (error)
           {
@@ -179,6 +119,7 @@ passport.use(
           }
             else
           {
+            console.log('Użytkownik wprowadził podane hasło');
             return done(null, false, { message: 'Nieprawidłowe hasło.' });
           }
         });
@@ -198,6 +139,7 @@ passport.deserializeUser((id, done) =>{
 });
 
 app.post('/login', (req, res, next) => {
+  console.log('Received a request to login, calling passport.authenticate');
   passport.authenticate('local', { 
     successRedirect: '/pages/ClientsPortalProtected.html',
     failureRedirect: '/pages/LoginPage.html',
@@ -206,6 +148,7 @@ app.post('/login', (req, res, next) => {
 });
 
 function checkAuthentication(req, res, next) {
+  console.log('Checking authentication, calling checkAuthentication');
   if (req.isAuthenticated()) 
   {
     //if user is looged in, req.isAuthenticated() will return true 
@@ -220,7 +163,7 @@ function checkAuthentication(req, res, next) {
 }
 
 app.get('/clientsPortalProtected', checkAuthentication, function (req, res) {
-  console.log('Received a request to the clients portal');
+  console.log("Received a request to the client's portal");
   res.redirect('/pages/ClientsPanelPage.html');
 });
 
@@ -280,27 +223,11 @@ app.post('/register', async (req, res) => {
       res.json({ message: 'Podano różne hasła!' });
     }
 
-    //At this point the email and password are valid
-    //We are ready to insert email and password into the database here
-
-    // //Select the 'CosmeticsLawDB' database
-    // await new Promise((resolve, reject) => {
-    //   connection.query('USE CosmeticsLawDB', (error, results, fields) => {
-    //     if (error) 
-    //     {
-    //       //The promise is rejected if an error occurs
-    //       reject(error);
-    //     } 
-    //       else 
-    //     {
-    //       //The promise is resolved if the database is successfully selected
-    //       console.log('"Clients" database selected');
-    //       resolve();
-    //     }
-    //   });
-    // });
-    
-    //First, we need to check if the user already exists in the database
+    /*
+    At this point the email and password are valid
+    We are ready to insert email and password into the database here    
+    First, we need to check if the user already exists in the database
+    */
 
     //Check if the user exists in the 'Clients' table
     const results = await new Promise((resolve, reject) => {
