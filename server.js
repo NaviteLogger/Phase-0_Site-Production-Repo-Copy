@@ -51,7 +51,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/pages', express.static(path.join(__dirname, 'pages')));
 
 //Serve static files from the 'scripts' directory
-//app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
 
 //Serve static files from the 'fonts' directory
 app.use('/fonts', express.static(path.join(__dirname, 'fonts')));
