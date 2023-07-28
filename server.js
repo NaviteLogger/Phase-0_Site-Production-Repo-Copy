@@ -68,7 +68,25 @@ app.use(
 //Passport initialization
 app.use(passport.initialize());
 app.use(passport.session());
+//Enables flash messages
 app.use(flash());
+
+//Send a test mail using sendgrid:
+const msg = {
+  to: 'test@example.com', // Change to your recipient
+  from: 'test@example.com', // Change to your verified sender
+  subject: 'Sending with SendGrid is Fun',
+  text: 'and easy to do anywhere, even with Node.js',
+  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+}
+sgMail
+  .send(msg)
+  .then(() => {
+    console.log('Email sent')
+  })
+  .catch((error) => {
+    console.error(error)
+  })
 
 //Connect to the MySQL database
 connection.connect((err) => {
@@ -88,50 +106,58 @@ connection.query('USE CosmeticsLawDB', (error, results, fields) => {
   console.log('Selecting CosmeticsLawDB by default was suffessful');
 });
 
-//Render the home page
+//Render the home page from the default domain
 app.get('/', (req, res) => {
   console.log('Home page rendered');
   res.redirect('/pages/indexPage.html'); // Redirect to main page
 });
 
+//Render the home page from the 'pages' directory
 app.get('/pages/indexPage.html', (req, res) => {
   console.log('Home page rendered');
   res.redirect('/pages/indexPage.html'); // Redirect to main page
 });
 
+//Sets up the local passport strategy for authenticating users
 passport.use(
   new LocalStrategy(
     {
+      // By default, local strategy uses username and password, we will override usernameField with email
       usernameField: 'email',
       passwordField: 'password',
     },
+    // This function is called when a user tries to sign in
     (email, password, done) => {
-
+      //First, check if the given email exists in the database
       connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results) {
         if (error)
         {
           return done(error);
         }
 
-        if (results.length === 0)
+        //If the given email does not exist in the database, return an error message
+        if (results.length === 0) // 3 equals signs are used to check if the value and type are the same
         {
           console.log('Given email: ' + email + ' does not exist in the database.');
           return done(null, false, { message: 'Given email does not exist in the database.' });
         }
-          else
+          else //Now we know that the given email exists in the database
         {
+          //Let's console.log it for debugging purposes
           console.log('Given email: ' + email + ' exists in the database.');
+          //Now it is time to compare the given password with the password stored in the database
           bcrypt.compare(password, results[0].password, function (error, response) {
+            //Console.log it for debugging purposes
             console.log(results[0]);
             if (error)
             {
               return done(error);
             }
-            else if (response)
+            else if (response) //If the passwords match, return the 'user' object
             {
               return done(null, results[0]);
             }
-            else
+            else //If the passwords do not match, return an error message
             {
               console.log('User entered an incorrect password');
               return done(null, false, { message: 'Incorrect password entered.' });
@@ -143,28 +169,37 @@ passport.use(
   )
 );
 
+//This is the function that is called when a user tries to log in - it will serialize (store) the user in the session
 passport.serializeUser((user, done) => {
   done(null, user.client_id);
 });
 
+//This is the function that is called when a user tries to access a page - it will deserialize (retrieve) the user from the session
 passport.deserializeUser((id, done) =>{
+  //Query the database to find the user with the given id
   connection.query('SELECT * FROM Clients WHERE client_id = ?', [id], (error, rows) => {
+    //If the user is not found, return an error message, otherwise return the user object
     done(error, rows[0]);
   });
 });
 
+//This is the function that will deal with the login request
 app.post('/login', (req, res, next) => {
+  //Console.log it for debugging purposes
   console.log('Received a request to login, calling passport.authenticate');
+  //Call the authenticate function of passport, using the 'local' strategy
   passport.authenticate('local', (error, user, info) => {
     if (error)
     {
       return next(error);
     }
 
+    //If there is an error with the user object, return the error message
     if (!user)
     {
       console.log('Info: ' + info.message); // Log the info.message containing the error message
 
+      //Return the appropriate error message
       if(info.message === 'Given email does not exist in the database.')
       {
         return res.json({ status: 'not_found', message: 'Podany adres email nie istnieje w bazie danych' });
@@ -179,6 +214,7 @@ app.post('/login', (req, res, next) => {
       }
     }
 
+    //If there are no error with the user object, log the user in
     req.logIn(user, (error) => {
       if (error)
       {
@@ -186,33 +222,48 @@ app.post('/login', (req, res, next) => {
       }
       return res.json({ status: 'logged_in', message: 'Zalogowano do serwisu' });
     });
-  })(req, res, next);
+  })(req, res, next); //Call the authenticate function
 });
 
+//This is the function which checks if the user is authenticated
 function checkAuthentication(req, res, next) {
   console.log('Checking authentication, calling checkAuthentication');
   console.log('User is authenticated: ' + req.isAuthenticated());
-  if (req.isAuthenticated()) 
+  if (req.isAuthenticated()) //If the user is authenticated (the res.isAuthenticated() status is true), call next()
   {
     //if user is looged in, req.isAuthenticated() will return true 
     console.log('User is authenticated');
-    return next();
+    return next(); //As this will act as a middleware, we must call next() to pass the request to the next function
   }
     else 
   {
     console.log('User is not authenticated');
     res.json({ /*status: 'not_logged_in', */message: 'Użytkownik nie jest zalogowany' });
-    //res.redirect('/pages/NotLoggedInPage.html');
+    /*
+    There is a bug here - if the user will try to access
+    a protected page directly, using the URL, the server will
+    return a JSON object with the message 'User is not logged in'
+    instead of redirecting the user to the login page. This is because
+    the server does not know where to redirect the user to, as the
+    redirect URL is stored in the session, which is not available
+    when the user tries to access a protected page directly, using
+    the URL. This is to be fixed, although it is not a critical bug,
+    neither is it a security issue.
+    */
   }
 }
 
-//Always make sure that the route does not contain .html extension
+//This is the function that will deal with the request to a protected page,
+//although at first it is the app.get('checkIfAuthenticated') function that will be called
 app.get('/protected/ClientsPortalPage.html', checkAuthentication, (req, res) => {
+  //Console.log it for debugging purposes
   console.log("Received a request to the client's portal");
+  //Send the client's portal page, iff the user is authenticated
   res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
-  //res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
 });
 
+//If a user tries to access a protected page, this is the route that the fetch
+//request will be sent to, to check if the user is authenticated
 app.get('/checkIfAuthenticated', checkAuthentication,(req, res) => {
   console.log('Checking if the user is authenticated');
   res.json({ status: 'logged_in', message: 'User is authenticated' });
@@ -289,16 +340,19 @@ app.post('/register', async (req, res) => {
         } 
           else 
         {
-          console.log("The user's lookup query was successful");
+          console.log("The user's lookup query involving: " + email +" was successful");
+          //'resolve' is the function that will be called if the query is successful,
+          //returing the results of the query as 'results'
           resolve(results);
         }
       });
     });
 
-    //Provide feedback if the user already exists in the database
+    //Check if the user exists in the 'Clients' table
     if (results.length > 0)
     {
       console.log('User already exists in the database');
+      //Provide feedback if the user already exists in the database (judging by the email)
       res.json({ message: 'Posiadasz już konto na naszym portalu, zaloguj się zamiast rejestracji' });
     }
       else
@@ -314,6 +368,7 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(plainPassword, salt);
 
         console.log('The password has been hashed');
+        //The password is hashed and ready to be inserted into the database
         return hashedPassword;
       }
 
@@ -330,6 +385,8 @@ app.post('/register', async (req, res) => {
             else
           {
             console.log("The query was successful: email and hashed password were inserted into the Clients table");
+            //This 'resolve' resolves the promise withouy returning anything,
+            //because we don't need to return anything here, program flow will continue
             resolve();
           }
         });
