@@ -62,6 +62,7 @@ app.use(
     secret: 'secret', //This is to be changed in production: we need a more secure secret
     resave: false,
     saveUninitialized: false,
+    cookie: { expires: false }
 }));
 
 //Passport initialization
@@ -200,8 +201,8 @@ function checkAuthentication(req, res, next) {
     else 
   {
     console.log('User is not authenticated');
-    //res.json({ status: 'not_logged_in', message: 'Użytkownik nie jest zalogowany' });
-    res.redirect('/pages/NotLoggedInPage.html');
+    res.json({ status: 'not_logged_in', message: 'Użytkownik nie jest zalogowany' });
+    //res.redirect('/pages/NotLoggedInPage.html');
   }
 }
 
