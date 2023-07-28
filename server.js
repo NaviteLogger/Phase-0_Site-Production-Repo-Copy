@@ -6,7 +6,7 @@ const mysql = require('mysql2');
 // For parsing the request body
 const bodyParser = require('body-parser');
 // For sending emails
-const sgMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
 // For authentication
 const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
@@ -71,22 +71,36 @@ app.use(passport.session());
 //Enables flash messages
 app.use(flash());
 
-//Send a test mail using sendgrid:
-const msg = {
-  to: 'kacprzakmarek077@gmail.com', // Change to your recipient
-  from: 'kacprzakmarek92@gmail.com', // Change to your verified sender
-  subject: 'Sending with SendGrid is Fun',
-  text: 'and easy to do anywhere, even with Node.js',
-  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-}
-sgMail
-  .send(msg)
-  .then(() => {
-    console.log('Email sent')
-  })
-  .catch((error) => {
-    console.error(error)
-  })
+//Set up the nodemailer
+const transporter = nodemailer.createTransport({
+  host: 'smtp.sendgrid.net',
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.SENDGRID_USERNAME,
+    pass: process.env.SENDGRID_API_KEY,
+  }
+});
+
+//Set up the email options
+const mailOptions = {
+  from: 'kacprzakmarek92@gmail.com',
+  to: 'kacprzakmarek077@gmail.com',
+  subject: 'Sending Email using Node.js',
+  text: 'That was easy!',
+};
+
+//Send test email
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error)
+  {
+    console.log('Error occurred while sending email:' + error.message);
+  }
+    else
+  {
+    console.log('Email sent successfully!', info.response);
+  }
+});
 
 //Connect to the MySQL database
 connection.connect((err) => {
