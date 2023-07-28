@@ -1,6 +1,6 @@
 document.getElementById('clients-portal').addEventListener('click', function() {
 
-  fetch('/protected/ClientsPortalPage.html', {
+  fetch('/checkIfAuthenticated', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
