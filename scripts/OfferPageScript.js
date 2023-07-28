@@ -8,7 +8,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
       })
       .then((response) => response.json())
       .then((data) => {
-        if (data.status === 'logged_in')
+        if (data.status == 'logged_in')
         {
           window.location.href = '/protected/ClientsPortalPage.html';
         }
@@ -18,6 +18,6 @@ document.getElementById('clients-portal').addEventListener('click', function() {
         }
       })
       .catch((error) => {
-        console.error(error);
+        console.error(error)
       });
 });
