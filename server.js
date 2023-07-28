@@ -17,9 +17,6 @@ const flash = require('connect-flash');
 //Load environment variables from the .env file
 require('dotenv').config();
 
-//Set SendGrid API key
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
 //Create the Express application
 const app = express();
 
