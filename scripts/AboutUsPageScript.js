@@ -1,6 +1,6 @@
 document.getElementById('clients-portal').addEventListener('click', function() {
 
-  fetch('/protected/ClientsPortalPage', {
+  fetch('/protected/ClientsPortalPage.html', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -8,7 +8,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
       })
       .then((response) => response.json())
       .then((data) => {
-        if (data.status == 'logged_in')
+        if (data.status === 'logged_in')
         {
           window.location.href = '/protected/ClientsPortalPage.html';
         }
