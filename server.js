@@ -39,16 +39,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Serve static files from the root directory
-app.use(express.static(path.join(__dirname)));
+//app.use(express.static(path.join(__dirname)));
 
 //Serve static files from the 'styles' directory
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 //Serve static files from the 'photos' directory
-app.use('/photos', express.static(path.join(__dirname, 'photos')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //Serve static files from the 'pages' directory
 app.use('/pages', express.static(path.join(__dirname, 'pages')));
+
+//Serve static files from the 'scripts' directory
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+
+//Serve static files from the 'fonts' directory
+app.use('/fonts', express.static(path.join(__dirname, 'fonts')));
 
 //Include the session middleware for user's session management
 app.use(
@@ -84,7 +90,12 @@ connection.query('USE CosmeticsLawDB', (error, results, fields) => {
 //Render the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
-  res.redirect('/'); // Redirect to main page
+  res.redirect('/pages/indexPage.html'); // Redirect to main page
+});
+
+app.get('/pages/indexPage.html', (req, res) => {
+  console.log('Home page rendered');
+  res.redirect('/pages/indexPage.html'); // Redirect to main page
 });
 
 passport.use(
@@ -195,8 +206,14 @@ function checkAuthentication(req, res, next) {
 }
 
 //Always make sure that the route does not contain .html extension
-app.get('/protected/ClientsPortalPage', checkAuthentication, function (req, res) {
+app.get('/protected/ClientsPortalPage.html', checkAuthentication, (req, res) => {
   console.log("Received a request to the client's portal");
+  res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
+  //res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
+});
+
+app.get('/checkIfAuthenticated', checkAuthentication,(req, res) => {
+  console.log('Checking if the user is authenticated');
   res.json({ status: 'logged_in', message: 'User is authenticated' });
 });
 
