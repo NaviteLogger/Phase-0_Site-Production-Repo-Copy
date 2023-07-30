@@ -104,7 +104,7 @@ function logData(data) {
   const logEntry = `${new Date().toISOString()} - ${data}`;
 
   // Log to console
-  console.log(logEntry);
+  //console.log(logEntry);
 
   // Append to log file (you can change the log file path as needed)
   fs.appendFile(path.join(__dirname, 'log.txt'), logEntry + '\n', (err) => {
