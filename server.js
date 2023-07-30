@@ -107,7 +107,7 @@ function logData(data) {
   console.log(logEntry);
 
   // Append to log file (you can change the log file path as needed)
-  fs.appendFile(path.join(__dirname, 'access.log'), logEntry + '\n', (err) => {
+  fs.appendFile(path.join(__dirname, 'log.txt'), logEntry + '\n', (err) => {
     if (err) {
       console.error('Error writing to log file:', err);
     }
