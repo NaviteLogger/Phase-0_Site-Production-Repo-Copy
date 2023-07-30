@@ -107,7 +107,7 @@ connection.query('USE CosmeticsLawDB', (error, results, fields) => {
   {
     return done(error);
   }
-  console.log('Selecting CosmeticsLawDB by default was suffessful');
+  console.log('Selecting CosmeticsLawDB by default was successful');
 });
 
 //Render the home page from the default domain
