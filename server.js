@@ -164,11 +164,19 @@ passport.use(
 //The result of the serializeUser method is attached to the session as javascript
 //object: req.session.passport.user = { client_id: '...', email: '...' }.
 passport.serializeUser((user, done) => {
+  //Console.log it for debugging purposes
+  console.log('Serializing the user: ' + user.client_id + ' ' + user.email);
   done(null, { id: user.client_id, email: user.email }); //Keeps the client_id and email in the session for further use
 });
 
 //This is the function that is called when a user tries to access a page - it will deserialize (retrieve) the user from the session
-passport.deserializeUser((id, done) =>{
+passport.deserializeUser((serializeUser, done) => {
+  //Retrive the id and email from the session
+  const { id, email } = serializeUser;
+
+  //Console.log it for debugging purposes
+  console.log('Deserializing the user: ' + id + ' ' + email);
+
   //Query the database to find the user with the given id
   connection.query('SELECT * FROM Clients WHERE client_id = ?', [id], (error, rows) => {
     //If the user is not found, return an error message, otherwise return the user object
