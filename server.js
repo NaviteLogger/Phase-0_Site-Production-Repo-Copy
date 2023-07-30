@@ -13,6 +13,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const flash = require('connect-flash');
+//For logging requests
+const morgan = require('morgan');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -67,6 +69,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 //Enables flash messages
 app.use(flash());
+
+//Set up the morgan logger
+app.use(morgan(':client-ip - :method :url :status :reponse-time ms'));
 
 //Set up the nodemailer
 const transporter = nodemailer.createTransport({
