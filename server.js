@@ -70,6 +70,11 @@ app.use(passport.session());
 //Enables flash messages
 app.use(flash());
 
+//Set up the morgan token
+morgan.token('client-ip', function (req, res) {
+  return req.ip || req.connection.remoteAddress;
+});
+
 //Set up the morgan logger
 app.use(morgan(':client-ip - :method :url :status :reponse-time ms'));
 
