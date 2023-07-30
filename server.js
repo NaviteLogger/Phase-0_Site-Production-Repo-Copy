@@ -114,11 +114,6 @@ function logData(data) {
   });
 }
 
-// Define a custom morgan format that includes the IP address
-morgan.token('client-ip', (req) => {
-  return req.ip || '-';
-});
-
 // Use the custom morgan format to log requests, including the IP address
 app.use(
   morgan((tokens, req, res) => {
