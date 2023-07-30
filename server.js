@@ -71,59 +71,15 @@ app.use(passport.session());
 //Enables flash messages
 app.use(flash());
 
-//Set up the morgan token
-morgan.token('client-ip', (req, res) => {
-  return req.ip || req.connection.remoteAddress;
+//Set up the morgan logger
+// Define a custom morgan format that includes the IP address
+morgan.token('client-ip', (req) => {
+  return req.ip || '-';
 });
-
-morgan.token('getMethod', (req) => {
-  return req.method;
-});
-
-morgan.token('getUrl', (req) => {
-  return req.originalUrl || req.url;
-});
-
-morgan.token('getStatus', (req, res) => {
-  return headersSent(res) ? String(res.statusCode) : undefined;
-});
-
-morgan.token('getResponseTime', (req, res, digits) => {
-  if (!req._startAt || !res._startAt) {
-    return;
-  }
-
-  var ms = (res._startAt[0] - req._startAt[0]) * 1e3 +
-    (res._startAt[1] - req._startAt[1]) * 1e-6;
-
-  return ms.toFixed(digits === undefined ? 3 : digits);
-});
-
-// Custom function to log data to both console and file
-function logData(data) {
-  const logEntry = `${new Date().toISOString()} - ${data}`;
-
-  // Log to console
-  //console.log(logEntry);
-
-  // Append to log file (you can change the log file path as needed)
-  fs.appendFile(path.join(__dirname, 'log.txt'), logEntry + '\n', (err) => {
-    if (err) {
-      console.error('Error writing to log file:', err);
-    }
-  });
-}
 
 // Use the custom morgan format to log requests, including the IP address
-app.use(
-  morgan((tokens, req, res) => {
-    const logDataString = `${tokens['client-ip']} - ${tokens['method']} ${tokens['url']} ${tokens['status']} ${tokens['response-time']} ms`;
-    logData(logDataString);
+app.use(morgan(':client-ip - :method :url :status :response-time ms'));
 
-    // Return null to skip the default logging behavior of morgan
-    return null;
-  })
-);;
 
 //Set up the nodemailer
 const transporter = nodemailer.createTransport({
