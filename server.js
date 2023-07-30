@@ -72,31 +72,63 @@ app.use(passport.session());
 app.use(flash());
 
 //Set up the morgan token
-morgan.token('client-ip', function (req, res) {
+morgan.token('client-ip', (req, res) => {
   return req.ip || req.connection.remoteAddress;
 });
 
-//Set up the morgan logger
+morgan.token('getMethod', (req) => {
+  return req.method;
+});
+
+morgan.token('getUrl', (req) => {
+  return req.originalUrl || req.url;
+});
+
+morgan.token('getStatus', (req, res) => {
+  return headersSent(res) ? String(res.statusCode) : undefined;
+});
+
+morgan.token('getResponseTime', (req, res, digits) => {
+  if (!req._startAt || !res._startAt) {
+    return;
+  }
+
+  var ms = (res._startAt[0] - req._startAt[0]) * 1e3 +
+    (res._startAt[1] - req._startAt[1]) * 1e-6;
+
+  return ms.toFixed(digits === undefined ? 3 : digits);
+});
+
+// Custom function to log data to both console and file
+function logData(data) {
+  const logEntry = `${new Date().toISOString()} - ${data}`;
+
+  // Log to console
+  console.log(logEntry);
+
+  // Append to log file (you can change the log file path as needed)
+  fs.appendFile(path.join(__dirname, 'access.log'), logEntry + '\n', (err) => {
+    if (err) {
+      console.error('Error writing to log file:', err);
+    }
+  });
+}
+
+// Define a custom morgan format that includes the IP address
+morgan.token('client-ip', (req) => {
+  return req.ip || '-';
+});
+
+// Use the custom morgan format to log requests, including the IP address
 app.use(
   morgan((tokens, req, res) => {
-    //Create a log entry with the timestamp
-    const logEntry = `${new Date().toISOString()} - ${tokens['client-ip']} - ${tokens['method']} ${tokens['url']} ${tokens['status']} ${tokens['response-time']} ms`;
+    const logDataString = `${tokens['client-ip']} - ${tokens['method']} ${tokens['url']} ${tokens['status']} ${tokens['response-time']} ms`;
+    logData(logDataString);
 
-    //Here you can optionally log the entry
-    //console.log(logEntry);
-
-    //Append the log entry to the log file
-    fs.appendFile(path.join(__dirname, 'log.txt'), logEntry + '\n', (error) => {
-      if (error) 
-      {
-        console.error('Error writing to log file:', err);
-      }
-    });
-
-    //Return null to prevent the default logging
+    // Return null to skip the default logging behavior of morgan
     return null;
   })
-);
+);;
 
 //Set up the nodemailer
 const transporter = nodemailer.createTransport({
