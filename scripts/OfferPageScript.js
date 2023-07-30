@@ -8,13 +8,13 @@ document.getElementById('clients-portal').addEventListener('click', function() {
       })
       .then((response) => response.json())
       .then((data) => {
-        if (data.status === 'logged_in')
+        if (data.status == 'logged_in')
         {
           window.location.href = '/protected/ClientsPortalPage.html';
         }
         else 
         {
-          window.location.href = '/pages/LoginPage.html';
+          window.location.href = '/pages/NotLoggedInPage.html';
         }
       })
       .catch((error) => {

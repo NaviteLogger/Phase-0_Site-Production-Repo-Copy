@@ -42,7 +42,7 @@ loginForm.addEventListener('submit', (event) => {
 
 document.getElementById('clients-portal').addEventListener('click', function() {
 
-  fetch('/protected/ClientsPortalPage.html', {
+  fetch('/checkIfAuthenticated', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -50,16 +50,16 @@ document.getElementById('clients-portal').addEventListener('click', function() {
       })
       .then((response) => response.json())
       .then((data) => {
-        if (data.status === 'logged_in')
+        if (data.status == 'logged_in')
         {
           window.location.href = '/protected/ClientsPortalPage.html';
         }
         else 
         {
-          window.location.href = '/pages/LoginPage.html';
+          window.location.href = '/pages/NotLoggedInPage.html';
         }
       })
       .catch((error) => {
-        console.error(error);
+        console.error(error)
       });
 });
