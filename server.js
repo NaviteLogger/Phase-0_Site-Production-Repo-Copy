@@ -79,26 +79,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-//Set up the email options
-const mailOptions = {
-  from: 'kacprzakmarek92@gmail.com',
-  to: 'kacprzakmarek077@gmail.com',
-  subject: 'Sending Email using Node.js',
-  text: 'That was easy!',
-};
-
-//Send test email
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error)
-  {
-    console.log('Error occurred while sending email:' + error.message);
-  }
-    else
-  {
-    console.log('Email sent successfully!', info.response);
-  }
-});
-
 //Connect to the MySQL database
 connection.connect((err) => {
   if (err) {
@@ -181,8 +161,10 @@ passport.use(
 );
 
 //This is the function that is called when a user tries to log in - it will serialize (store) the user in the session
+//The result of the serializeUser method is attached to the session as javascript
+//object: req.session.passport.user = { client_id: '...', email: '...' }.
 passport.serializeUser((user, done) => {
-  done(null, user.client_id);
+  done(null, { id: user.client_id, email: user.email }); //Keeps the client_id and email in the session for further use
 });
 
 //This is the function that is called when a user tries to access a page - it will deserialize (retrieve) the user from the session
@@ -238,7 +220,7 @@ app.post('/login', (req, res, next) => {
 
 //This is the function which checks if the user is authenticated
 function checkAuthentication(req, res, next) {
-  console.log('Checking authentication, calling checkAuthentication');
+  console.log('Checking authentication, calling checkAuthentication()');
   console.log('User is authenticated: ' + req.isAuthenticated());
   if (req.isAuthenticated()) //If the user is authenticated (the res.isAuthenticated() status is true), call next()
   {
@@ -267,14 +249,17 @@ function checkAuthentication(req, res, next) {
 //This is the function that will deal with the request to a protected page,
 //although at first it is the app.get('checkIfAuthenticated') function that will be called
 app.get('/protected/ClientsPortalPage.html', checkAuthentication, (req, res) => {
+  //Access the user email stored in the session
+  const userEmail = req.session.passport.user.email;
   //Console.log it for debugging purposes
-  console.log("Received a request to the client's portal");
+  console.log("Received a request to the client's portal: ", userEmail);
   //Send the client's portal page, iff the user is authenticated
   res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
 });
 
+//This function acts as a middleware route to check if the user is authenticated
 //If a user tries to access a protected page, this is the route that the fetch
-//request will be sent to, to check if the user is authenticated
+//request will be sent to
 app.get('/checkIfAuthenticated', checkAuthentication,(req, res) => {
   console.log('Checking if the user is authenticated');
   res.json({ status: 'logged_in', message: 'User is authenticated' });
@@ -435,17 +420,26 @@ app.post('/register', async (req, res) => {
         });
       });
 
-      // //Send the confirmation email to the user
-      // const msg = {
-      //   to: email,
-      //   from: 'pomoc@prawokosmetyczne.pl',
-      //   subject: 'Potwierdzenie rejestracji adresu email',
-      //   text: 'Twój kod potwierdzający adres email to: ' + verificationCode,
-      //   html: '<strong>Twój kod potwierdzający adres email to: ' + verificationCode + '</strong>',
-      // };
+      //Set up the email options
+      const mailOptions = {
+        from: 'pomoc@prawokosmetyczne.pl',
+        to: 'kacprzakmarek077@gmail.com',
+        subject: 'Potwierdzenie rejestracji adresu email',
+        text: 'Twój kod potwierdzający adres email to: ' + verificationCode,
+        html: '<strong>Twój kod potwierdzający adres email to: ' + verificationCode + '</strong>',
+      };
 
-      // //Now it is time to send the email
-      // sgMail.send(msg);
+      //Send test email
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error)
+        {
+          console.log('Error occurred while sending email:' + error.message);
+        }
+          else
+        {
+          console.log('Email sent successfully!', info.response);
+        }
+      });
 
       res.json({ message: 'Rejestracja przebiegła pomyślnie, sprawdź swoją skrzynkę pocztową w celu potwierdzenia adresu email' });
 
