@@ -76,7 +76,7 @@ morgan.token('client-ip', function (req, res) {
 });
 
 //Set up the morgan logger
-app.use(morgan(':client-ip - :method :url :status :reponse-time ms'));
+app.use(morgan(':client-ip - :method :url :status :response-time ms'));
 
 //Set up the nodemailer
 const transporter = nodemailer.createTransport({
