@@ -15,6 +15,7 @@ const bcrypt = require('bcrypt');
 const flash = require('connect-flash');
 //For logging requests
 const morgan = require('morgan');
+const fs = require('fs');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -76,7 +77,26 @@ morgan.token('client-ip', function (req, res) {
 });
 
 //Set up the morgan logger
-app.use(morgan(':client-ip - :method :url :status :response-time ms'));
+app.use(
+  morgan((tokens, req, res) => {
+    //Create a log entry with the timestamp
+    const logEntry = `${new Date().toISOString()} - ${tokens['client-ip']} - ${tokens['method']} ${tokens['url']} ${tokens['status']} ${tokens['response-time']} ms`;
+
+    //Here you can optionally log the entry
+    //console.log(logEntry);
+
+    //Append the log entry to the log file
+    fs.appendFile(path.join(__dirname, 'log.txt'), logEntry + '\n', (error) => {
+      if (error) 
+      {
+        console.error('Error writing to log file:', err);
+      }
+    });
+
+    //Return null to prevent the default logging
+    return null;
+  })
+);
 
 //Set up the nodemailer
 const transporter = nodemailer.createTransport({
