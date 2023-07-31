@@ -269,8 +269,7 @@ function checkAuthentication(req, res, next) {
 
 //This is the function that will check if the user's mail is verified
 function checkEmailConfirmation(req, res, next) {
-  const email = req.body.email;
-  const password = req.body.password;
+  const email = req.session.passport.user.email; 
 
   console.log('Checking email confirmation for: ' + email + ', calling checkEmailConfirmation()');
 
@@ -329,7 +328,7 @@ app.post('/verifyEmailAddress', (req, res) => {
 
 //This is the function that will deal with the request to a protected page,
 //although at first it is the app.get('checkIfAuthenticated') function that will be called
-app.get('/protected/ClientsPortalPage.html', checkAuthentication, checkEmailConfirmation,(req, res) => {
+app.get('/protected/ClientsPortalPage.html', checkAuthentication, checkEmailConfirmation, (req, res) => {
   //Access the user email stored in the session
   const userEmail = req.session.passport.user.email;
   //Console.log it for debugging purposes
