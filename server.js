@@ -286,11 +286,45 @@ function checkEmailConfirmation(req, res, next) {
     }
       else
     {
-      console.log('Email: ' + email + ' is not verified');
-      res.json({ status: 'not_verified', message: 'Email nie został potwierdzony' });  
+      console.log('Email: ' + email + ' is not yet verified');
+      res.sendFile(path.join(__dirname, 'protected/EmailVerificationPage.html'));
+      //res.json({ status: 'not_verified', message: 'Email nie został potwierdzony' });  
     }
   });
 }
+
+app.post('/verifyEmailAddress', (req, res) => {
+  const email = req.body.email;
+  const emailVerificationCode = req.body.emailVerificationCode;
+
+  console.log('Verifying email: ', email);
+  
+  //Check if the input code is correct
+  connection.query('SELECT verification_code FROM Email_Verifications WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
+    if (error) 
+    {
+      console.log('Error while querying the database', error);
+    }
+
+    if (results[0].verification_code === emailVerificationCode) //The results[0] is an array of objects, so we need to access the first element of the array
+    {
+      console.log('Email verification code is correct');
+      //Update the database to set the is_verified column to 1
+      connection.query('UPDATE Email_Verifications SET is_verified = 1 WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
+        if (error) 
+        {
+          console.log('Error while querying the database', error);
+        }
+        console.log('Email: ' + email + ' is now verified');
+      });
+    }
+      else
+    {
+      console.log('Email verification code: ' + emailVerificationCode + ' does not match the email: ' + email);
+      res.json({ status: 'incorrect_code', message: 'Podany kod weryfikacyjny nie pasuje do adresu email'});
+    }
+  });
+});
 
 //This is the function that will deal with the request to a protected page,
 //although at first it is the app.get('checkIfAuthenticated') function that will be called

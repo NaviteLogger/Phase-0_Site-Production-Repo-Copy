@@ -23,7 +23,7 @@ loginForm.addEventListener('submit', (event) => {
     },
     body: JSON.stringify(requestBody) //Indicate that we are sending JSON data in the request body
   })
-    .then ((response) => response.json())
+    .then ((response) => response.json()) //Parse the incoming JSON response
     .then ((data) => {
       const messageElement = document.getElementById('message');
       messageElement.innerHTML = data.message;
@@ -32,7 +32,7 @@ loginForm.addEventListener('submit', (event) => {
       {
         setTimeout(() => {
           window.location.href = '/protected/ClientsPortalPage.html';
-        }, 1500); //Redirect to the clients portal page after 3 seconds
+        }, 1500); //Redirect to the clients portal page after 1,5 seconds
       }
   })
     .catch ((error) => {
