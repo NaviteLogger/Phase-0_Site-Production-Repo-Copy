@@ -286,7 +286,7 @@ function checkEmailConfirmation(req, res, next) {
       else
     {
       console.log('Email: ' + email + ' is not yet verified');
-      res.sendFile(path.join(__dirname, 'protected/EmailVerificationPage.html'));
+      res.sendFile(path.join(__dirname, 'protected', 'EmailVerificationPage.html'));
       //res.json({ status: 'not_verified', message: 'Email nie został potwierdzony' });  
     }
   });
