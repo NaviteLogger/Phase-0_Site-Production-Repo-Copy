@@ -316,6 +316,7 @@ app.post('/verifyEmailAddress', (req, res) => {
           console.log('Error while querying the database', error);
         }
         console.log('Email: ' + email + ' is now verified');
+        res.json({ status: 'email_verified', message: 'Email został potwierdzony' });
       });
     }
       else
