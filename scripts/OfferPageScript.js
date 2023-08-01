@@ -11,17 +11,17 @@ buttonsIds.forEach((buttonId) => {
             'Content-Type': 'application/json'
           }
         })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status == 'not_logged_in')
-          {
-            window.location.href = '/pages/NotLoggedInPage.html';
-          }
-            else
-          {
-            console.log('Zalogowano');
-          }
-        })
+        // .then((response) => response.json())
+        // .then((data) => {
+        //   if (data.status == 'not_logged_in')
+        //   {
+        //     window.location.href = '/pages/NotLoggedInPage.html';
+        //   }
+        //     else
+        //   {
+        //     console.log('Zalogowano');
+        //   }
+        // })
         .catch((error) => {
           console.error(error);
         });
