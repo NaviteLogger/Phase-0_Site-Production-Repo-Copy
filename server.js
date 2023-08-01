@@ -15,6 +15,7 @@ const bcrypt = require('bcrypt');
 const flash = require('connect-flash');
 //For logging requests
 const morgan = require('morgan');
+//For file manipulation
 const fs = require('fs');
 
 //Load environment variables from the .env file
@@ -38,8 +39,8 @@ app.use(bodyParser.json());
 //Parse URL-encoded bodies (as sent by HTML forms)
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Serve static files from the root directory
-//app.use(express.static(path.join(__dirname)));
+//Set up the view engine
+app.set('view engine', 'ejs');
 
 //Serve static files from the 'styles' directory
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
@@ -531,6 +532,24 @@ app.post('/register', async (req, res) => {
     console.error('An error occurred during registration:', error);
   }
 });  
+
+//Handle the incoming GET request to the OfferPage
+app.get('/offerPage', (req, res) => {
+  console.log('GET request to the OfferPage');
+
+  const agreementsFolder = '../agreements/';
+
+  fs.readdir(agreementsFolder, (error, files) => {
+    if (error) 
+    {
+      console.log('An error occurred while reading the agreements folder:', error);
+    }
+      else
+    {
+      res.render('offerPage', { files: files });
+    }
+  });
+});
 
 //Prevent the idling of the db connection
 setInterval(function () {
