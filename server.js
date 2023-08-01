@@ -370,7 +370,7 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   });
 
   //Console.log it for debugging purposes
-  console.log("Received a request to the client's portal: ", userEmail);
+  console.log("Received a request to the client's portal, query run successfully: ", userEmail);
 
   //Send the client's portal page, iff the user is authenticated
   //res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
