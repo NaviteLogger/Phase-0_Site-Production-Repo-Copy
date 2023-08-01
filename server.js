@@ -267,9 +267,71 @@ function checkAuthentication(req, res, next) {
   }
 }
 
+//This is the function that will check if the user's mail is verified
+function checkEmailConfirmation(req, res, next) {
+  const email = req.session.passport.user.email; 
+
+  console.log('Checking email confirmation for: ' + email + ', calling checkEmailConfirmation()');
+
+  //Query the database to find the user with the given email
+  connection.query('SELECT * FROM Email_Verifications WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
+    if (error) {
+      console.log('Error while querying the database', error);
+    }
+
+    if (results[0].is_verified === 1) {
+      console.log('Email: ' + email + ' is verified');
+      return next();
+    }
+      else
+    {
+      console.log('Email: ' + email + ' is not yet verified');
+      res.sendFile(path.join(__dirname, 'protected', 'EmailVerificationPage.html'));
+      //res.json({ status: 'not_verified', message: 'Email nie został potwierdzony' });  
+    }
+  });
+}
+
+app.post('/verifyEmailAddress', (req, res) => {
+  const email = req.body.email;
+  const emailVerificationCode = req.body.emailVerificationCode;
+
+  console.log('Verifying email: ', email);
+  
+  //Check if the input code is correct
+  connection.query('SELECT verification_code FROM Email_Verifications WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
+    if (error) 
+    {
+      console.log('Error while querying the database', error);
+    }
+
+    //Console.log it for debugging purposes
+    console.log('Email verification code from the database: ' + results[0].verification_code);
+
+    if (results[0].verification_code == emailVerificationCode) //The results[0] is an array of objects, so we need to access the first element of the array
+    {
+      console.log('Email verification code is correct');
+      //Update the database to set the is_verified column to 1
+      connection.query('UPDATE Email_Verifications SET is_verified = 1 WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
+        if (error) 
+        {
+          console.log('Error while querying the database', error);
+        }
+        console.log('Email: ' + email + ' is now verified');
+        res.json({ status: 'email_verified', message: 'Email został potwierdzony' });
+      });
+    }
+      else
+    {
+      console.log('Email verification code: ' + emailVerificationCode + ' does not match the email: ' + email);
+      res.json({ status: 'incorrect_code', message: 'Podany kod weryfikacyjny nie pasuje do adresu email'});
+    }
+  });
+});
+
 //This is the function that will deal with the request to a protected page,
 //although at first it is the app.get('checkIfAuthenticated') function that will be called
-app.get('/protected/ClientsPortalPage.html', checkAuthentication, (req, res) => {
+app.get('/protected/ClientsPortalPage.html', checkAuthentication, checkEmailConfirmation, (req, res) => {
   //Access the user email stored in the session
   const userEmail = req.session.passport.user.email;
   //Console.log it for debugging purposes
@@ -469,6 +531,11 @@ app.post('/register', async (req, res) => {
     console.error('An error occurred during registration:', error);
   }
 });  
+
+//Prevent the idling of the db connection
+setInterval(function () {
+  connection.query('SELECT 1');
+}, 50000);
 
 //Start the server
 const port = 80;

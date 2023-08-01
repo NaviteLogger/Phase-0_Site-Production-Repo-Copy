@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+  <title>Contact Page</title>
+  <link rel="stylesheet" type="text/css" href="../styles/EmailVerificationPageStyles.css">
+  <script src="../scripts/EmailVerificationPageScript.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="left">
+        <a href="./indexPage.html" class="nav-link">STRONA GŁÓWNA</a>
+        <a href="./OfferPage.html" class="nav-link">OFERTA</a>
+        <a href="./AboutUsPage.html" class="nav-link">O NAS</a>
+    </div>
+    <div class="middle">
+        <a href="./indexPage.html" class="nav-link">
+            <img src="../images/logo.png" alt="Logo" id="logo">
+        </a>
+    </div>
+    <div class="right">
+        <a href="./ContactPage.html" class="nav-link">KONTAKT</a>
+        <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
+    </div>
+</header>
+<div class="email-verification-form">
+    <h2>Twój adres email nie został jeszcze potwierdzony. W poniższe pole wpisz kod otrzymany w procesie rejestracji konta</h2>
+    <br>
+    <form id="email-verification-form"> 
+        <div class="form-group">
+            <label for="email">Adres email który zamierzasz zweryfikować:</label>
+            <input type="email" id="email" name="email" placeholder="Adres email">
+            <label for="email-verification-code">Kod weryfikacyjny:</label>
+            <input type="text" id="email-verification-code" name="email-verification-code" autocomplete="off" placeholder="Kod weryfikacyjny">
+            <button type="submit" class="submit-button" id="submit-button">Dalej</button>
+        </div>
+    </form>
+    <div id="server-response">
+        <p id='message' style="color: red"></p>
+    </div>
+</div>
+</body>
+</html>
