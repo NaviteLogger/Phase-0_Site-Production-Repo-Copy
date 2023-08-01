@@ -50,13 +50,13 @@ document.getElementById('clients-portal').addEventListener('click', function() {
       })
       .then((response) => response.json())
       .then((data) => {
-        if (data.status == 'logged_in')
+        if (data.status == 'not_logged_in')
         {
-          window.location.href = '/clientsPortalPage';
+          window.location.href = '/pages/NotLoggedInPage.html';
         }
         else 
         {
-          window.location.href = '/pages/NotLoggedInPage.html';
+          window.location.href = '/clientsPortalPage';
         }
       })
       .catch((error) => {
