@@ -357,6 +357,7 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
       if (results.length == 0)
       {
         console.log('Found no agreements associated with the account: ' + userEmail);
+        resolve(results);
       }
         else
       {
