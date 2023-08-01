@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+  <title>Offer Page</title>
+  <link rel="stylesheet" type="text/css" href="../styles/OfferPageStyles.css">
+  <script src="../scripts/OfferPageScript.js" defer></script>
+  <meta charset="utf-8">
+</head>
+<body>
+  <header>
+    <div class="left">
+        <a href="./indexPage.html" class="nav-link">STRONA GŁÓWNA</a>
+        <a href="./OfferPage.html" class="nav-link">OFERTA</a>
+        <a href="./AboutUsPage.html" class="nav-link">O NAS</a>
+    </div>
+    <div class="middle">
+        <a href="./indexPage.html" class="nav-link">
+            <img src="../images/logo.png" alt="Logo" id="logo">
+        </a>
+    </div>
+    <div class="right">
+        <a href="./ContactPage.html" class="nav-link">KONTAKT</a>
+        <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
+    </div>
+</header>
+
+  <div class="offer">
+    <div class="box">
+      <h3>Standard</h3>
+      <p>RODO</p>
+      <p>WYWIAD</p>
+      <p>ZGODA NA ZDJĘCIE</p>
+      <p>1 ZGODA NA ZABIEG</p>
+      <button class="buy-button">KUP</button>
+    </div>
+    <div class="box">
+      <h3>Silver</h3>
+      <p>RODO</p>
+      <p>WYWIAD</p>
+      <p>ZGODA NA ZDJĘCIE</p>
+      <p>10 ZGÓD</p>
+      <button class="buy-button">KUP</button>
+    </div>
+    <div class="box">
+      <h3>Gold</h3>
+      <p>RODO</p>
+      <p>WYWIAD</p>
+      <p>ZGODA NA ZDJĘCIE</p>
+      <p>30 ZGÓD</p>
+      <button class="buy-button">KUP</button>
+    </div>
+    <div class="box platinum">
+      <h3>Platinum</h3>
+      <p>RODO</p>
+      <p>WYWIAD</p>
+      <p>ZGODA NA ZDJĘCIE</p>
+      <p>WSZYSTKIE</p>
+      <span class="tag">najczęściej wybierane</span>
+      <button class="buy-button">KUP</button>
+    </div>
+  </div>
+
+  <h2>Pojedyncze umowy</h2>
+  <table class="agreements-table">
+    <tr> <!-- table row -->
+      <th>Nazwa zgody</th> <!-- table header -->
+    </tr>
+    <% files.forEach(file => { %>
+    <tr>
+      <td><%= file %></td> <!-- table data -->
+    </tr>
+    <% }); %>>
+  </table>
+
+  <button class="buy-button">KUP</button>
+</body>
+</html>
