@@ -581,7 +581,7 @@ app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in
         else
       {
         console.log('The query was successful: all the offers were retrieved from the Offers table');
-        res.render('offerPage', { files: results });
+        res.render('OfferPage', { files: results });
         resolve();
       }
     });
