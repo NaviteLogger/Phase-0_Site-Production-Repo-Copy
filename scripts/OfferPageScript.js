@@ -17,9 +17,13 @@ buttonsIds.forEach((buttonId) => {
           {
             window.location.href = '/pages/NotLoggedInPage.html';
           }
+            else
+          {
+            console.log('Zalogowano');
+          }
         })
         .catch((error) => {
-          console.error(error)
+          console.error(error);
         });
   });
 });
