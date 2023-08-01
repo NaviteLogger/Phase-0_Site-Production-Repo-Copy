@@ -379,10 +379,10 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
 //This function acts as a middleware route to check if the user is authenticated
 //If a user tries to access a protected page, this is the route that the fetch
 //request will be sent to
-app.get('/checkIfAuthenticated', checkAuthentication,(req, res) => {
-  console.log('Checking if the user is authenticated');
-  res.json({ status: 'logged_in', message: 'User is authenticated' });
-});
+//app.get('/checkIfAuthenticated', checkAuthentication,(req, res) => {
+//  console.log('Checking if the user is authenticated');
+//  res.json({ status: 'logged_in', message: 'User is authenticated' });
+//});
 
 //Handle registration requests
 app.post('/register', async (req, res) => {

@@ -3,9 +3,9 @@ const buttonsIds = ['clients-portal', 'clients-portal-subscription', 'clients-po
 
 //Add event listeners to all the buttons
 buttonsIds.forEach((buttonId) => {
-  document.getElementById(buttonId).addEventListener('click', function() {
+  document.getElementById('clients-portal').addEventListener('click', function() {
 
-    fetch('/checkIfAuthenticated', {
+    fetch('/clientsPortalPage', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -13,11 +13,7 @@ buttonsIds.forEach((buttonId) => {
         })
         .then((response) => response.json())
         .then((data) => {
-          if (data.status == 'logged_in')
-          {
-            window.location.href = '/clientsPortalPage';
-          }
-          else 
+          if (data.status == 'not_logged_in')
           {
             window.location.href = '/pages/NotLoggedInPage.html';
           }
