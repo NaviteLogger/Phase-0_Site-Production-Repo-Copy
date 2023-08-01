@@ -258,7 +258,7 @@ function checkAuthentication(req, res, next) {
     else 
   {
     console.log('User is not authenticated');
-    res.json({ /*status: 'not_logged_in', */message: 'Użytkownik nie jest zalogowany' });
+    res.json({ status: 'not_logged_in', message: 'Użytkownik nie jest zalogowany' });
     /*
     There is a bug here - if the user will try to access
     a protected page directly, using the URL, the server will
