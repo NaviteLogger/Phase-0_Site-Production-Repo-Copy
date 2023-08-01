@@ -78,8 +78,13 @@ morgan.token('client-ip', (req) => {
   return req.ip || '-';
 });
 
+//Define a new morgan token 'date' for the timestamps
+morgan.token('date', (req, res, tz) => {
+  return new Date().toISOString();
+});
+
 // Use the custom morgan format to log requests, including the IP address
-app.use(morgan(':client-ip - :method :url :status :response-time ms'));
+app.use(morgan(':date :client-ip - :method :url :status :response-time ms'));
 
 
 //Set up the nodemailer
