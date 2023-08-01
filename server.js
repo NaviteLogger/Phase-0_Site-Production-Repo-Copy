@@ -305,10 +305,11 @@ app.post('/verifyEmailAddress', (req, res) => {
       console.log('Error while querying the database', error);
     }
 
+    //Console.log it for debugging purposes
+    console.log('Email verification code from the database: ' + results[0].verification_code);
+
     if (results[0].verification_code === emailVerificationCode) //The results[0] is an array of objects, so we need to access the first element of the array
     {
-      //Console.log it for debugging purposes
-      console.log('The resuling query is: ', results[0].verification_code + ' === ' + emailVerificationCode);
       console.log('Email verification code is correct');
       //Update the database to set the is_verified column to 1
       connection.query('UPDATE Email_Verifications SET is_verified = 1 WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
