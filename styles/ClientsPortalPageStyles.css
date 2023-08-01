@@ -55,9 +55,7 @@
   }
 
   .clients-portal-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+    background-color: blanchedalmond;
+    text-align: center;
     padding: 20px;
   }

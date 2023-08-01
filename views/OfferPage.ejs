@@ -60,16 +60,22 @@
     </div>
   </div>
 
-  <h2>Pojedyncze umowy</h2>
+  <h2>Lista dostępnych zgód:</h2>
   <table class="agreements-table">
-    <tr> <!-- table row -->
-      <th>Nazwa zgody</th> <!-- table header -->
-    </tr>
-    <% files.forEach(file => { %> <!-- for each file in files -->
-    <tr>
-      <td><%= file %></td> <!-- table data -->
-    </tr>
-    <% }); %>>
+    <thead>
+      <tr> <!-- tr stands for table row -->
+        <th>NAZWA ZGODY</th> <!-- th stands for table header -->
+        <th>CENA</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% files.forEach((file)) => { %>
+      <tr>
+        <p><%= file.agreement_name %></p>
+        <p><%= file.agreement_name %></p>
+      </tr>
+    <% }) %>
+    </tbody>
   </table>
 
   <button class="clients-portal buy-button" id="clients-portal-list">KUP</button>

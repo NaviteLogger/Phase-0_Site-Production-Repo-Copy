@@ -337,10 +337,35 @@ app.post('/verifyEmailAddress', (req, res) => {
 
 //This is the function that will deal with the request to a protected page,
 //although at first it is the app.get('checkIfAuthenticated') function that will be called
-app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, (req, res) => {
+app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   
   //Access the user email stored in the session
   const userEmail = req.session.passport.user.email;
+
+  /*
+  Using that email let's retrieve the client_id from the database
+  and then use that client_id to retrieve the agreement_id from the
+  Agreements_Ownerships table
+  */
+  await new Promise((resolve, reject) => {
+    connection.query('SELECT agreement_id FROM Agreements_Ownerships WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [userEmail], (error, results) => {
+      if (error)
+      {
+        console.log('Error while querying the database', error);
+      }
+      
+      if (results.length == 0)
+      {
+        console.log('Found no agreements associated with the account: ' + userEmail);
+        res.json({ status: 'no_bought_agreements', message: 'Klient nie zakupił jeszcze żadnych umów' });
+      }
+        else
+      {
+        console.log('Found the following agreements associated with the account: ' + userEmail);
+        resolve(results);
+      }
+    });
+  });
 
   //Console.log it for debugging purposes
   console.log("Received a request to the client's portal: ", userEmail);
@@ -544,30 +569,29 @@ app.post('/register', async (req, res) => {
 });  
 
 //Handle the incoming GET request to the OfferPage
-app.get('/offerPage', (req, res) => { //if there is a href='/offerPage' in the html file, then this function will be executed
+app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in the html file, then this function will be executed
   console.log('GET request to the OfferPage');
 
-  const agreementsFolder = path.join(__dirname, 'agreements');
-
-  fs.readdir(agreementsFolder, (error, files) => {
-    if (error) 
-    {
-      console.log('An error occurred while reading the agreements folder:', error);
-    }
-      else
-    {
-      //The .map is used to create a new array from the 'files' array, containing only the filenames without the extensions
-      let filenamesWithoutExtensions = files.map(file => path.basename(file, path.extname(file)));
-      res.render('OfferPage', { files: filenamesWithoutExtensions });
-
-    }
+  await new Promise((resolve, reject) => {
+    connection.query('SELECT * FROM Agreements', function (error, results, fields) {
+      if (error)
+      {
+        reject(error);
+      }
+        else
+      {
+        console.log('The query was successful: all the offers were retrieved from the Offers table');
+        res.render('offerPage', { files: results });
+        resolve();
+      }
+    });
   });
 });
 
 //Prevent the idling of the db connection
 setInterval(function () {
   connection.query('SELECT 1');
-}, 50000);
+}, 60000);
 
 //Start the server
 const port = 80;
