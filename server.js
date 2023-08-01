@@ -308,7 +308,7 @@ app.post('/verifyEmailAddress', (req, res) => {
     //Console.log it for debugging purposes
     console.log('Email verification code from the database: ' + results[0].verification_code);
 
-    if (results[0].verification_code === emailVerificationCode) //The results[0] is an array of objects, so we need to access the first element of the array
+    if (results[0].verification_code == emailVerificationCode) //The results[0] is an array of objects, so we need to access the first element of the array
     {
       console.log('Email verification code is correct');
       //Update the database to set the is_verified column to 1
