@@ -342,6 +342,8 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   //Access the user email stored in the session
   const userEmail = req.session.passport.user.email;
 
+  //Console.log it for debugging purposes
+  console.log("Received a request to the client's portal: ", userEmail);
   /*
   Using that email let's retrieve the client_id from the database
   and then use that client_id to retrieve the agreement_id from the
