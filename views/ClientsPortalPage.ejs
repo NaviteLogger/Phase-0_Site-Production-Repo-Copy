@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/ClientsPortalPageStyles.css" type="text/css">
+    <script src="../scripts/ClientsPortalPageScript.js" defer></script>
+    <title>Clients Portal Page</title>
+</head>
+<body>
+    <header>
+        <div class="left">
+            <a href="../pages/indexPage.html" class="nav-link">STRONA GŁÓWNA</a>
+            <a href="../pages/OfferPage.html" class="nav-link">OFERTA</a>
+            <a href="../pages/AboutUsPage.html" class="nav-link">O NAS</a>
+        </div>
+        <div class="middle">
+            <a href="../pages/indexPage.html" class="nav-link">
+                <img src="../images/logo.png" alt="Logo" id="logo">
+            </a>
+        </div>
+        <div class="right">
+            <a href="../pages/ContactPage.html" class="nav-link">KONTAKT</a>
+            <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
+        </div>
+    </header>
+    <div class="clients-portal-container" id="clients-portal-container">
+        <p>Witamy w portalu klienta przypisanym do konta: <%= userEmail %></p>
+    </div>
+</body>
+</html>
