@@ -551,7 +551,10 @@ app.get('/offerPage', (req, res) => { //if there is a href='/offerPage' in the h
     }
       else
     {
-      res.render('OfferPage', { files: files });
+      //The .map is used to create a new array from the 'files' array, containing only the filenames without the extensions
+      let filenamesWithoutExtensions = files.map(file => path.basename(file, path.extname(file)));
+      res.render('OfferPage', { files: filenamesWithoutExtensions });
+
     }
   });
 });
