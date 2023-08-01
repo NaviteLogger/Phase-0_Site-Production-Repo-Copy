@@ -53,3 +53,11 @@
   .clients-portal:hover {
     text-decoration: underline;
   }
+
+  .clients-portal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px;
+  }
