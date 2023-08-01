@@ -31,7 +31,7 @@ loginForm.addEventListener('submit', (event) => {
       if (data.status === 'logged_in')
       {
         setTimeout(() => {
-          window.location.href = '/protected/ClientsPortalPage.html';
+          window.location.href = '/clientsPortalPage';
         }, 1500); //Redirect to the clients portal page after 1,5 seconds
       }
   })
@@ -52,7 +52,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
       .then((data) => {
         if (data.status == 'logged_in')
         {
-          window.location.href = '/protected/ClientsPortalPage.html';
+          window.location.href = '/clientsPortalPage';
         }
         else 
         {

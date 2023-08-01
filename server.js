@@ -332,13 +332,18 @@ app.post('/verifyEmailAddress', (req, res) => {
 
 //This is the function that will deal with the request to a protected page,
 //although at first it is the app.get('checkIfAuthenticated') function that will be called
-app.get('/protected/ClientsPortalPage.html', checkAuthentication, checkEmailConfirmation, (req, res) => {
+app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, (req, res) => {
+  
   //Access the user email stored in the session
   const userEmail = req.session.passport.user.email;
+
   //Console.log it for debugging purposes
   console.log("Received a request to the client's portal: ", userEmail);
+
   //Send the client's portal page, iff the user is authenticated
-  res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
+  //es.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
+
+  res.render('ClientsPortalPage', { userEmail: userEmail });
 });
 
 //This function acts as a middleware route to check if the user is authenticated
@@ -534,7 +539,7 @@ app.post('/register', async (req, res) => {
 });  
 
 //Handle the incoming GET request to the OfferPage
-app.get('/offerPage', (req, res) => {
+app.get('/offerPage', (req, res) => { //if there is a href='/offerPage' in the html file, then this function will be executed
   console.log('GET request to the OfferPage');
 
   const agreementsFolder = path.join(__dirname, 'agreements');
