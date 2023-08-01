@@ -1,4 +1,8 @@
-document.getElementById('submit-button').addEventListener('click', function() {
+//Get the refence to the form
+const form = document.getElementById('email-verification-form');
+
+form.addEventListener('click', (event) => {
+    event.preventDefault(); //Prevent the default form submit event, which would cause the page to reload
 
     var email = document.getElementById('email').value;
     var emailVerificationCode = document.getElementById('email-verification-code').value;
