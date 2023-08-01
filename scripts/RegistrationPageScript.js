@@ -101,7 +101,7 @@ document.getElementById('clients-portal').addEventListener('click', function() {
         .then((data) => {
           if (data.status == 'logged_in')
           {
-            window.location.href = '/protected/ClientsPortalPage.html';
+            window.location.href = '/clientsPortalPage';
           }
           else 
           {
