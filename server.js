@@ -546,7 +546,7 @@ app.get('/offerPage', (req, res) => {
     }
       else
     {
-      res.render('/views/OfferPage.ejs', { files: files });
+      res.render('OfferPage', { files: files });
     }
   });
 });
