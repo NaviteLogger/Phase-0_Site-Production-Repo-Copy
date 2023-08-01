@@ -307,6 +307,8 @@ app.post('/verifyEmailAddress', (req, res) => {
 
     if (results[0].verification_code === emailVerificationCode) //The results[0] is an array of objects, so we need to access the first element of the array
     {
+      //Console.log it for debugging purposes
+      console.log('The resuling query is: ', results[0].verification_code + ' === ' + emailVerificationCode);
       console.log('Email verification code is correct');
       //Update the database to set the is_verified column to 1
       connection.query('UPDATE Email_Verifications SET is_verified = 1 WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
@@ -528,6 +530,11 @@ app.post('/register', async (req, res) => {
     console.error('An error occurred during registration:', error);
   }
 });  
+
+//Prevent the idling of the db connection
+setInterval(function () {
+  connection.query('SELECT 1');
+}, 50000);
 
 //Start the server
 const port = 80;
