@@ -537,7 +537,7 @@ app.post('/register', async (req, res) => {
 app.get('/offerPage', (req, res) => {
   console.log('GET request to the OfferPage');
 
-  const agreementsFolder = '../agreements/';
+  const agreementsFolder = path.join(__dirname, 'agreements');
 
   fs.readdir(agreementsFolder, (error, files) => {
     if (error) 
