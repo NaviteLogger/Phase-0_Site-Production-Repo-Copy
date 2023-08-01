@@ -1,7 +1,7 @@
 //Get the refence to the form
 const form = document.getElementById('email-verification-form');
 
-form.addEventListener('click', (event) => {
+form.addEventListener('submit', (event) => {
     event.preventDefault(); //Prevent the default form submit event, which would cause the page to reload
 
     var email = document.getElementById('email').value;
@@ -15,7 +15,7 @@ form.addEventListener('click', (event) => {
     fetch('/verifyEmailAddress', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody) //Indicate that we are sending JSON data in the request body
     })
