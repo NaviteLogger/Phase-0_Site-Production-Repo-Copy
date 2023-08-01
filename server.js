@@ -357,7 +357,6 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
       if (results.length == 0)
       {
         console.log('Found no agreements associated with the account: ' + userEmail);
-        res.json({ status: 'no_bought_agreements', message: 'Klient nie zakupił jeszcze żadnych umów' });
       }
         else
       {
