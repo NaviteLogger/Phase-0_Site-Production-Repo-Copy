@@ -258,19 +258,7 @@ function checkAuthentication(req, res, next) {
     else 
   {
     console.log('User is not authenticated');
-    //res.json({ status: 'not_logged_in', message: 'Użytkownik nie jest zalogowany' });
     res.sendFile(path.join(__dirname, '/pages/NotLoggedInPage.html')); //If the user is not authenticated, redirect the user to the login page
-    /*
-    There is a bug here - if the user will try to access
-    a protected page directly, using the URL, the server will
-    return a JSON object with the message 'User is not logged in'
-    instead of redirecting the user to the login page. This is because
-    the server does not know where to redirect the user to, as the
-    redirect URL is stored in the session, which is not available
-    when the user tries to access a protected page directly, using
-    the URL. This is to be fixed, although it is not a critical bug,
-    neither is it a security issue.
-    */
   }
 }
 
@@ -374,18 +362,8 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   console.log("Received a request to the client's portal, query run successfully: ", userEmail);
 
   //Send the client's portal page, iff the user is authenticated
-  //res.sendFile(path.join(__dirname, 'protected/ClientsPortalPage.html'));
-
   res.render('ClientsPortalPage', { userEmail: userEmail });
 });
-
-//This function acts as a middleware route to check if the user is authenticated
-//If a user tries to access a protected page, this is the route that the fetch
-//request will be sent to
-//app.get('/checkIfAuthenticated', checkAuthentication,(req, res) => {
-//  console.log('Checking if the user is authenticated');
-//  res.json({ status: 'logged_in', message: 'User is authenticated' });
-//});
 
 //Handle registration requests
 app.post('/register', async (req, res) => {
