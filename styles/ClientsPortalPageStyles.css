@@ -107,10 +107,10 @@
     min-height: 25px;
   }
 
-  #generator-button {
+  #generator-button-top, #generator-button-bottom {
     background-color: green;
   }
 
-  #logout-button {
+  #logout-button-top, #logout-button-bottom {
     background-color: red;
   }
