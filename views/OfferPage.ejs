@@ -69,14 +69,15 @@
       </tr>
     </thead>
     <tbody>
-    <% files.forEach(file => { %>
-      <tr>
-        <p><%= file.agreement_name %></p>
-        <p><%= file.agreement_name %></p>
-      </tr>
-    <% }) %>
+      <% files.forEach(file => { %>
+        <tr>
+          <td><%= file.agreement_name %></td> <!-- td stands for table data -->
+          <td><%= file.agreement_price %></td>
+        </tr>
+      <% }) %>
     </tbody>
   </table>
+
 
   <button type="button" class="clients-portal buy-button" id="clients-portal-list">KUP</button>
 </body>
