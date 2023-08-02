@@ -27,13 +27,13 @@
     <div class="clients-portal-container" id="clients-portal-container">
         <p>Witamy w portalu klienta przypisanym do konta: <%= email %></p> <!-- The <%= %> tag is used to output the value of a JS expression into the table-->
         <br>
-        <p>W tym miejscu możesz zobaczyć swoje aktywne subskrypcje:</p>
+        <p class="headings">W tym miejscu możesz zobaczyć swoje aktywne subskrypcje:</p>
         <br>
         <p id="active-subscriptions">Brak aktywnych subskrypcji</p>
         <br>
         <button type="button" class="buy-subscription" id="buy-subscription">Kup subskrypcję</button>
         <br>
-        <p>W tym miejscu możesz zobaczyć swoje zakupione zgody:</p>
+        <p class="headings">W tym miejscu możesz zobaczyć swoje zakupione zgody:</p>
         <br>
         <% if (agreements.length == 0) { %> <!-- <%  %> is embedded JavaScript code into the HTML file -->
             <p>Nie posiadasz zakupionych zgód</p>
