@@ -58,9 +58,18 @@
     background-color: blanchedalmond;
     text-align: center;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
-
+  
   ol {
-    margin: 5px;
-    padding: 5px;
+    /*list-style-type: none;*/
+    margin: 0;
+    padding: 0;
+    text-align: left; /* Align text to the left within each list item */
+    width: fit-content; /* Shrink the list's width to its content */
+    margin: 0 auto; /* Center the list itself */
   }
+  
