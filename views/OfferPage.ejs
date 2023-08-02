@@ -60,23 +60,28 @@
     </div>
   </div>
 
-  <h2>Lista dostępnych zgód:</h2>
-  <table class="agreements-table">
-    <thead>
-      <tr> <!-- tr stands for table row -->
-        <th>NAZWA ZGODY</th> <!-- th stands for table header -->
-        <th>CENA</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% files.forEach(file => { %>
-        <tr>
-          <td><%= file.agreement_name.replace(/_/g, ' ') %></td> <!-- td stands for table data -->
-          <td><%= file.agreement_price %></td>
+<h2>Lista dostępnych zgód:</h2>
+
+  <form id="agreements-form">
+    <table class="agreements-table">
+      <thead>
+        <tr> <!-- tr stands for table row -->
+          <th>NAZWA ZGODY</th> <!-- th stands for table header -->
+          <th>CENA</th>
         </tr>
-      <% }) %>
-    </tbody>
-  </table>
-  <button type="button" class="clients-portal buy-button" id="clients-portal-list">KUP</button>
+      </thead>
+      <tbody>
+        <% files.forEach(file => { %>
+          <tr>
+            <td><input type="checkbox" name="agreement" value="<%= file.agreement_id %>"></td>
+            <td><%= file.agreement_name.replace(/_/g, ' ') %></td> <!-- td stands for table data -->
+            <td><%= file.agreement_price %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <button type="button" class="clients-portal buy-button" id="clients-portal-list">KUP</button>
+  </form>
+
 </body>
 </html>
