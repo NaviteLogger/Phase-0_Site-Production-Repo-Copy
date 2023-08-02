@@ -37,7 +37,7 @@
     margin: 5px;
   }
   
-  .clients-portal, .buy-subscription, .buy-agreements {
+  .clients-portal {
     background-color: black;
     color: white;
     border: none;
@@ -53,6 +53,8 @@
   .clients-portal:hover {
     text-decoration: underline;
   }
+
+  /* This is the main container for the Clients Portal page */
 
   .clients-portal-container {
     background-color: blanchedalmond;
@@ -88,4 +90,19 @@
 
   li {
     padding: 10px;
+  }
+
+  /* buttons */
+  .button-container {
+    display: flex;        /* Turn on flexbox */
+    justify-content: space-around; /* Distribute space evenly between the buttons */
+  }
+
+  .buy-button {
+    flex: 1;              /* All buttons take up equal space */
+    margin: 10px;         /* Add some margin around each button */
+    text-align: center;   /* Center the text on the button */
+    /* Set a minimum size if you want to */
+    min-width: 50px;
+    min-height: 25px;
   }

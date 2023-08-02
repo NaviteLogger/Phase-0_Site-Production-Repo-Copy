@@ -30,8 +30,6 @@
         <p class="headings">W tym miejscu możesz zobaczyć swoje aktywne subskrypcje:</p>
         <h3 id="active-subscriptions">Brak aktywnych subskrypcji</h3>
         <br>
-        <button type="button" class="buy-subscription" id="buy-subscription">Kup subskrypcję</button>
-        <br>
         <h3 class="headings">W tym miejscu możesz zobaczyć swoje zakupione zgody:</h3>
         <div class="agreements-list">
         <% if (agreements.length == 0) { %> <!-- <%  %> is embedded JavaScript code into the HTML file -->
@@ -45,8 +43,14 @@
           <% } %>
         </div>
         <br>
-        <button type="button" class="buy-agreements" id="buy-subscription">Kup zgody</button>
-        <br>
+        <div class="buttons-container">
+            <button class="buy-button">KUP SUBSKRYPCJĘ</button>
+            <button class="buy-button">KUP ZGODY</button>
+            <button class="buy-button">DRUKUJ ZGODY</button>
+            <button class="buy-button">WYPEŁNIJ ZGODĘ</button>
+            <button class="buy-button">WYLOGUJ</button>
+        </div>
+        
     </div>
 </body>
 </html>
