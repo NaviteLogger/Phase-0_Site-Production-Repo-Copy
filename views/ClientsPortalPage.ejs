@@ -36,11 +36,11 @@
         <% if (agreements.length == 0) { %> <!-- <%  %> is embedded JavaScript code into the HTML file -->
             <p>Nie posiadasz zakupionych zgód</p>
           <% } else { %>
-            <ul>
+            <ol>
               <% agreements.forEach(agreement => { %>
                 <li><%= agreement.agreement_name.replace(/_/g, ' ') %></li>
               <% }) %>
-            </ul>
+            </ol>
           <% } %>
         <br>
     </div>
