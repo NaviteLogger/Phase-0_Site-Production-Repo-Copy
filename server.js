@@ -369,9 +369,6 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
       });
     });
 
-    console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
-    res.render('ClientsPortalPage', { agreements: results, email: userEmail });
-
     //Console.log it for debugging purposes
     console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
 
