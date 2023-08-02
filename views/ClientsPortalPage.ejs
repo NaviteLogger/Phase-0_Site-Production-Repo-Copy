@@ -25,8 +25,7 @@
         </div>
     </header>
     <div class="clients-portal-container" id="clients-portal-container">
-        <p>Witamy w portalu klienta przypisanym do konta: <%= userEmail %></p>
-
+        <p>Witamy w portalu klienta przypisanym do konta: <%= email %></p> <!-- The <%= %> tag is used to output the value of a JS expression into the table-->
         <br>
         <p>W tym miejscu możesz zobaczyć swoje aktywne subskrypcje:</p>
         <br>
@@ -34,7 +33,15 @@
         <br>
         <p>W tym miejscu możesz zobaczyć swoje zakupione zgody:</p>
         <br>
-        <p id="bought-consents">Brak zakupionych zgód</p>
+        <% if (agreements.length == 0) { %> <!-- <%  %> is embedded JavaScript code into the HTML file -->
+            <p>Nie posiadasz zakupionych zgód</p>
+          <% } else { %>
+            <ul>
+              <% agreements.forEach(agreement => { %>
+                <li><%= agreement.agreement_name.replace(/_/g, ' ') %></li>
+              <% }) %>
+            </ul>
+          <% } %>
         <br>
     </div>
 </body>

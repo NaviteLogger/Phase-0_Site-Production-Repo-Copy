@@ -339,30 +339,45 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   Agreements_Ownerships table
   */
   await new Promise((resolve, reject) => {
-    connection.query('SELECT agreement_id FROM Agreements_Ownerships WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [userEmail], (error, results) => {
-      if (error)
-      {
-        console.log('Error while querying the database', error);
-      }
-      
-      if (results.length == 0)
-      {
-        console.log('Found no agreements associated with the account: ' + userEmail);
-        resolve(results);
-      }
-        else
-      {
-        console.log('Found the following agreements associated with the account: ' + userEmail);
-        resolve(results);
-      }
+    /*
+    This long query will return the agreement_name of the agreements
+    that are owned by the client with the given email: I needed to 
+    join the Agreements and Agreements_Ownerships tables on the agreement_id field
+    (the agreement_id key exists in both tables). 
+    This allows me to select the agreement_name from the Agreements table for each 
+    agreement_id that the client owns in the Agreements_Ownerships table
+    */
+    connection.query(`
+      SELECT Agreements.agreement_name
+      FROM Agreements 
+      INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
+      WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
+      `, [userEmail], (error, results) => {
+        if (error)
+        {
+          console.log('Error while querying the database', error);
+        }
+
+        if (results.length === 0) //The user has no agreements assigned to his account
+        {
+          console.log('Found no agreements associated with the account: ' + userEmail);
+        }
+          else
+        {
+          console.log('Found the following agreements associated with the account: ' + userEmail);
+          results.forEach((row) => {
+          console.log(row.agreement_name)
+          });
+          resolve(results);
+        }
     });
   });
 
   //Console.log it for debugging purposes
-  console.log("Received a request to the client's portal, query run successfully: ", userEmail);
+  console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
 
   //Send the client's portal page, iff the user is authenticated
-  res.render('ClientsPortalPage', { userEmail: userEmail });
+  res.render('ClientsPortalPage', { agreements: results, email: userEmail });
 });
 
 //Handle registration requests
