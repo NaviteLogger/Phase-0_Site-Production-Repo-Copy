@@ -28,13 +28,11 @@
         <h2>Witamy w portalu klienta przypisanym do konta: <%= email %></h2> <!-- The <%= %> tag is used to output the value of a JS expression into the table-->
         <br>
         <p class="headings">W tym miejscu możesz zobaczyć swoje aktywne subskrypcje:</p>
-        <br>
         <h3 id="active-subscriptions">Brak aktywnych subskrypcji</h3>
         <br>
         <button type="button" class="buy-subscription" id="buy-subscription">Kup subskrypcję</button>
         <br>
         <h3 class="headings">W tym miejscu możesz zobaczyć swoje zakupione zgody:</h3>
-        <br>
         <div class="agreements-list">
         <% if (agreements.length == 0) { %> <!-- <%  %> is embedded JavaScript code into the HTML file -->
             <p>Nie posiadasz zakupionych zgód</p>
