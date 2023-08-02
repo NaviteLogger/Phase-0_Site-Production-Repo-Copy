@@ -72,8 +72,8 @@
 
   .agreements-list {
     font-size: 14px;
-    padding: 1px;
-    margin: 1px;
+    padding: 5px;
+    margin: 5px;
   }
   
   ol {
@@ -84,5 +84,10 @@
     text-align: left; /* Align text to the left within each list item */
     width: fit-content; /* Shrink the list's width to its content */
     margin: 0 auto; /* Center the list itself */
+  }
+
+  li {
+    padding: 50px;
+    margin: 20px;
   }
   
