@@ -338,46 +338,40 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   and then use that client_id to retrieve the agreement_id from the
   Agreements_Ownerships table
   */
-  await new Promise((resolve, reject) => {
-    /*
-    This long query will return the agreement_name of the agreements
-    that are owned by the client with the given email: I needed to 
-    join the Agreements and Agreements_Ownerships tables on the agreement_id field
-    (the agreement_id key exists in both tables). 
-    This allows me to select the agreement_name from the Agreements table for each 
-    agreement_id that the client owns in the Agreements_Ownerships table
-    */
-    connection.query(`
-      SELECT Agreements.agreement_name
-      FROM Agreements 
-      INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
-      WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
-      `, [userEmail], (error, results) => {
-        if (error)
-        {
+  try {
+    const results = await new Promise((resolve, reject) => {
+      connection.query(query, [userEmail], (error, results) => {
+        if (error) {
           console.log('Error while querying the database', error);
+          reject(error); // if there's an error, reject the Promise
         }
-
-        if (results.length === 0) //The user has no agreements assigned to his account
-        {
-          console.log('Found no agreements associated with the account: ' + userEmail);
+        else {
+          if (results.length === 0) {
+            console.log('Found no agreements associated with the account: ' + userEmail);
+          } else {
+            console.log('Found the following agreements associated with the account: ' + userEmail);
+            results.forEach((row) => {
+              console.log(row.agreement_name)
+            });
+          }
+          resolve(results); // if everything's okay, resolve the Promise with the results
         }
-          else
-        {
-          console.log('Found the following agreements associated with the account: ' + userEmail);
-          results.forEach((row) => {
-          console.log(row.agreement_name)
-          });
-          resolve(results);
-        }
+      });
     });
-  });
+
+    console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
+    res.render('ClientsPortalPage', { agreements: results, email: userEmail });
 
   //Console.log it for debugging purposes
   console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
 
   //Send the client's portal page, iff the user is authenticated
   res.render('ClientsPortalPage', { agreements: results, email: userEmail });
+  
+  } catch (error) {
+    console.log('Error while querying the database', error);
+    res.status(500).send("Internal server error");
+  }
 });
 
 //Handle registration requests
