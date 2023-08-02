@@ -340,15 +340,25 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   */
   try {
     const results = await new Promise((resolve, reject) => {
-      connection.query(query, [userEmail], (error, results) => {
-        if (error) {
+      connection.query(`
+        SELECT Agreements.agreement_name
+        FROM Agreements 
+        INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
+        WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
+        `, [userEmail], (error, results) => {
+        if (error) 
+        {
           console.log('Error while querying the database', error);
           reject(error); // if there's an error, reject the Promise
         }
-        else {
-          if (results.length === 0) {
+          else 
+        {
+          if (results.length === 0) 
+          {
             console.log('Found no agreements associated with the account: ' + userEmail);
-          } else {
+          } 
+            else 
+          {
             console.log('Found the following agreements associated with the account: ' + userEmail);
             results.forEach((row) => {
               console.log(row.agreement_name)
@@ -362,12 +372,12 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
     console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
     res.render('ClientsPortalPage', { agreements: results, email: userEmail });
 
-  //Console.log it for debugging purposes
-  console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
+    //Console.log it for debugging purposes
+    console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
 
-  //Send the client's portal page, iff the user is authenticated
-  res.render('ClientsPortalPage', { agreements: results, email: userEmail });
-  
+    //Send the client's portal page, iff the user is authenticated
+    res.render('ClientsPortalPage', { agreements: results, email: userEmail });
+
   } catch (error) {
     console.log('Error while querying the database', error);
     res.status(500).send("Internal server error");
