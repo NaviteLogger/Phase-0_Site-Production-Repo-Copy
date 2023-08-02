@@ -35,6 +35,7 @@
         <br>
         <h3 class="headings">W tym miejscu możesz zobaczyć swoje zakupione zgody:</h3>
         <br>
+        <div class="agreements-list">
         <% if (agreements.length == 0) { %> <!-- <%  %> is embedded JavaScript code into the HTML file -->
             <p>Nie posiadasz zakupionych zgód</p>
           <% } else { %>
@@ -44,8 +45,9 @@
               <% }) %>
             </ol>
           <% } %>
+        </div>
         <br>
-        <button type="button" class="buy-agreements" id="buy-subscription">Kup zgody</button
+        <button type="button" class="buy-agreements" id="buy-subscription">Kup zgody</button>
         <br>
     </div>
 </body>

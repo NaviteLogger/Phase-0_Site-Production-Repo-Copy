@@ -69,6 +69,11 @@
     font-weight: bold;
     margin: 20px;
   }
+
+  .agreements-list {
+    font-size: 14px;
+    padding: 1px;
+  }
   
   ol {
     /*list-style-type: none;*/
