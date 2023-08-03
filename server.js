@@ -386,6 +386,37 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
+app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  console.log('Received a request to the agreements generator page');
+
+  //Extract the user email from the session
+  const userEmail = req.session.passport.user.email;
+
+  //Extract the current date
+  const currentDate = new Date();
+  //Extract the date after 30 days
+  const dateAfter30Days = new Date();
+  dateAfter30Days.setDate(currentDate.getDate() + 30);
+
+  //Check what agreements the user has access to in the form of subscriptions
+  await new Promise((resolve, reject) => {
+    connection.query(`
+      SELECT *
+      FROM Agreements_Ownerships
+      WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)
+      AND access_expires_date BETWEEN ? AND ?
+    `, [userEmail, currentDate, dateAfter30Days], (error, results) => {
+      if (error) 
+      {
+        console.log('Error while querying the database', error);
+        reject(error); // if there's an error, reject the Promise
+      }
+
+      res.render()
+  });
+
+});
+
 //Handle registration requests
 app.post('/register', async (req, res) => {
   try {
