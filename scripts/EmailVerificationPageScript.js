@@ -36,6 +36,6 @@ form.addEventListener('submit', (event) => {
     });
 });
 
-document.getElementById('clients-portal').addEventListener('click', function() {
+document.getElementById('clients-portal').addEventListener('click', () => {
   window.location.href = '/clientsPortalPage';
 });

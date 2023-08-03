@@ -3,6 +3,7 @@ const loginForm = document.getElementById('login-form');
 
 //Add an event listener to the login form
 loginForm.addEventListener('submit', (event) => {
+  //Prevent form from submitting normally
   event.preventDefault();
 
   //Get the email and password values from the form
@@ -40,6 +41,6 @@ loginForm.addEventListener('submit', (event) => {
   });
 });
 
-document.getElementById('clients-portal').addEventListener('click', function() {
+document.getElementById('clients-portal').addEventListener('click', () => {
   window.location.href = '/clientsPortalPage';
 });

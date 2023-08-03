@@ -412,7 +412,7 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
         reject(error); // if there's an error, reject the Promise
       }
 
-      res.render();
+      res.render('AgreementGeneratorPage', { agreements: results, email: userEmail });
     });
   });
 });

@@ -3,7 +3,7 @@ const buttonsIds = ['clients-portal', 'clients-portal-subscription'];
 
 //Add event listeners to all the buttons
 buttonsIds.forEach((buttonId) => {
-  document.getElementById('clients-portal').addEventListener('click', function() {
+  document.getElementById('clients-portal').addEventListener('click', () => {
     window.location.href = '/clientsPortalPage';
   });
 });

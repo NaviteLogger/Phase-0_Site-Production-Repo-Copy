@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../styles/GlobalStyles.css" rel="stylesheet" type="text/css">
     <link href="../styles/AgreementGeneratorPageStyles.css" rel="stylesheet" type="text/css">
+    <script src="../scripts/AgreementGeneratorPageScript.js" defer></script>
     <title>Agreement Generator</title>
 </head>
 <body>
@@ -23,6 +24,24 @@
             <a href="../pages/ContactPage.html" class="nav-link">KONTAKT</a>
             <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
         </div>
-    </header>    
+    </header>   
+    <div class="generator-body">
+        <% if(agreements.length > 0) { %>
+          <form id="agreement-form">
+            <% agreements.forEach((agreement, index) => { %>
+              <div class="agreement-option">
+                <input type="radio" id="agreement<%= index %>" name="selectedAgreement" value="<%= agreement.agreement_id %>">
+                <label for="agreement<%= index %>">
+                  Agreement ID: <%= agreement.agreement_id %> - Expires: <%= agreement.access_expires_date %>
+                </label>
+              </div>
+            <% }) %>
+            <button type="submit">Submit</button>
+          </form>
+        <% } else { %>
+          <p>No agreements available</p>
+        <% } %>
+      </div> 
+      
 </body>
 </html>
