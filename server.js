@@ -381,6 +381,11 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   }
 });
 
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
+
 //Handle registration requests
 app.post('/register', async (req, res) => {
   try {
