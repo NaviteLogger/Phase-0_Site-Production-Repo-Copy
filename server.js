@@ -401,10 +401,10 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
   //Check what agreements the user has access to in the form of subscriptions
   await new Promise((resolve, reject) => {
     connection.query(`
-      SELECT *
-      FROM Agreements_Ownerships
-      WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)
-      AND access_expires_date BETWEEN ? AND ?
+      SELECT Agreements.agreement_name
+      FROM Agreements 
+      INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
+      WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
     `, [userEmail, currentDate, dateAfter30Days], (error, results) => {
       if (error) 
       {
