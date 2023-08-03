@@ -5,3 +5,9 @@
     align-items: center;
     font-size: 24px;
   }
+
+.nav-link-login {
+  text-decoration: none;
+  color: black;
+  margin: 10px;
+}
