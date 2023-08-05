@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../styles/GlobalStyles.css" rel="stylesheet" type="text/css">
-    <link href="../styles/AgreementGeneratorPageStyles.css" rel="stylesheet" type="text/css">
-    <script src="../scripts/AgreementGeneratorPageScript.js" defer></script>
+    <link href="../styles/AgreementOverviewPageStyles.css" rel="stylesheet" type="text/css">
+    <script src="../scripts/AgreementOverviewPageScript.js" defer></script>
     <title>Agreement Selection</title>
 </head>
 <body>
@@ -25,5 +25,29 @@
             <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
         </div>
     </header>
+    <div class="agreement-overview-container">
+        <div id="date"></div>
+        <form id="agreement-overview-form">
+            <input type="text" id="client-full-name" placeholder="Full Name of the Client">
+            <input type="text" id="employee-full-name" placeholder="Full Name of the Employee">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <td>RODO</td>
+                    </tr>
+                    <tr>
+                        <td>Wywiad</td>
+                    </tr>
+                    <tr>
+                        <td>Zgoda na zdjęcie</td>
+                    </tr>
+                    <tr>
+                        <td>Zgoda na zabieg</td>
+                    </tr>
+                </table>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
