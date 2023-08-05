@@ -381,13 +381,14 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   }
 });
 
-app.get('/logout', (req, res) => {
+app.get('/logout', checkAuthentication, checkEmailConfirmation, (req, res) => {
   req.logout(() => {});
   res.redirect('/');
 });
 
 app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, async (req, res) => {
-  console.log('Received a request to the agreements generator page');
+  try {
+    console.log('Received a request to the agreements generator page');
 
   //Extract the user email from the session
   const userEmail = req.session.passport.user.email;
@@ -415,6 +416,26 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
       res.render('AgreementGeneratorPage', { agreements: results, email: userEmail });
     });
   });
+  } catch (error) {
+    console.log('Error while loading the agreements generator', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get('/fillTheSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    //Extract the selected agreement name from the request
+    const { selectedAgreement } = req.body;
+
+    //Console.log it for debugging purposes
+    console.log('Received a request to the fill the selected agreement page: ', selectedAgreement);
+
+    
+
+  } catch (error) {
+    console.log('Error while filling the selected agreement', error);
+    res.status(500).send("Internal server error");
+  }
 });
 
 //Handle registration requests
@@ -599,7 +620,7 @@ app.post('/register', async (req, res) => {
   } catch (error) {
     console.error('An error occurred during registration:', error);
   }
-});  
+});
 
 //Handle the incoming GET request to the OfferPage
 app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in the html file, then this function will be executed

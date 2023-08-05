@@ -31,7 +31,7 @@
         konta przypisane są pojedynczo zakupione zgody, możesz je wysłać na swój adres email 
         używając klawisza 'Drukuj Zgody'):</h3>
         <% if(agreements.length > 0) { %>
-          <form id="agreement-form">
+          <form id="agreement-form" onsubmit="return validateForm()">
             <% agreements.forEach((agreement, index) => { %>
               <div class="agreement-option">
                 <input type="radio" id="agreement<%= index %>" name="selectedAgreement" value="<%= agreement.agreement_id %>">
