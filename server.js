@@ -424,6 +424,9 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
 
 app.post('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
+
+    console.log(req.body);
+
     //Extract the selected agreement name from the request
     const { selectedAgreement } = req.body; 
 
