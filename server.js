@@ -444,6 +444,9 @@ app.post('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmati
 //Handle the request to the agreement overview page
 app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
+    //Console.log it for debugging purposes
+    console.log('Received a request to the agreement overview page: ', req.session.selectedAgreement);
+
     //Redirect the user to the agreement overview page
     res.render('AgreementOverviewPage', { agreementName: req.session.selectedAgreement.replace(/_/g, ' ') });
   } catch (error) {
