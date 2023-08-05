@@ -425,7 +425,10 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
 app.post('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     //Extract the selected agreement name from the request
-    const { selectedAgreement } = req.body;
+    const { selectedAgreement } = req.body; 
+
+    //Store the selected agreement name in the session
+    req.session.selectedAgreement = selectedAgreement;
 
     //Console.log it for debugging purposes
     console.log('Received a request to the fill the selected agreement page: ', selectedAgreement);
@@ -434,6 +437,17 @@ app.post('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmati
 
   } catch (error) {
     console.log('Error while filling the selected agreement', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+//Handle the request to the agreement overview page
+app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    //Redirect the user to the agreement overview page
+    res.render('AgreementOverviewPage');
+  } catch (error) {
+    console.log('Error while loading the agreement overview page', error);
     res.status(500).send("Internal server error");
   }
 });
