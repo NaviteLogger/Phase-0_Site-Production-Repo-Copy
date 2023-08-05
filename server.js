@@ -402,7 +402,7 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
   //Check what agreements the user has access to in the form of subscriptions
   await new Promise((resolve, reject) => {
     connection.query(`
-      SELECT Agreements.agreement_name
+      SELECT Agreements.agreement_name, Agreements.agreement_id
       FROM Agreements 
       INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
       WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
