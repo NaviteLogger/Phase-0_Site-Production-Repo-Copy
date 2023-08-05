@@ -12,13 +12,13 @@ agreementForm.addEventListener('submit', (event) => {
     GetElementById does not work for radio buttons, as 
     it does not for any multiple selection elements
     */
-    const selectedAgreement = document.querySelector('input[name="selectedAgreement"]:checked').value;
+    const selectedAgreementId = document.querySelector('input[name="selectedAgreement"]:checked').value;
 
     //Console log the selected agreement
-    console.log(selectedAgreement);
+    console.log(selectedAgreementId);
 
     const requestBody = {
-        selectedAgreement: selectedAgreement
+        selectedAgreementId: selectedAgreementId
     };
     // Use Fetch API to send the selected agreement to the server
     fetch('/selectAgreementToBeFilled', {

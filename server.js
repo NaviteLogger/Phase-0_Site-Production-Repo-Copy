@@ -428,15 +428,32 @@ app.post('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmati
     console.log(req.body);
 
     //Extract the selected agreement name from the request
-    const { selectedAgreement } = req.body; 
+    const { selectedAgreementId } = req.body; 
 
     //Store the selected agreement name in the session
-    req.session.selectedAgreement = selectedAgreement;
+    req.session.selectedAgreementId = selectedAgreementId;
+
+    //Query the database to retrieve the agreement's name from the agreement's id
+    const results = await new Promise((resolve, reject) => {
+      connection.query('SELECT agreement_name FROM Agreements WHERE agreement_id = ?', [selectedAgreementId], (error, results) => {
+        if (error)
+        {
+          console.log('Error while querying the database', error);
+          reject(error); // if there's an error, reject the Promise
+        }
+          else
+        {
+          //Store the selected agreement name in the session
+          req.session.selectedAgreement = results[0].agreement_name;
+          resolve(results); // if everything's okay, resolve the Promise with the results
+        }
+      });
+    });
 
     //Console.log it for debugging purposes
-    console.log('Received a request to the fill the selected agreement page: ', selectedAgreement);
+    console.log('Received a request to the fill the selected agreement page: ', results[0].agreement_name);
 
-    res.render('AgreementOverviewPage', { agreementName: selectedAgreement });
+    res.render('AgreementOverviewPage', { agreementName: results[0].agreement_name });
 
   } catch (error) {
     console.log('Error while filling the selected agreement', error);
