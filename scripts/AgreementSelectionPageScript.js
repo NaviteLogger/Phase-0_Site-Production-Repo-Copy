@@ -25,11 +25,6 @@ agreementForm.addEventListener('submit', (event) => {
       },
       body: JSON.stringify(requestBody),
     })
-    .then(response => response.json())
-    .then(data => {
-      // Handle response here
-      console.log('Success:', data);
-    })
     .catch((error) => {
       console.error('Error:', error);
     });
