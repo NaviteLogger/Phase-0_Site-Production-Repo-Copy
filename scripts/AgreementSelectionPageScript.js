@@ -14,6 +14,9 @@ agreementForm.addEventListener('submit', (event) => {
     */
     const selectedAgreement = document.querySelector('input[name="selectedAgreement"]:checked').value;
 
+    //Console log the selected agreement
+    console.log(selectedAgreement);
+
     const requestBody = {
         selectedAgreement: selectedAgreement
     };
