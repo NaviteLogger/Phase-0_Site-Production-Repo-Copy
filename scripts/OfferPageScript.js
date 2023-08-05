@@ -19,7 +19,8 @@ document.getElementById('clients-portal-list').addEventListener('click', () => {
     },
     body: formData
   }).then((response) => {
-    if (!response.ok) {
+    if (!response.ok) 
+    {
       throw new Error(`Network response was not ok, status: ${response.status}`);
     }
   }).catch((error) => {

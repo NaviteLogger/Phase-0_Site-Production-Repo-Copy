@@ -25,8 +25,13 @@ agreementForm.addEventListener('submit', (event) => {
       },
       body: JSON.stringify(requestBody),
     }).then((response) => {
-      if (!response.ok) {
+      if (!response.ok) 
+      {
         throw new Error(`Network response was not ok, status: ${response.status}`);
+      }
+        else
+      {
+          window.location.href = '/AgreementOverviewPage';
       }
     }).catch((error) => {
       console.error('Error:', error);
