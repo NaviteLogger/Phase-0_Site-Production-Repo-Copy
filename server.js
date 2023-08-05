@@ -430,7 +430,7 @@ app.get('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmatio
     //Console.log it for debugging purposes
     console.log('Received a request to the fill the selected agreement page: ', selectedAgreement);
 
-    
+    res.render('AgreementOverviewPage', { agreementName: selectedAgreement });
 
   } catch (error) {
     console.log('Error while filling the selected agreement', error);
