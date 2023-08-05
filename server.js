@@ -413,7 +413,7 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
         reject(error); // if there's an error, reject the Promise
       }
 
-      res.render('AgreementGeneratorPage', { agreements: results, email: userEmail });
+      res.render('AgreementSelectionPage', { agreements: results, email: userEmail });
     });
   });
   } catch (error) {
@@ -422,7 +422,7 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
   }
 });
 
-app.get('/fillTheSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.get('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     //Extract the selected agreement name from the request
     const { selectedAgreement } = req.body;
