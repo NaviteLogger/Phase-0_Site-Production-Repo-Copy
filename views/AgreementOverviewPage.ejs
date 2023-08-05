@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl-PL">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../styles/GlobalStyles.css" rel="stylesheet" type="text/css">
     <link href="../styles/AgreementOverviewPageStyles.css" rel="stylesheet" type="text/css">
     <script src="../scripts/AgreementOverviewPageScript.js" defer></script>
-    <title>Agreement Selection</title>
+    <title>Agreement Overview</title>
 </head>
 <body>
     <header>
@@ -26,27 +26,30 @@
         </div>
     </header>
     <div class="agreement-overview-container">
-        <div id="date"></div>
+        <div id="date">Data: </div>
         <form id="agreement-overview-form">
-            <input type="text" id="client-full-name" placeholder="Full Name of the Client">
-            <input type="text" id="employee-full-name" placeholder="Full Name of the Employee">
+            <label for="client-full-name">Imię i nazwisko klienta:</label>
+            <input class="input-field" type="text" id="client-full-name" placeholder="Imię i nazwisko klienta">
+            <label for="employee-full-name">Imię i nazwisko pracownika:</label>
+            <input class="input-field" type="text" id="employee-full-name" placeholder="Imię i nazwisko pracownika">
+            <p>W generatorze do wypełnienia są następujące zgody:</p>
             <div class="table-container">
-                <table>
+                <table class="information-table">
                     <tr>
-                        <td>RODO</td>
+                        <td>Zgoda na przetwarzanie danych osobowych (RODO)</td>
                     </tr>
                     <tr>
-                        <td>Wywiad</td>
+                        <td>Wywiad z klientem</td>
+                    </tr>
+                    <tr>
+                        <td>Zgoda na zabieg: wybrana zgoda to: <%= agreementName %></td>
                     </tr>
                     <tr>
                         <td>Zgoda na zdjęcie</td>
                     </tr>
-                    <tr>
-                        <td>Zgoda na zabieg</td>
-                    </tr>
                 </table>
             </div>
-            <button type="submit">Submit</button>
+            <button id="submit-button" type="submit">Submit</button>
         </form>
     </div>
 </body>

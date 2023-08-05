@@ -445,7 +445,7 @@ app.post('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmati
 app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     //Redirect the user to the agreement overview page
-    res.render('AgreementOverviewPage');
+    res.render('AgreementOverviewPage', { agreementName: req.session.selectedAgreement.replace(/_/g, ' ') });
   } catch (error) {
     console.log('Error while loading the agreement overview page', error);
     res.status(500).send("Internal server error");

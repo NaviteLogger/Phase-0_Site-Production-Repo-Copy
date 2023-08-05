@@ -19,7 +19,7 @@
     gap: 10px;
 }
 
-input {
+.input-field {
     padding: 10px;
     font-size: 16px;
 }
@@ -30,12 +30,12 @@ input {
     align-items: center;
 }
 
-table {
+.information-table {
     text-align: center;
     width: 50%;
 }
 
-button {
+#submit-button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
