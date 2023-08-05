@@ -87,7 +87,7 @@ morgan.token('date', (req, res, tz) => {
 app.use(morgan(':date :client-ip - :method :url :status :response-time ms'));
 
 
-//Set up the nodemailer
+//Set up the nodemailer (SMTP transport)
 const transporter = nodemailer.createTransport({
   host: 'smtp.sendgrid.net',
   port: 587,
@@ -107,7 +107,7 @@ connection.connect((err) => {
   console.log('Successfully connected to the MYSQL database!');
 });
 
-//Select the 'CosmeticsLawDB' database
+//Select the 'CosmeticsLawDB' database (by default)
 connection.query('USE CosmeticsLawDB', (error, results, fields) => {
   if (error)
   {
@@ -116,16 +116,36 @@ connection.query('USE CosmeticsLawDB', (error, results, fields) => {
   console.log('Selecting CosmeticsLawDB by default was successful');
 });
 
-//Render the home page from the default domain
+//Handle the incoming GET request to the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
   res.redirect('/pages/indexPage.html'); // Redirect to main page
 });
 
-//Render the home page from the 'pages' directory
+//Handle the incoming GET request to the home page
 app.get('/pages/indexPage.html', (req, res) => {
   console.log('Home page rendered');
   res.redirect('/pages/indexPage.html'); // Redirect to main page
+});
+
+//Handle the incoming GET request to the OfferPage
+app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in the html file, then this function will be executed
+  console.log('GET request to the OfferPage');
+
+  await new Promise((resolve, reject) => {
+    connection.query('SELECT * FROM Agreements', function (error, results, fields) {
+      if (error)
+      {
+        reject(error);
+      }
+        else
+      {
+        console.log('The query was successful: all the offers were retrieved from the Offers table');
+        res.render('OfferPage', { files: results });
+        resolve();
+      }
+    });
+  });
 });
 
 //Sets up the local passport strategy for authenticating users
@@ -179,7 +199,7 @@ passport.use(
   )
 );
 
-//This is the function that is called when a user tries to log in - it will serialize (store) the user in the session
+//This is the function which is called when a user tries to log in - it will serialize (store) the user in the session
 //The result of the serializeUser method is attached to the session as javascript
 //object: req.session.passport.user = { client_id: '...', email: '...' }.
 passport.serializeUser((user, done) => {
@@ -188,7 +208,7 @@ passport.serializeUser((user, done) => {
   done(null, { id: user.client_id, email: user.email }); //Keeps the client_id and email in the session for further use
 });
 
-//This is the function that is called when a user tries to access a page - it will deserialize (retrieve) the user from the session
+//This is the function which is called when a user tries to access a page - it will deserialize (retrieve) the user from the session
 passport.deserializeUser((user, done) => {
   //Retrive the id and email from the session
   const { id, email } = user;
@@ -201,48 +221,6 @@ passport.deserializeUser((user, done) => {
     //If the user is not found, return an error message, otherwise return the user object
     done(error, rows[0]);
   });
-});
-
-//This is the function that will deal with the login request
-app.post('/login', (req, res, next) => {
-  //Console.log it for debugging purposes
-  console.log('Received a request to login, calling passport.authenticate');
-  //Call the authenticate function of passport, using the 'local' strategy
-  passport.authenticate('local', (error, user, info) => {
-    if (error)
-    {
-      return next(error);
-    }
-
-    //If there is an error with the user object, return the error message
-    if (!user)
-    {
-      console.log('Info: ' + info.message); // Log the info.message containing the error message
-
-      //Return the appropriate error message
-      if(info.message === 'Given email does not exist in the database.')
-      {
-        return res.json({ status: 'not_found', message: 'Podany adres email nie istnieje w bazie danych' });
-      }
-        else if(info.message === 'Incorrect password entered.')
-      {
-        return res.json({ status: 'incorrect_password', message: 'Podano niepoprawne hasło' });
-      }
-        else
-      {
-          return res.json({ status: 'unknown_error', message: info.message });
-      }
-    }
-
-    //If there are no error with the user object, log the user in
-    req.logIn(user, (error) => {
-      if (error)
-      {
-        return next(error);
-      }
-      return res.json({ status: 'logged_in', message: 'Zalogowano do serwisu' });
-    });
-  })(req, res, next); //Call the authenticate function
 });
 
 //This is the function which checks if the user is authenticated
@@ -324,8 +302,7 @@ app.post('/verifyEmailAddress', (req, res) => {
   });
 });
 
-//This is the function that will deal with the request to a protected page,
-//although at first it is the app.get('checkIfAuthenticated') function that will be called
+//Handle the request to the client's portal page,
 app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   
   //Access the user email stored in the session
@@ -381,12 +358,8 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
   }
 });
 
-app.get('/logout', checkAuthentication, checkEmailConfirmation, (req, res) => {
-  req.logout(() => {});
-  res.redirect('/');
-});
-
-app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+//Handle the request to the agreements generator page
+app.get('/agreementsGeneratorPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     console.log('Received a request to the agreements generator page');
 
@@ -422,7 +395,8 @@ app.get('/agreementsGenerator', checkAuthentication, checkEmailConfirmation, asy
   }
 });
 
-app.post('/selectAgreementToBeFilled', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+//Handle the request to the agreement selection page
+app.post('/agreementSelectionPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
 
     console.log(req.body);
@@ -473,6 +447,58 @@ app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, a
     console.log('Error while loading the agreement overview page', error);
     res.status(500).send("Internal server error");
   }
+});
+
+//Handle the incoming filled overview page
+app.get('/postAgreementData', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+
+  } catch (error) {
+    console.log('Error while posting the agreement data', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+//Handle the login request
+app.post('/login', (req, res, next) => {
+  //Console.log it for debugging purposes
+  console.log('Received a request to login, calling passport.authenticate');
+  //Call the authenticate function of passport, using the 'local' strategy
+  passport.authenticate('local', (error, user, info) => {
+    if (error)
+    {
+      return next(error);
+    }
+
+    //If there is an error with the user object, return the error message
+    if (!user)
+    {
+      console.log('Info: ' + info.message); // Log the info.message containing the error message
+
+      //Return the appropriate error message
+      if(info.message === 'Given email does not exist in the database.')
+      {
+        return res.json({ status: 'not_found', message: 'Podany adres email nie istnieje w bazie danych' });
+      }
+        else if(info.message === 'Incorrect password entered.')
+      {
+        return res.json({ status: 'incorrect_password', message: 'Podano niepoprawne hasło' });
+      }
+        else
+      {
+          return res.json({ status: 'unknown_error', message: info.message });
+      }
+    }
+
+    //If there are no error with the user object, log the user in
+    req.logIn(user, (error) => {
+      if (error)
+      {
+        return next(error);
+      }
+      return res.json({ status: 'logged_in', message: 'Zalogowano do serwisu' });
+    });
+  })(req, res, next); //Call the authenticate function
 });
 
 //Handle registration requests
@@ -659,24 +685,10 @@ app.post('/register', async (req, res) => {
   }
 });
 
-//Handle the incoming GET request to the OfferPage
-app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in the html file, then this function will be executed
-  console.log('GET request to the OfferPage');
-
-  await new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM Agreements', function (error, results, fields) {
-      if (error)
-      {
-        reject(error);
-      }
-        else
-      {
-        console.log('The query was successful: all the offers were retrieved from the Offers table');
-        res.render('OfferPage', { files: results });
-        resolve();
-      }
-    });
-  });
+//Handle the logout request
+app.get('/logout', checkAuthentication, checkEmailConfirmation, (req, res) => {
+  req.logout(() => {});
+  res.redirect('/');
 });
 
 //Prevent the idling of the db connection

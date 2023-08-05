@@ -21,7 +21,7 @@ agreementForm.addEventListener('submit', (event) => {
         selectedAgreementId: selectedAgreementId
     };
     // Use Fetch API to send the selected agreement to the server
-    fetch('/selectAgreementToBeFilled', {
+    fetch('/agreementSelectionPage', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
