@@ -24,8 +24,11 @@ agreementForm.addEventListener('submit', (event) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestBody),
-    })
-    .catch((error) => {
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok, status: ${response.status}`);
+      }
+    }).catch((error) => {
       console.error('Error:', error);
     });
 });
