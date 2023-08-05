@@ -265,6 +265,18 @@ function checkEmailConfirmation(req, res, next) {
   });
 }
 
+//This is the function that will fill the RODO agreement template with the user's data
+function fillTemplate(content, data) {
+  let updatedContent = content;
+
+  for (const key in data) {
+      const placeholder = `{{${key}}}`;
+      updatedContent = updatedContent.replace(new RegExp(placeholder, 'g'), data[key]);
+  }
+
+  return updatedContent;
+}
+
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -452,6 +464,15 @@ app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, a
 //Handle the incoming filled overview page
 app.get('/postAgreementData', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
+    const rodoContent = fs.readFileSync(path.join(__dirname, 'agreements', 'RODO.txt'), 'utf-8');
+
+    const dataToFill = {
+      clientFullName: req.body.clientFullName,
+      employeeFullName: req.body.employeeFullName,
+      currentDate: req.body.currentDate,
+    };
+
+    const filledRODO = fillTemplate(rodoContent, dataToFill);
 
   } catch (error) {
     console.log('Error while posting the agreement data', error);
