@@ -7,19 +7,6 @@
     <link href="../styles/AgreementSelectionPageStyles.css" rel="stylesheet" type="text/css">
     <script src="../scripts/AgreementSelectionPageScript.js" defer></script>
     <title>Agreement Generator</title>
-
-    <script>
-      function validateForm() {
-        //Get the selected agreement
-        const selectedAgreement = document.querySelector('input[name="selectedAgreement"]:checked');
-        if (selectedAgreement == null) 
-        {
-          alert("Proszę wybrać umowę do wypełnienia");
-          return false;
-        }
-        return true;
-      }
-    </script>
 </head>
 <body>
     <header>

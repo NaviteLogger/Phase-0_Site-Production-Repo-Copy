@@ -44,3 +44,14 @@ agreementForm.addEventListener('submit', (event) => {
 document.getElementById('clients-portal').addEventListener('click', () => {
     window.location.href = '/clientsPortalPage';
 });
+
+function validateForm() {
+  //Get the selected agreement
+  const selectedAgreement = document.querySelector('input[name="selectedAgreement"]:checked');
+  if (selectedAgreement == null) 
+  {
+    alert("Proszę wybrać umowę do wypełnienia");
+    return false;
+  }
+  return true;
+}
