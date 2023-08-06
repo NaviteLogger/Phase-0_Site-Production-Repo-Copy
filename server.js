@@ -277,6 +277,50 @@ function fillTemplate(content, data) {
   return updatedContent;
 }
 
+async function getTheRODOAgreement() {
+  try {
+    return await fs.readFile(path.join(__dirname, 'agreements', 'RODO_agreement.html'), 'utf-8');
+  } catch (error) {
+    console.log('Error while reading the RODO agreement template', error);
+    throw error;
+  }
+}
+
+function saveAndDeleteTemporaryRODOAgreementFile(email, content, callback) {
+  const uniqueFileName = `RODO_filled_${Date.now()}_by_${email}.txt`;
+  const filePath = path.join(__dirname, 'agreements', uniqueFileName);
+
+  //Save the filled RODO agreement to a file
+  fs.writeFile(filePath, content, (error) => {
+    if (error) 
+    {
+      console.error('Error while saving the filled RODO agreement to a file', error);
+      callback(error);
+      return;
+    }
+
+    console.log('Filled RODO agreement saved to a file');
+
+    //Here we need to send the filled RODO agreement to the user
+    //We will use the nodemailer module to send the email
+
+
+    //Delete the temporary file
+    fs.unlink(filePath, (error) => {
+      if (error) 
+      {
+        console.error('Error while deleting the temporary RODO agreement file', error);
+        callback(error);
+        return;
+      }
+
+      console.log('Temporary RODO agreement file deleted');
+    });
+
+    callback(null);
+  });
+}
+
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -464,7 +508,7 @@ app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, a
 //Handle the incoming filled overview page
 app.get('/postAgreementData', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const rodoContent = fs.readFileSync(path.join(__dirname, 'agreements', 'RODO.txt'), 'utf-8');
+    const rodoContent = await getTheRODOAgreement();
 
     const dataToFill = {
       clientFullName: req.body.clientFullName,
