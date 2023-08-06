@@ -17,8 +17,6 @@ const flash = require('connect-flash');
 const morgan = require('morgan');
 //For file manipulation
 const fs = require('fs');
-//For converting docx to pdf
-const pdf = require('pdf-poppler');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -275,43 +273,6 @@ function fillRODOAgreement(template, data) {
     .replace(/{{currentDate}}/g, data.currentDate);
 }
 
-async function getTheRODOAgreement() {
-  try {
-    return await fs.readFile(path.join(__dirname, 'agreements', 'RODO_agreement.html'), 'utf-8');
-  } catch (error) {
-    console.log('Error while reading the RODO agreement template', error);
-    throw error;
-  }
-}
-
-function convertDocxToPdf(inputFilePath, outputFilePath) {
-  return new Promise((resolve, reject) => {
-    exec(`unoconv -f pdf -o ${outputFilePath} ${inputFilePath}`, (error) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(outputFilePath);
-      }
-    });
-  });
-}
-
-async function convertPdfToImg(pdfFilePath) {
-  let opts = {
-    format: 'png',
-    out_dir: path.dirname(pdfFilePath),
-    out_prefix: path.basename(pdfFilePath, path.extname(pdfFilePath)),
-    page: null
-  };
-
-  try {
-    const files = await pdf.convert(pdfFilePath, opts);
-    return files; // This is an array of image file paths.
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -499,34 +460,26 @@ app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, a
 //Handle the incoming filled overview page
 app.get('/postAgreementData', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const rodoContent = await getTheRODOAgreement();
+    const rodoContent = await new Promise((resolve, reject) => {
+      fs.readFile(path.join(__dirname, 'agreements', 'RODO_agreement.docx'), 'utf-8', (error, content) => {
+        if (error)
+        {
+          console.log('Error while reading the RODO agreement', error);
+          reject(error); // if there's an error, reject the Promise
+        }
+          else
+        {
+          resolve(content); // if everything's okay, resolve the Promise with the results
+        }
+      });
+    });
 
     const dataToFill = {
       clientFullName: req.body.clientFullName,
       employeeFullName: req.body.employeeFullName,
       currentDate: req.body.currentDate,
     };
-
-    //Fill the agreement with the data
-    const filledRODOAgreement = await fillRODOAgreement(rodoContent, dataToFill);
-
-    //Console.log it for debugging purposes
-    console.log('Received a request to post the agreement data, agreement filled successfully');
-
-    //Construct the file name based on the current date, time and the user's email
-    const userEmail = req.session.passport.user.email;
-    const fileName = `${new Date().toISOString()}_${userEmail.replace(/@/g, '_')}_RODO.docx`;
-
-    // Construct file path
-    const filledAgreementPath = path.join(__dirname, 'agreements', fileName);
-
-    // Save the filled agreement
-    await fs.writeFile(filledAgreementPath, filledRODOAgreement, 'utf-8');
-
-    // ... rest of your code (e.g., sending a response to the client)
-    res.status(200).send("Agreement saved successfully");
-
-
+    
   } catch (error) {
     console.log('Error while posting the agreement data', error);
     res.status(500).send("Internal server error");
