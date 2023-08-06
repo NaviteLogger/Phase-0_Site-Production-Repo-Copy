@@ -267,6 +267,46 @@ function checkEmailConfirmation(req, res, next) {
   });
 }
 
+const fillAndSaveDocument = async (fileName, dataToFill, userEmail, prefix) => {
+  const docPath = path.join(__dirname, 'agreements', fileName);
+  const content = fs.readFileSync(docPath, 'binary');
+
+  const zip = new PizZip(content);
+  const docxTemplater = new Docxtemplater().loadZip(zip);
+  docxTemplater.setData(dataToFill);
+  docxTemplater.render();
+  const buffer = docxTemplater.getZip().generate({ type: 'nodebuffer' });
+
+  const currentDate = new Date();
+  const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
+
+  const newFileName = `${prefix}_${formattedDate}_${userEmail}.docx`;
+  const outputPath = path.join(__dirname, 'agreements', newFileName);
+  
+  fs.writeFileSync(outputPath, buffer);
+  console.log(`The filled ${fileName} has been written as ${newFileName}`);
+
+  return newFileName;  // return the generated file name for further use
+};
+
+async function getAgreementFileNameById(agreementId) {
+  await new Promise((resolve, reject) => {
+    connection.query('SELECT file_name FROM Agreements WHERE agreement_id = ?', [agreementId], (error, results) => {
+      if (error)
+      {
+        console.log('Error while querying the database', error);
+        reject(error);
+      }
+        else
+      {
+        resolve(results[0]);
+      }
+    });
+  });
+
+  return results[0].file_name;
+}
+
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -452,41 +492,36 @@ app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, a
 });
 
 //Handle the incoming filled overview page
-app.get('/postAgreementData', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const rodoContent = await new Promise((resolve, reject) => {
-      fs.readFile(path.join(__dirname, 'agreements', 'RODO_agreement.docx'), 'utf-8', (error, content) => {
-        if (error)
-        {
-          console.log('Error while reading the RODO agreement', error);
-          reject(error); // if there's an error, reject the Promise
-        }
-          else
-        {
-          resolve(content); // if everything's okay, resolve the Promise with the results
-        }
-      });
-    });
-
     const dataToFill = {
       clientFullName: req.body.clientFullName,
       employeeFullName: req.body.employeeFullName,
       currentDate: req.body.currentDate,
     };
 
-    try {
-      const docPath = path.join(__dirname, 'agreements', 'RODO_agreement.docx');
-      const content = fs.readFileSync(docPath, 'binary');
+    // Get the user's email
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
 
-      const zip = new PizZip(content);
-      const docxTemplater = new Docxtemplater().loadZip(zip);
+    //Get the user's choice of agreement
+    const agreementId = req.session.selectedAgreementId;
 
-    } catch (error) {
-      console.log('Error while filling the RODO agreement', error);
-      res.status(500).send("Internal server error");
-    }
-    
-    
+    // Fill and save RODO agreement
+    const rodoFileName = 'RODO_agreement.docx';
+    const filledRODOFileName = await fillAndSaveDocument(rodoFileName, dataToFill, userEmail, 'RODO_agreement');
+
+    // Fill and save selected agreement
+    const agreementFileName = await getAgreementFileNameById(agreementId);
+    const agreementPrefix = agreementFileName.split('.docx')[0];
+    const filledAgreementFileName = await fillAndSaveDocument(agreementFileName, dataToFill, userEmail, agreementPrefix);
+
+    // Both documents are now filled and saved. You can further process or store the generated file names
+    res.status(200).send({ 
+      message: "The agreements were successfully generated!", 
+      filledRODOFileName, 
+      filledAgreementFileName 
+    });
+
   } catch (error) {
     console.log('Error while posting the agreement data', error);
     res.status(500).send("Internal server error");
