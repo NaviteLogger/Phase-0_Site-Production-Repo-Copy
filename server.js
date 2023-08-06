@@ -17,6 +17,8 @@ const flash = require('connect-flash');
 const morgan = require('morgan');
 //For file manipulation
 const fs = require('fs');
+//For converting docx to pdf
+const { exec } = require('child_process');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -318,6 +320,18 @@ function saveAndDeleteTemporaryRODOAgreementFile(email, content, callback) {
     });
 
     callback(null);
+  });
+}
+
+function convertDocxToPdf(inputFilePath, outputFilePath) {
+  return new Promise((resolve, reject) => {
+    exec(`unoconv -f pdf -o ${outputFilePath} ${inputFilePath}`, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(outputFilePath);
+      }
+    });
   });
 }
 
