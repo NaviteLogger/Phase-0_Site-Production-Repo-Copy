@@ -19,7 +19,6 @@ const morgan = require('morgan');
 const fs = require('fs');
 //For converting docx to pdf
 const pdf = require('pdf-poppler');
-const { exec } = require('child_process');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -516,7 +515,7 @@ app.get('/postAgreementData', checkAuthentication, checkEmailConfirmation, async
 
     //Construct the file name based on the current date, time and the user's email
     const userEmail = req.session.passport.user.email;
-    const fileName = `${new Date().toISOString()}_${userEmail.replace(/@/g, '_')}_RODO.html`;
+    const fileName = `${new Date().toISOString()}_${userEmail.replace(/@/g, '_')}_RODO.docx`;
 
     // Construct file path
     const filledAgreementPath = path.join(__dirname, 'agreements', fileName);
