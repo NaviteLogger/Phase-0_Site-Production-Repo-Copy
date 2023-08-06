@@ -18,6 +18,7 @@ const morgan = require('morgan');
 //For file manipulation
 const fs = require('fs');
 //For converting docx to pdf
+const pdf = require('pdf-poppler');
 const { exec } = require('child_process');
 
 //Load environment variables from the .env file
@@ -333,6 +334,22 @@ function convertDocxToPdf(inputFilePath, outputFilePath) {
       }
     });
   });
+}
+
+async function convertPdfToImg(pdfFilePath) {
+  let opts = {
+    format: 'png',
+    out_dir: path.dirname(pdfFilePath),
+    out_prefix: path.basename(pdfFilePath, path.extname(pdfFilePath)),
+    page: null
+  };
+
+  try {
+    const files = await pdf.convert(pdfFilePath, opts);
+    return files; // This is an array of image file paths.
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 app.post('/verifyEmailAddress', (req, res) => {
