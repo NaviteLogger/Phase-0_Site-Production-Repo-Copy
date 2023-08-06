@@ -17,6 +17,8 @@ const flash = require('connect-flash');
 const morgan = require('morgan');
 //For file manipulation
 const fs = require('fs');
+const Docxtemplater = require('docxtemplater');
+const PizZip = require('pizzip');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -265,14 +267,6 @@ function checkEmailConfirmation(req, res, next) {
   });
 }
 
-//This is the function that will fill the RODO agreement template with the user's data
-function fillRODOAgreement(template, data) {
-  return template
-    .replace(/{{clientFullName}}/g, data.clientFullName)
-    .replace(/{{employeeFullName}}/g, data.employeeFullName)
-    .replace(/{{currentDate}}/g, data.currentDate);
-}
-
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -479,6 +473,19 @@ app.get('/postAgreementData', checkAuthentication, checkEmailConfirmation, async
       employeeFullName: req.body.employeeFullName,
       currentDate: req.body.currentDate,
     };
+
+    try {
+      const docPath = path.join(__dirname, 'agreements', 'RODO_agreement.docx');
+      const content = fs.readFileSync(docPath, 'binary');
+
+      const zip = new PizZip(content);
+      const docxTemplater = new Docxtemplater().loadZip(zip);
+
+    } catch (error) {
+      console.log('Error while filling the RODO agreement', error);
+      res.status(500).send("Internal server error");
+    }
+    
     
   } catch (error) {
     console.log('Error while posting the agreement data', error);
