@@ -269,15 +269,11 @@ function checkEmailConfirmation(req, res, next) {
 }
 
 //This is the function that will fill the RODO agreement template with the user's data
-function fillTemplate(content, data) {
-  let updatedContent = content;
-
-  for (const key in data) {
-      const placeholder = `{{${key}}}`;
-      updatedContent = updatedContent.replace(new RegExp(placeholder, 'g'), data[key]);
-  }
-
-  return updatedContent;
+function fillRODOAgreement(template, data) {
+  return template
+    .replace(/{{clientFullName}}/g, data.clientFullName)
+    .replace(/{{employeeFullName}}/g, data.employeeFullName)
+    .replace(/{{currentDate}}/g, data.currentDate);
 }
 
 async function getTheRODOAgreement() {
@@ -287,41 +283,6 @@ async function getTheRODOAgreement() {
     console.log('Error while reading the RODO agreement template', error);
     throw error;
   }
-}
-
-function saveAndDeleteTemporaryRODOAgreementFile(email, content, callback) {
-  const uniqueFileName = `RODO_filled_${Date.now()}_by_${email}.txt`;
-  const filePath = path.join(__dirname, 'agreements', uniqueFileName);
-
-  //Save the filled RODO agreement to a file
-  fs.writeFile(filePath, content, (error) => {
-    if (error) 
-    {
-      console.error('Error while saving the filled RODO agreement to a file', error);
-      callback(error);
-      return;
-    }
-
-    console.log('Filled RODO agreement saved to a file');
-
-    //Here we need to send the filled RODO agreement to the user
-    //We will use the nodemailer module to send the email
-
-
-    //Delete the temporary file
-    fs.unlink(filePath, (error) => {
-      if (error) 
-      {
-        console.error('Error while deleting the temporary RODO agreement file', error);
-        callback(error);
-        return;
-      }
-
-      console.log('Temporary RODO agreement file deleted');
-    });
-
-    callback(null);
-  });
 }
 
 function convertDocxToPdf(inputFilePath, outputFilePath) {
@@ -547,7 +508,25 @@ app.get('/postAgreementData', checkAuthentication, checkEmailConfirmation, async
       currentDate: req.body.currentDate,
     };
 
-    const filledRODO = fillTemplate(rodoContent, dataToFill);
+    //Fill the agreement with the data
+    const filledRODOAgreement = await fillRODOAgreement(rodoContent, dataToFill);
+
+    //Console.log it for debugging purposes
+    console.log('Received a request to post the agreement data, agreement filled successfully');
+
+    //Construct the file name based on the current date, time and the user's email
+    const userEmail = req.session.passport.user.email;
+    const fileName = `${new Date().toISOString()}_${userEmail.replace(/@/g, '_')}_RODO.html`;
+
+    // Construct file path
+    const filledAgreementPath = path.join(__dirname, 'agreements', fileName);
+
+    // Save the filled agreement
+    await fs.writeFile(filledAgreementPath, filledRODOAgreement, 'utf-8');
+
+    // ... rest of your code (e.g., sending a response to the client)
+    res.status(200).send("Agreement saved successfully");
+
 
   } catch (error) {
     console.log('Error while posting the agreement data', error);
