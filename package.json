@@ -14,8 +14,8 @@
     "nodemailer": "^6.9.4",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "pdf-poppler": "^0.2.1",
-    "pizzip": "^3.1.4"
+    "pizzip": "^3.1.4",
+    "puppeteer": "^21.0.1"
   },
   "engines": {
     "node": ">=16.14"
