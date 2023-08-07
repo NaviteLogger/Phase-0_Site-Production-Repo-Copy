@@ -776,7 +776,7 @@ setInterval(function () {
 }, 60000);
 
 //Start the server
-const port = 80;
+const port = 3000;
 app.listen(port, () => {
   console.log('Server is starting');
   console.log(`Server is running on port ${port}`);
