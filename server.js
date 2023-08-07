@@ -19,6 +19,9 @@ const morgan = require('morgan');
 const fs = require('fs');
 const Docxtemplater = require('docxtemplater');
 const PizZip = require('pizzip');
+//For converting files
+const mammoth = require('mammoth');
+const puppeteer = require('puppeteer');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -297,6 +300,34 @@ async function getAgreementFileNameById(agreementId) {
   return results[0].file_name;
 }
 
+async function convertDocxToPNG(docxPath) {
+  //Convert DOCX to PDF
+  const { value: html } = await mammoth.convertToHtml({ path: docxPath });
+
+  //Launch Puppeteer
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  //Set contect of the page to the converted HTML
+  await page.setContent(html);
+
+  //Create PDF from page content
+  const pdfBuffer = await page.pdf();
+
+  //Une puppeteer to capture screenshot from PDF content
+  await page.setContent(`<embed src="data:application/pdf;base64,${pdfBuffer.toString('base64')}" width="100%" height="100%">`, { waitUntil: 'domcontentloaded' });
+  const screenshot = await page.screenshot();
+
+  //Close the browser
+  await browser.close();
+
+  //Save the screenshot as PNG
+  const pngPath = docxPath.replace('.docx', '.png');
+  fs.writeFileSync(pngPath, screenshot);
+
+  return pngPath;
+}
+
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -521,7 +552,15 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
 //Handle the request to the agreement signing page
 app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    res.redirect('/SignRODOAgreementPage');
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
+    const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
+
+    const RODOAgreementImage = await convertDocxToPNG(RODOAgreementPath);
+
+    res.render('SignRODOAgreement', { agreementImage: RODOAgreementImage });
+
   } catch (error) {
     console.log('Error while loading the agreement overview page', error);
     res.status(500).send("Internal server error");
