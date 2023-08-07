@@ -88,7 +88,6 @@ morgan.token('date', (req, res, tz) => {
 //Use the custom morgan format to log requests, including the IP address
 app.use(morgan(':date :client-ip - :method :url :status :response-time ms'));
 
-
 //Set up the nodemailer (SMTP transport)
 const transporter = nodemailer.createTransport({
   host: 'smtp.sendgrid.net',
