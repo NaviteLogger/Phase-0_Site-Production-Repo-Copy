@@ -109,15 +109,6 @@ connection.connect((err) => {
   console.log('Successfully connected to the MYSQL database!');
 });
 
-//Select the 'CosmeticsLawDB' database (by default)
-connection.query('USE CosmeticsLawDB', (error, results, fields) => {
-  if (error)
-  {
-    return done(error);
-  }
-  console.log('Selecting CosmeticsLawDB by default was successful');
-});
-
 //Handle the incoming GET request to the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
