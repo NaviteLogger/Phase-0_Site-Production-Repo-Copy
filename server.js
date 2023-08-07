@@ -1,13 +1,13 @@
 //Import required modules
 const express = require('express');
 const path = require('path');
-// For connecting to the MySQL database
+//For connecting to the MySQL database
 const mysql = require('mysql2');
-// For parsing the request body
+//For parsing the request body
 const bodyParser = require('body-parser');
-// For sending emails
+//For sending emails
 const nodemailer = require('nodemailer');
-// For authentication
+//For authentication
 const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
@@ -75,7 +75,7 @@ app.use(passport.session());
 app.use(flash());
 
 //Set up the morgan logger
-// Define a custom morgan format that includes the IP address
+//Define a custom morgan format that includes the IP address
 morgan.token('client-ip', (req) => {
   return req.ip || '-';
 });
@@ -85,7 +85,7 @@ morgan.token('date', (req, res, tz) => {
   return new Date().toISOString();
 });
 
-// Use the custom morgan format to log requests, including the IP address
+//Use the custom morgan format to log requests, including the IP address
 app.use(morgan(':date :client-ip - :method :url :status :response-time ms'));
 
 
@@ -121,13 +121,13 @@ connection.query('USE CosmeticsLawDB', (error, results, fields) => {
 //Handle the incoming GET request to the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
-  res.redirect('/pages/indexPage.html'); // Redirect to main page
+  res.redirect('/pages/indexPage.html'); //Redirect to main page
 });
 
 //Handle the incoming GET request to the home page
 app.get('/pages/indexPage.html', (req, res) => {
   console.log('Home page rendered');
-  res.redirect('/pages/indexPage.html'); // Redirect to main page
+  res.redirect('/pages/indexPage.html'); //Redirect to main page
 });
 
 //Handle the incoming GET request to the OfferPage
@@ -154,11 +154,11 @@ app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in
 passport.use(
   new LocalStrategy(
     {
-      // By default, local strategy uses username and password, we will override usernameField with email
+      //By default, local strategy uses username and password, we will override usernameField with email
       usernameField: 'email',
       passwordField: 'password',
     },
-    // This function is called when a user tries to sign in
+    //This function is called when a user tries to sign in
     (email, password, done) => {
       //First, check if the given email exists in the database
       connection.query('SELECT * FROM Clients WHERE email = ?', [email], function (error, results) {
@@ -168,7 +168,7 @@ passport.use(
         }
 
         //If the given email does not exist in the database, return an error message
-        if (results.length === 0) // 3 equals signs are used to check if the value and type are the same
+        if (results.length === 0) //3 equals signs are used to check if the value and type are the same
         {
           console.log('Given email: ' + email + ' does not exist in the database.');
           return done(null, false, { message: 'Given email does not exist in the database.' });
@@ -286,7 +286,7 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, prefix) => {
   fs.writeFileSync(outputPath, buffer);
   console.log(`The filled ${fileName} has been written as ${newFileName}`);
 
-  return newFileName;  // return the generated file name for further use
+  return newFileName;  //return the generated file name for further use
 };
 
 async function getAgreementFileNameById(agreementId) {
@@ -368,7 +368,7 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
         if (error) 
         {
           console.log('Error while querying the database', error);
-          reject(error); // if there's an error, reject the Promise
+          reject(error); //if there's an error, reject the Promise
         }
           else 
         {
@@ -383,7 +383,7 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
               console.log(row.agreement_name)
             });
           }
-          resolve(results); // if everything's okay, resolve the Promise with the results
+          resolve(results); //if everything's okay, resolve the Promise with the results
         }
       });
     });
@@ -425,7 +425,7 @@ app.get('/agreementsGeneratorPage', checkAuthentication, checkEmailConfirmation,
       if (error) 
       {
         console.log('Error while querying the database', error);
-        reject(error); // if there's an error, reject the Promise
+        reject(error); //if there's an error, reject the Promise
       }
 
       res.render('AgreementSelectionPage', { agreements: results, email: userEmail });
@@ -455,13 +455,13 @@ app.post('/agreementSelectionPage', checkAuthentication, checkEmailConfirmation,
         if (error)
         {
           console.log('Error while querying the database', error);
-          reject(error); // if there's an error, reject the Promise
+          reject(error); //if there's an error, reject the Promise
         }
           else
         {
           //Store the selected agreement name in the session
           req.session.selectedAgreement = results[0].agreement_name;
-          resolve(results); // if everything's okay, resolve the Promise with the results
+          resolve(results); //if everything's okay, resolve the Promise with the results
         }
       });
     });
@@ -500,30 +500,40 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
       currentDate: req.body.currentDate,
     };
 
-    // Get the user's email
+    //Get the user's email
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
 
     //Get the user's choice of agreement
     const agreementId = req.session.selectedAgreementId;
 
-    // Fill and save RODO agreement
+    //Fill and save RODO agreement
     const rodoFileName = 'RODO_agreement.docx';
     const filledRODOFileName = await fillAndSaveDocument(rodoFileName, dataToFill, userEmail, 'RODO_agreement');
 
-    // Fill and save selected agreement
+    //Fill and save selected agreement
     const agreementFileName = await getAgreementFileNameById(agreementId);
     const agreementPrefix = agreementFileName.split('.docx')[0];
     const filledAgreementFileName = await fillAndSaveDocument(agreementFileName, dataToFill, userEmail, agreementPrefix);
 
-    // Both documents are now filled and saved. You can further process or store the generated file names
-    res.status(200).send({ 
-      message: "The agreements were successfully generated!", 
-      filledRODOFileName, 
-      filledAgreementFileName 
-    });
+    //Pass the filled RODO and agreement names to the session
+    req.session.filledRODOFileName = filledRODOFileName;
+    req.session.filledAgreementFileName = filledAgreementFileName;
+
+    //Both documents are now filled and saved. You can further process or store the generated file names
+    res.json({ status: 'success', message: 'Wybrane zgody zostały uzupełnione i zapisane'});
 
   } catch (error) {
     console.log('Error while posting the agreement data', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+//Handle the request to the agreement signing page
+app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    res.redirect('/SignRODOAgreementPage');
+  } catch (error) {
+    console.log('Error while loading the agreement overview page', error);
     res.status(500).send("Internal server error");
   }
 });
@@ -542,7 +552,7 @@ app.post('/login', (req, res, next) => {
     //If there is an error with the user object, return the error message
     if (!user)
     {
-      console.log('Info: ' + info.message); // Log the info.message containing the error message
+      console.log('Info: ' + info.message); //Log the info.message containing the error message
 
       //Return the appropriate error message
       if(info.message === 'Given email does not exist in the database.')

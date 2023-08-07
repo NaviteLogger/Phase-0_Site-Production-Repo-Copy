@@ -28,9 +28,17 @@ window.onload = function() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestBody),
-        }).then((response) => {
-            if (!response.ok) {
-                throw new Error(`Network response was not ok, status: ${response.status}`);
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            const messageElement = document.getElementById('message');
+            messageElement.innerHTML = data.message;
+
+            if (data.status === 'success')
+            {
+                setTimeout(() => {
+                    window.location.href = '/signRODOAgreement';
+                }, 1500);
             }
         }).catch((error) => {
             console.error('Error:', error);
