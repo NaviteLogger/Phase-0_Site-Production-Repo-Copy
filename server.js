@@ -263,6 +263,7 @@ function checkEmailConfirmation(req, res, next) {
 const fillAndSaveDocument = async (fileName, dataToFill, userEmail, prefix) => {
   const docPath = path.join(__dirname, 'agreements', fileName);
   const content = fs.readFileSync(docPath, 'binary');
+  console.log(`The ${fileName} has been read from path ${docPath}`);
 
   const zip = new PizZip(content);
   const docxTemplater = new Docxtemplater().loadZip(zip);
@@ -272,6 +273,8 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, prefix) => {
 
   const currentDate = new Date();
   const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
+  req.session.formattedDate = formattedDate;
+  console.log(`The formatted date is ${formattedDate}`);
 
   const newFileName = `${prefix}_${formattedDate}_${userEmail}.docx`;
   const outputPath = path.join(__dirname, 'agreements', newFileName);
@@ -283,7 +286,9 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, prefix) => {
 };
 
 async function getAgreementFileNameById(agreementId) {
-  const result = await new Promise((resolve, reject) => {
+  console.log("Received the request to get agreement file name by id: " + agreementId + ", calling getAgreementFileNameById()");
+
+  const fileName = await new Promise((resolve, reject) => {
     connection.query('SELECT file_name FROM Agreements WHERE agreement_id = ?', [agreementId], (error, results) => {
       if (error)
       {
@@ -298,7 +303,8 @@ async function getAgreementFileNameById(agreementId) {
     });
   });
 
-  return result;
+  console.log('Retrieved agreement file name: ' + fileName + ' for agreement id: ' + agreementId + ' from the database');
+  return fileName;
 }
 
 async function convertDocxToPNG(docxPath) {
@@ -521,9 +527,11 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
       employeeFullName: req.body.employeeFullName,
       currentDate: req.body.currentDate,
     };
+    console.log('Data to fill has been received');
 
     //Get the user's email
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    console.log("User's email has been extracted and modified: ", userEmail);
 
     //Get the user's choice of agreement
     const agreementId = req.session.selectedAgreementId;
@@ -532,18 +540,25 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
     //Fill and save RODO agreement
     const rodoFileName = 'RODO_agreement.docx';
     const filledRODOFileName = await fillAndSaveDocument(rodoFileName, dataToFill, userEmail, 'RODO_agreement');
+    console.log('RODO agreement has been filled and saved');
 
     //Fill and save selected agreement
     var agreementFileName = await getAgreementFileNameById(agreementId);
+    console.log('Agreement file name has been retrieved: ', agreementFileName);
     const agreementPrefix = agreementFileName.split('.docx')[0];
+    console.log('Agreement prefix has been extracted: ', agreementPrefix);
     agreementFileName = agreementFileName + '.docx';
+    console.log('Agreement file name has been modified: ', agreementFileName);
     const filledAgreementFileName = await fillAndSaveDocument(agreementFileName, dataToFill, userEmail, agreementPrefix);
+    console.log('Selected agreement has been filled and saved');
 
     //Pass the filled RODO and agreement names to the session
     req.session.filledRODOFileName = filledRODOFileName;
     req.session.filledAgreementFileName = filledAgreementFileName;
+    console.log('Filled RODO and agreement file names have been passed to the session');
 
     //Both documents are now filled and saved. You can further process or store the generated file names
+    console.log("Sending json response to the user");
     res.json({ status: 'success', message: 'Wybrane zgody zostały uzupełnione i zapisane'});
 
   } catch (error) {
@@ -556,11 +571,14 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
 app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-    const currentDate = new Date();
-    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
-    const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
-
+    const currentDate = req.session.currentDate;
+    console.log("The date saved to the session: ", currentDate);
+    
+    const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${currentDate}_${userEmail}.docx`);
+    console.log("Final RODO agreement path: ", RODOAgreementPath);
+    
     const RODOAgreementImage = await convertDocxToPNG(RODOAgreementPath);
+    console.log("RODO agreement image has been converted to PNG");
 
     res.render('SignRODOAgreement', { agreementImage: RODOAgreementImage });
 
