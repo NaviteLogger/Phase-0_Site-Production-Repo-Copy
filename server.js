@@ -333,9 +333,10 @@ async function convertDocxToPNG(docxPath) {
     args: ['--no-sandbox']
   });
   const page = await browser.newPage();
+  await page.setViewport({ width: 1240, height: 1754 });
 
   // Load the generated PDF in Puppeteer
-  await page.goto('file://' + pdfPath, { waitUntil: 'networkidle2', timeout: 60000 });
+  await page.goto('file://' + pdfPath, { waitUntil: 'domcontentloaded'});
 
   // Capture screenshot from the loaded PDF
   const screenshot = await page.screenshot();
