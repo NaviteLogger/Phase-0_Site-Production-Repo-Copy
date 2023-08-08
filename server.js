@@ -303,6 +303,7 @@ async function getAgreementFileNameById(agreementId) {
   return fileName;
 }
 
+//This function will convert the docx file to pdf
 async function convertDocxToPDF(docxPath) {
   return new Promise((resolve, reject) => {
     const pdfPath = path.resolve(__dirname, 'agreements', path.basename(docxPath).replace('.docx', '.pdf'));
