@@ -338,8 +338,9 @@ async function convertDocxToPNG(docxPath) {
   // Load the generated PDF in Puppeteer
   await page.goto('file://' + pdfPath, { waitUntil: 'domcontentloaded'});
 
-  // Capture screenshot from the loaded PDF
-  const screenshot = await page.screenshot();
+  // Capture screenshot from the loaded PDF after waiting for 5 seconds
+  await page.waitForTimeout(5000);
+  const screenshot = await page.screenshot({ fullPage: true });
 
   // Close the browser
   await browser.close();
