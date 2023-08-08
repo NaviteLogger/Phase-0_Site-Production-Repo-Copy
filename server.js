@@ -569,13 +569,14 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
     const pdfPath = await convertDocxToPDF(RODOAgreementPath);
     
     const pdf = fs.readFileSync(pdfPath, null);
-    const RODOAgreementImage = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.png`);
+    const RODOAgreementImagePath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.png`);
+    console.log("RODO agreement image path: ", RODOAgreementImagePath);
     await pdftobuffer(pdf, 0).then((buffer) => {
       fs.writeFileSync(RODOAgreementImage, buffer, null);
     });
     console.log("RODO agreement image has been converted to PNG");
 
-    res.render('SignRODOAgreementPage', { agreementImage: RODOAgreementImage });
+    res.render('SignRODOAgreementPage', { agreementImage: RODOAgreementImagePath });
 
   } catch (error) {
     console.log('Error while loading the agreement overview page', error);
