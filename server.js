@@ -575,6 +575,7 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
       fs.writeFileSync(RODOAgreementImagePath, buffer, null);
     });
     console.log("RODO agreement image has been converted to PNG");
+    console.log("Sending the RODO agreement image to the user");
 
     res.render('SignRODOAgreementPage', { agreementImage: RODOAgreementImagePath });
 
