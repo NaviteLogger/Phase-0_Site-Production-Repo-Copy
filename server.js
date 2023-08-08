@@ -534,8 +534,9 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
     const filledRODOFileName = await fillAndSaveDocument(rodoFileName, dataToFill, userEmail, 'RODO_agreement');
 
     //Fill and save selected agreement
-    const agreementFileName = await getAgreementFileNameById(agreementId);
+    var agreementFileName = await getAgreementFileNameById(agreementId);
     const agreementPrefix = agreementFileName.split('.docx')[0];
+    agreementFileName = agreementFileName + '.docx';
     const filledAgreementFileName = await fillAndSaveDocument(agreementFileName, dataToFill, userEmail, agreementPrefix);
 
     //Pass the filled RODO and agreement names to the session
