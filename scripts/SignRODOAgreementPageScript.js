@@ -7,7 +7,7 @@ const ctx = canvas.getContext('2d');
 let isDrawing = false;
 
 const image = new Image();
-image.src = '<%- agreementImage %>';
+image.src = '/RODOAgreementImage';
 console.log('Image path: ' + '<%- agreementImage %>');
 image.onload = () => {
     console.log('Image loaded');

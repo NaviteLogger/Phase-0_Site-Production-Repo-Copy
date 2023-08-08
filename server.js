@@ -576,9 +576,38 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
     });
     console.log("RODO agreement image has been converted to PNG");
     console.log("Sending the RODO agreement image to the user");
+    req.session.RODOAgreementImagePath = RODOAgreementImagePath;
 
-    res.render('SignRODOAgreementPage', { agreementImage: RODOAgreementImagePath });
+    res.render('SignRODOAgreementPage');
 
+  } catch (error) {
+    console.log('Error while loading the agreement overview page', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get('/RODOAgreementImage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    const RODOAgreementImagePath = req.session.RODOAgreementImagePath;
+
+    if(!RODOAgreementImagePath)
+    {
+      return res.status(404).send("Image not found");
+    }
+
+    console.log("Sending the RODO agreement image to the user");
+
+    fs.access(RODOAgreementImagePath, fs.F_OK, (error) => {
+      if (error) {
+        console.error(error);
+        return res.status(404).send("Image not found");
+      }
+        else
+      {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.sendFile(RODOAgreementImagePath);
+      }
+    });
   } catch (error) {
     console.log('Error while loading the agreement overview page', error);
     res.status(500).send("Internal server error");
