@@ -328,7 +328,7 @@ async function convertDocxToPNG(docxPath) {
 
   //Une puppeteer to capture screenshot from PDF content
   await page.setContent(`<embed src="data:application/pdf;base64,${pdfBuffer.toString('base64')}" width="100%" height="100%">`, { waitUntil: 'domcontentloaded' });
-  await page.waitFor(3000);
+  await page.waitForTimeout(3000);
   const screenshot = await page.screenshot();
 
   //Close the browser
