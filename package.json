@@ -17,6 +17,7 @@
     "nodemailer": "^6.9.4",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "pdftopic": "^0.2.0",
     "pizzip": "^3.1.4",
     "puppeteer": "^21.0.1"
   },
