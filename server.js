@@ -20,8 +20,8 @@ const fs = require('fs');
 const Docxtemplater = require('docxtemplater');
 const PizZip = require('pizzip');
 //For converting files
-const mammoth = require('mammoth');
 const puppeteer = require('puppeteer');
+const exec = require('child_process').exec;
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -303,41 +303,48 @@ async function getAgreementFileNameById(agreementId) {
   return fileName;
 }
 
+async function convertDocxToPDF(docxPath) {
+  return new Promise((resolve, reject) => {
+    const pdfPath = docxPath.replace('.docx', '.pdf');
+    const cmd = `libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir ./ ${docxPath}`;
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        reject(error);
+      }
+      resolve(pdfPath);
+    });
+  });
+}
+
 async function convertDocxToPNG(docxPath) {
   console.log('The path of the file to be converted to PNG: ' + docxPath + ', calling convertDocxToPNG()');
   
-  //Convert DOCX to PDF
-  const { value: html } = await mammoth.convertToHtml({ path: docxPath });
-  console.log('The DOCX file has been converted to HTML');
-  console.log(html);
-  fs.writeFileSync("test.html", html);
+  // Convert DOCX to PDF using LibreOffice
+  const pdfPath = await convertDocxToPDF(docxPath);
+  console.log('The DOCX file has been converted to PDF: ' + pdfPath);
 
-  //Launch Puppeteer
+  // Launch Puppeteer
   const browser = await puppeteer.launch({
     headless: "new",
-    args: ['--no-sandbox'] //This is an issue to be addressed in the future
+    args: ['--no-sandbox']
   });
   const page = await browser.newPage();
 
-  //Set contect of the page to the converted HTML
-  await page.setContent(html);
+  // Load the generated PDF in Puppeteer
+  await page.goto('file:///' + pdfPath, { waitUntil: 'networkidle2' });
 
-  //Create PDF from page content
-  const pdfBuffer = await page.pdf();
-  fs.writeFileSync("test.pdf", pdfBuffer);
-
-  //Une puppeteer to capture screenshot from PDF content
-  await page.setContent(`<embed src="data:application/pdf;base64,${pdfBuffer.toString('base64')}" width="100%" height="100%">`, { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(10000);
+  // Capture screenshot from the loaded PDF
   const screenshot = await page.screenshot();
 
-  //Close the browser
+  // Close the browser
   await browser.close();
 
-  //Save the screenshot as PNG
+  // Save the screenshot as PNG
   const pngPath = docxPath.replace('.docx', '.png');
   fs.writeFileSync(pngPath, screenshot);
 
+  console.log('PNG saved at: ' + pngPath);
   return pngPath;
 }
 
