@@ -572,7 +572,7 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
     const RODOAgreementImagePath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.png`);
     console.log("RODO agreement image path: ", RODOAgreementImagePath);
     await pdftobuffer(pdf, 0).then((buffer) => {
-      fs.writeFileSync(RODOAgreementImage, buffer, null);
+      fs.writeFileSync(RODOAgreementImagePath, buffer, null);
     });
     console.log("RODO agreement image has been converted to PNG");
 
