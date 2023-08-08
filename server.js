@@ -304,8 +304,13 @@ async function getAgreementFileNameById(agreementId) {
 }
 
 async function convertDocxToPNG(docxPath) {
+  console.log('The path of the file to be converted to PNG: ' + docxPath + ', calling convertDocxToPNG()');
+  
   //Convert DOCX to PDF
   const { value: html } = await mammoth.convertToHtml({ path: docxPath });
+  console.log('The DOCX file has been converted to HTML');
+  console.log(html);
+  fs.writeFileSync("test.html", html);
 
   //Launch Puppeteer
   const browser = await puppeteer.launch({
@@ -319,9 +324,11 @@ async function convertDocxToPNG(docxPath) {
 
   //Create PDF from page content
   const pdfBuffer = await page.pdf();
+  fs.writeFileSync("test.pdf", pdfBuffer);
 
   //Une puppeteer to capture screenshot from PDF content
   await page.setContent(`<embed src="data:application/pdf;base64,${pdfBuffer.toString('base64')}" width="100%" height="100%">`, { waitUntil: 'domcontentloaded' });
+  await page.waitFor(3000);
   const screenshot = await page.screenshot();
 
   //Close the browser
@@ -554,7 +561,7 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
     console.log('Agreement prefix has been extracted: ', agreementPrefix);
     agreementFileName = agreementFileName + '.docx';
     console.log('Agreement file name has been modified: ', agreementFileName);
-    const filledAgreementFileName = await fillAndSaveDocument(agreementFileName, dataToFill, userEmail, agreementPrefix);
+    const filledAgreementFileName = await fillAndSaveDocument(agreementFileName, dataToFill, userEmail, formattedDate, agreementPrefix);
     console.log('Selected agreement has been filled and saved');
 
     //Pass the filled RODO and agreement names to the session
