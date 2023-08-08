@@ -283,7 +283,7 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, prefix) => {
 };
 
 async function getAgreementFileNameById(agreementId) {
-  await new Promise((resolve, reject) => {
+  const result = await new Promise((resolve, reject) => {
     connection.query('SELECT file_name FROM Agreements WHERE agreement_id = ?', [agreementId], (error, results) => {
       if (error)
       {
@@ -298,7 +298,7 @@ async function getAgreementFileNameById(agreementId) {
     });
   });
 
-  return results[0].file_name;
+  return result;
 }
 
 async function convertDocxToPNG(docxPath) {
