@@ -585,7 +585,7 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
     const RODOAgreementImage = await convertDocxToPNG(RODOAgreementPath);
     console.log("RODO agreement image has been converted to PNG");
 
-    res.render('SignRODOAgreement', { agreementImage: RODOAgreementImage });
+    res.render('SignRODOAgreementPage', { agreementImage: RODOAgreementImage });
 
   } catch (error) {
     console.log('Error while loading the agreement overview page', error);
