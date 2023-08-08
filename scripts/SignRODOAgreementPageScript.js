@@ -8,7 +8,9 @@ let isDrawing = false;
 
 const image = new Image();
 image.src = '<%= agreementImage %>';
+console.log('Image path: ' + '<%= agreementImage %>');
 image.onload = () => {
+    console.log('Image loaded');
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 }
 
