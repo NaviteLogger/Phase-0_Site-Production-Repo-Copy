@@ -305,7 +305,7 @@ async function getAgreementFileNameById(agreementId) {
 
 async function convertDocxToPDF(docxPath) {
   return new Promise((resolve, reject) => {
-    const pdfPath = './agreements/' + path.basename(docxPath).replace('.docx', '.pdf');
+    const pdfPath = path.join(__dirname, 'agreements', path.basename(docxPath).replace('.docx', '.pdf'));
     const cmd = `libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir ./agreements ${docxPath}`;
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
@@ -334,7 +334,7 @@ async function convertDocxToPNG(docxPath) {
   const page = await browser.newPage();
 
   // Load the generated PDF in Puppeteer
-  await page.goto('file:///' + pdfPath, { waitUntil: 'networkidle2', timeout: 60000 });
+  await page.goto('file://' + pdfPath, { waitUntil: 'networkidle2', timeout: 60000 });
 
   // Capture screenshot from the loaded PDF
   const screenshot = await page.screenshot();
