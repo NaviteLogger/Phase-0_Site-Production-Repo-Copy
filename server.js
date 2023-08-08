@@ -292,6 +292,7 @@ async function getAgreementFileNameById(agreementId) {
       }
         else
       {
+        console.log('Agreement file name: ' + results[0].file_name + ' is associated with agreement id: ' + agreementId);
         resolve(results[0]);
       }
     });
@@ -526,6 +527,7 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
 
     //Get the user's choice of agreement
     const agreementId = req.session.selectedAgreementId;
+    console.log('Received a request to fill the selected agreement: ', agreementId);
 
     //Fill and save RODO agreement
     const rodoFileName = 'RODO_agreement.docx';
