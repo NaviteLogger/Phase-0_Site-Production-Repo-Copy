@@ -22,6 +22,7 @@ const PizZip = require('pizzip');
 //For converting files
 const puppeteer = require('puppeteer');
 const exec = require('child_process').exec;
+const { pdftobuffer } = require('pdftopic');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -597,11 +598,18 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     const formattedDate = req.session.formattedDate;
     console.log("The date saved to the session: ", formattedDate);
-    
+
     const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
     console.log("Final RODO agreement path: ", RODOAgreementPath);
+
+    // Convert DOCX to PDF
+    const pdfPath = await convertDocxToPDF(RODOAgreementPath);
     
-    const RODOAgreementImage = await convertDocxToPNG(RODOAgreementPath);
+    const pdf = fs.readFileSync(pdfPath, null);
+    const RODOAgreementImage = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.png`);
+    await pdftobuffer(pdf, 0).then((buffer) => {
+      fs.writeFileSync(RODOAgreementImage, buffer, null);
+    });
     console.log("RODO agreement image has been converted to PNG");
 
     res.render('SignRODOAgreementPage', { agreementImage: RODOAgreementImage });
