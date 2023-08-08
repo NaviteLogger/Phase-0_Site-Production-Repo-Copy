@@ -260,7 +260,7 @@ function checkEmailConfirmation(req, res, next) {
   });
 }
 
-const fillAndSaveDocument = async (fileName, dataToFill, userEmail, prefix) => {
+const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDate, prefix) => {
   const docPath = path.join(__dirname, 'agreements', fileName);
   const content = fs.readFileSync(docPath, 'binary');
   console.log(`The ${fileName} has been read from path ${docPath}`);
@@ -271,10 +271,6 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, prefix) => {
   docxTemplater.render();
   const buffer = docxTemplater.getZip().generate({ type: 'nodebuffer' });
 
-  const currentDate = new Date();
-  const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
-  req.session.formattedDate = formattedDate;
-  console.log(`The formatted date is ${formattedDate}`);
 
   const newFileName = `${prefix}_${formattedDate}_${userEmail}.docx`;
   const outputPath = path.join(__dirname, 'agreements', newFileName);
@@ -539,7 +535,14 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
 
     //Fill and save RODO agreement
     const rodoFileName = 'RODO_agreement.docx';
-    const filledRODOFileName = await fillAndSaveDocument(rodoFileName, dataToFill, userEmail, 'RODO_agreement');
+
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
+    req.session.formattedDate = formattedDate;
+    console.log(`The formatted date is ${formattedDate}`);
+
+
+    const filledRODOFileName = await fillAndSaveDocument(rodoFileName, dataToFill, userEmail, formattedDate, 'RODO_agreement');
     console.log('RODO agreement has been filled and saved');
 
     //Fill and save selected agreement
