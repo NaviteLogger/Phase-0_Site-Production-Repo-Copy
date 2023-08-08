@@ -308,7 +308,10 @@ async function convertDocxToPNG(docxPath) {
   const { value: html } = await mammoth.convertToHtml({ path: docxPath });
 
   //Launch Puppeteer
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox'] //This is an issue to be addressed in the future
+  });
   const page = await browser.newPage();
 
   //Set contect of the page to the converted HTML
