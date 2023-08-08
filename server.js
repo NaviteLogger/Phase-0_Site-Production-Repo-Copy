@@ -339,7 +339,7 @@ async function convertDocxToPNG(docxPath) {
   await page.goto('file://' + pdfPath, { waitUntil: 'domcontentloaded'});
 
   // Capture screenshot from the loaded PDF after waiting for 5 seconds
-  await page.waitForTimeout(15000);
+  await page.waitForTimeout(30000);
   const screenshot = await page.screenshot({ fullPage: true });
 
   // Close the browser
