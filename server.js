@@ -573,7 +573,7 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
 app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-    const formattedDate = req.session.currentDate;
+    const formattedDate = req.session.formattedDate;
     console.log("The date saved to the session: ", formattedDate);
     
     const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
