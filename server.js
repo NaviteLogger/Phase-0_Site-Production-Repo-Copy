@@ -306,7 +306,7 @@ async function getAgreementFileNameById(agreementId) {
 async function convertDocxToPDF(docxPath) {
   return new Promise((resolve, reject) => {
     const pdfPath = docxPath.replace('.docx', '.pdf');
-    const cmd = `libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir ./ ${docxPath}`;
+    const cmd = `libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir ./agreements ${docxPath}`;
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
