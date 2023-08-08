@@ -26,30 +26,30 @@
         </div>
     </header>
     <div class="agreement-overview-container">
-        <div id="date">Data: </div>
+        <div id="date"></div>
         <form id="agreement-overview-form">
             <label for="client-full-name">Imię i nazwisko klienta:</label>
             <input class="input-field" type="text" id="client-full-name" placeholder="Imię i nazwisko klienta">
             <label for="employee-full-name">Imię i nazwisko pracownika:</label>
             <input class="input-field" type="text" id="employee-full-name" placeholder="Imię i nazwisko pracownika">
-            <p>W generatorze do wypełnienia są następujące zgody:</p>
+            <p>W generatorze podanymi powyżej danymi zostaną wypełnione następujące zgody:</p>
             <div class="table-container">
                 <table class="information-table">
-                    <tr>
-                        <td>Zgoda na przetwarzanie danych osobowych (RODO)</td>
+                    <tr class="table-row">
+                        <td class="table-data">Zgoda na przetwarzanie danych osobowych (RODO)</td>
                     </tr>
-                    <tr>
-                        <td>Wywiad z klientem</td>
+                    <tr class="table-row">
+                        <td class="table-data">Wywiad z klientem</td>
                     </tr>
-                    <tr>
-                        <td>Zgoda na zabieg: wybrana zgoda to: <%= agreementName %></td>
+                    <tr class="table-row">
+                        <td class="table-data">Zgoda na zabieg: wybrana zgoda to: <%= agreementName %></td>
                     </tr>
-                    <tr>
-                        <td>Zgoda na zdjęcie</td>
+                    <tr class="table-row">
+                        <td class="table-data">Zgoda na zdjęcie</td>
                     </tr>
                 </table>
             </div>
-            <button id="submit-button" type="submit">Submit</button>
+            <button class="submit-button" id="submit-button" type="submit">Zatwierdz i przejdź do podpisania zgód</button>
         </form>
     </div>
     <div id="server-response">

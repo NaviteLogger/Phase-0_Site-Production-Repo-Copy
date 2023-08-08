@@ -6,7 +6,7 @@ window.onload = function() {
     // Display current date
     const dateDiv = document.getElementById('date');
     const currentDate = new Date();
-    dateDiv.innerText = `${currentDate.getDate()}-${currentDate.getMonth()+1}-${currentDate.getFullYear()}`;
+    dateDiv.innerText = `Dzisiejsza data: ${currentDate.getDate()}-${currentDate.getMonth()+1}-${currentDate.getFullYear()}`;
 
     const agreementOverviewForm = document.getElementById('agreement-overview-form');
 
