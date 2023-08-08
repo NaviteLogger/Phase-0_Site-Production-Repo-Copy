@@ -305,8 +305,8 @@ async function getAgreementFileNameById(agreementId) {
 
 async function convertDocxToPDF(docxPath) {
   return new Promise((resolve, reject) => {
-    const pdfPath = path.join(__dirname, 'agreements', path.basename(docxPath).replace('.docx', '.pdf'));
-    const cmd = `libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir ./agreements ${docxPath}`;
+    const pdfPath = path.resolve(__dirname, 'agreements', path.basename(docxPath).replace('.docx', '.pdf'));
+    const cmd = `libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir ${path.dirname(pdfPath)} ${docxPath}`;
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
@@ -316,6 +316,7 @@ async function convertDocxToPDF(docxPath) {
     });
   });
 }
+
 
 async function convertDocxToPNG(docxPath) {
   console.log('The path of the file to be converted to PNG: ' + docxPath + ', calling convertDocxToPNG()');
