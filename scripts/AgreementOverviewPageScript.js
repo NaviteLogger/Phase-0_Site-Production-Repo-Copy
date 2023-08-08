@@ -19,7 +19,6 @@ window.onload = function() {
         const requestBody = {
             clientFullName: clientFullName,
             employeeFullName: employeeFullName,
-            currentDate: currentDate,
         };
 
         fetch('/postAgreementData', {

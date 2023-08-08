@@ -521,7 +521,6 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
     const dataToFill = {
       clientFullName: req.body.clientFullName,
       employeeFullName: req.body.employeeFullName,
-      currentDate: req.body.currentDate,
     };
     console.log('Data to fill has been received');
 
@@ -574,10 +573,10 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
 app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-    const currentDate = req.session.currentDate;
-    console.log("The date saved to the session: ", currentDate);
+    const formattedDate = req.session.currentDate;
+    console.log("The date saved to the session: ", formattedDate);
     
-    const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${currentDate}_${userEmail}.docx`);
+    const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
     console.log("Final RODO agreement path: ", RODOAgreementPath);
     
     const RODOAgreementImage = await convertDocxToPNG(RODOAgreementPath);
