@@ -10,6 +10,7 @@
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "https": "^1.0.0",
+    "libreoffice": "^0.4.5",
     "mammoth": "^1.6.0",
     "morgan": "^1.10.0",
     "mysql2": "^3.5.2",
