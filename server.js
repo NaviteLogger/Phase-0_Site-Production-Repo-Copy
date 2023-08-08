@@ -309,7 +309,7 @@ async function convertDocxToPNG(docxPath) {
 
   //Launch Puppeteer
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: "new",
     args: ['--no-sandbox'] //This is an issue to be addressed in the future
   });
   const page = await browser.newPage();
