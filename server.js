@@ -20,7 +20,6 @@ const fs = require('fs');
 const Docxtemplater = require('docxtemplater');
 const PizZip = require('pizzip');
 //For converting files
-const puppeteer = require('puppeteer');
 const exec = require('child_process').exec;
 const { pdftobuffer } = require('pdftopic');
 
@@ -316,42 +315,6 @@ async function convertDocxToPDF(docxPath) {
       resolve(pdfPath);
     });
   });
-}
-
-
-async function convertDocxToPNG(docxPath) {
-  console.log('The path of the file to be converted to PNG: ' + docxPath + ', calling convertDocxToPNG()');
-  
-  // Convert DOCX to PDF using LibreOffice
-  const pdfPath = await convertDocxToPDF(docxPath);
-  console.log('The DOCX file has been converted to PDF: ' + pdfPath);
-
-  console.log("Loading PDF from:", pdfPath);
-
-  // Launch Puppeteer
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ['--no-sandbox']
-  });
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1240, height: 1754 });
-
-  // Load the generated PDF in Puppeteer
-  await page.goto('file://' + pdfPath, { waitUntil: 'domcontentloaded'});
-
-  // Capture screenshot from the loaded PDF after waiting for 5 seconds
-  await page.waitForTimeout(30000);
-  const screenshot = await page.screenshot({ fullPage: true });
-
-  // Close the browser
-  await browser.close();
-
-  // Save the screenshot as PNG
-  const pngPath = docxPath.replace('.docx', '.png');
-  fs.writeFileSync(pngPath, screenshot);
-
-  console.log('PNG saved at: ' + pngPath);
-  return pngPath;
 }
 
 app.post('/verifyEmailAddress', (req, res) => {
