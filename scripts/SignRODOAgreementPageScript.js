@@ -7,15 +7,41 @@ document.getElementById('clearDrawing').addEventListener('click', () => {
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 });
 
+const maxPages = 10;
+
+document.getElementById('nextPage').addEventListener('click', () => {
+    if (currentPage < maxPages - 1) {
+        currentPage++;
+        loadImage();
+        updatePageDisplay();
+    }
+});
+
+document.getElementById('previousPage').addEventListener('click', () => {
+    if (currentPage > 0) {
+        currentPage--;
+        loadImage();
+        updatePageDisplay();
+    }
+});
+
 const canvas = document.getElementById('signatureCanvas');
 const ctx = canvas.getContext('2d');
 let isDrawing = false;
 
+let currentPage = 0;
 const image = new Image();
-image.src = '/RODOAgreementImage';
-image.onload = () => {
-    console.log('Image loaded');
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+let signatures = [];
+
+function loadImage() {
+    signatures[currentPage] = canvas.toDataURL();
+    image.src = '/RODOAgreementImage/' + currentPage;
+    image.onload = () => {
+        console.log('Image loaded');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    }
 }
 
 canvas.addEventListener('mousedown', () => {
@@ -60,28 +86,37 @@ function draw(event) {
     ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
 }
 
-document.getElementById('submitSignature').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL();
+document.getElementById('submitAllSignatures').addEventListener('click', () => {
+    if (signatures.length < maxPages) {
+        alert('Please sign all pages before submitting.');
+        return;
+    }
 
-    //Send this to the server
-    fetch('/submitSignedRODOAgreement', {
+    sendAllSignatures();
+});
+
+function sendAllSignatures() {
+    fetch('/submitAllSignedRODOAgreements', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ image: dataURL })
+        body: JSON.stringify({ signatures: signatures })
     })
     .then((response) => response.json())
     .then((data) => {
         if (data.status === 'success') {
-            alert('Signature saved successfully!');
+            alert('All signatures saved successfully!');
             setTimeout(() => {
                 window.location.href = '/signSelectedAgreement';
-              }, 1500); //Redirect to the clients portal page after 1,5 seconds      
+            }, 1500);
         } else {
-            alert('Failed to save the signature.');
+            alert('Failed to save the signatures.');
         }
     }).catch((error) => {
         console.error('Error:', error);
     });
-});
+}
+
+
+loadImage();
