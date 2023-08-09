@@ -20,7 +20,7 @@ const fs = require('fs');
 const Docxtemplater = require('docxtemplater');
 const PizZip = require('pizzip');
 //For converting files
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
 
 //Load environment variables from the .env file
