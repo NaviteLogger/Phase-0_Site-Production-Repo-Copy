@@ -23,8 +23,8 @@ const PizZip = require('pizzip');
 //For converting files
 const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
-const { PDFDocument: PDFKitDocument } = require('pdfkit'); 
-const { PDFDocument: PDFLibDocument } = require('pdf-lib'); 
+const PDFDocument = require('pdfkit'); 
+//const { PDFDocument: PDFLibDocument } = require('pdf-lib'); 
 const imageToBase64 = require('image-to-base64');
 
 //Load environment variables from the .env file
