@@ -648,15 +648,19 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, checkEmailConfirmatio
 app.post('/submitAllSignedRODOAgreements', async (req, res) => {
   try {
     const images = req.body.images; // Assuming images is an array of dataURLs sent from the client.
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    const formattedDate = req.session.formattedDate;
+    const finalPDFPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.pdf`);
+
     console.log("Number of images received:", images.length);
       
     const doc = new PDFDocument();
 
-    const outputPDFPath = path.join(__dirname, 'agreements', 'output.pdf'); // Modify this path as necessary
+    const outputPDFPath = path.join(__dirname, 'agreements', `${finalPDFPath}`); // Modify this path as necessary
     const stream = fs.createWriteStream(outputPDFPath);
 
     doc.pipe(stream);
-    doc.pipe(fs.createWriteStream('output.pdf'));
+    //doc.pipe(fs.createWriteStream('output.pdf'));
       
     for(let i = 0; i < images.length; i++) {
       if (i !== 0) doc.addPage();
@@ -664,11 +668,11 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
       const dataURL = images[i].split(',')[1];
       const imgBuffer = Buffer.from(dataURL, 'base64');
 
-      try {
-        fs.writeFileSync("test.jpeg", imgBuffer);
-      } catch (error) {
-        console.log("Error while writing the image to the file system:", error);
-      }
+      // try {
+      //   fs.writeFileSync("test.jpeg", imgBuffer);
+      // } catch (error) {
+      //   console.log("Error while writing the image to the file system:", error);
+      // }
 
       console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
       console.log("Data URL:", images[i]);
