@@ -42,7 +42,7 @@ const connection = mysql.createConnection({
 app.use(bodyParser.json());
 
 //Parse URL-encoded bodies (as sent by HTML forms)
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 //Set up the view engine
 app.set('view engine', 'ejs');
@@ -544,7 +544,9 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
     //Pass the filled RODO and agreement names to the session
     req.session.filledRODOFileName = filledRODOFileName;
     req.session.filledAgreementFileName = filledAgreementFileName;
-    console.log('Filled RODO and agreement file names have been passed to the session');
+    req.session.agreementPrefix = agreementPrefix;
+
+    console.log('Filled RODO and agreement file names have been passed to the session, along with the prefix');
 
     //Both documents are now filled and saved. You can further process or store the generated file names
     console.log("Sending json response to the user");
@@ -582,7 +584,7 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
     res.render('SignRODOAgreementPage');
 
   } catch (error) {
-    console.log('Error while loading the agreement overview page', error);
+    console.log('Error while loading the RODO agreement overview page', error);
     res.status(500).send("Internal server error");
   }
 });
@@ -593,7 +595,7 @@ app.get('/RODOAgreementImage', checkAuthentication, checkEmailConfirmation, asyn
 
     if(!RODOAgreementImagePath)
     {
-      return res.status(404).send("Image not found");
+      return res.status(404).send("Image of RODO agreement not found");
     }
 
     console.log("Sending the RODO agreement image to the user");
@@ -601,12 +603,119 @@ app.get('/RODOAgreementImage', checkAuthentication, checkEmailConfirmation, asyn
     fs.access(RODOAgreementImagePath, fs.F_OK, (error) => {
       if (error) {
         console.error(error);
-        return res.status(404).send("Image not found");
+        return res.status(404).send("Image: 'RODO agreement' not found");
       }
         else
       {
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         res.sendFile(RODOAgreementImagePath);
+      }
+    });
+  } catch (error) {
+    console.log('Error while loading the RODO agreement image overview page', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.post('/submitSignedRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    const base64Data = req.body.image.replace(/^data:image\/png;base64,/, '');
+
+    const RODOAgreementImgPath = req.session.RODOAgreementImagePath;
+
+    fs.writeFile(RODOimgPath, base64Data, 'base64',  (error) => {
+      if (error)
+      {
+        console.log('Error while saving the image', error);
+        return res.status(500).send("Internal server error");
+      }
+        else
+      {
+        console.log('The image has been saved');
+        return res.send({ status: 'success', message: 'Zgoda RODO wraz z podpisem została podpisana' });
+      }
+    });
+  } catch (error) {
+    console.log('Error while loading the agreement overview page', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    const formattedDate = req.session.formattedDate;
+    const agreementPrefix = req.session.agreementPrefix;
+    console.log("The date saved to the session: ", formattedDate);
+
+    const selectedAgreementPath = `${agreementPrefix}_${formattedDate}_${userEmail}.docx`;
+    console.log("Final RODO agreement path: ", selectedAgreementPath);
+
+    // Convert DOCX to PDF
+    const pdfPath = await convertDocxToPDF(selectedAgreementPath);
+    
+    const pdf = fs.readFileSync(pdfPath, null);
+    const selectedAgreementImagePath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.docx`);
+    console.log("Selected agreement image path: ", selectedAgreementImagePath);
+    await pdftobuffer(pdf, 0).then((buffer) => {
+      fs.writeFileSync(selectedAgreementImagePath, buffer, null);
+    });
+    console.log("RODO agreement image has been converted to PNG");
+    console.log("Sending the RODO agreement image to the user");
+    req.session.selectedAgreementImagePath = selectedAgreementImagePath;
+
+    res.render('SignSelectedAgreementPage');
+
+  } catch (error) {
+    console.log('Error while loading the selected agreement overview page', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get('/SelectedAgreementImage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    const selectedAgreementImagePath = req.session.selectedAgreementImagePath;
+
+    if(!selectedAgreementImagePath)
+    {
+      return res.status(404).send("Image of selected agreement not found");
+    }
+
+    console.log("Sending the RODO agreement image to the user");
+
+    fs.access(selectedAgreementImagePath, fs.F_OK, (error) => {
+      if (error) {
+        console.error(error);
+        return res.status(404).send("Image: 'Selected agreement' not found");
+      }
+        else
+      {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.sendFile(selectedAgreementImagePath);
+      }
+    });
+  } catch (error) {
+    console.log('Error while loading the selected agreement image overview page', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.post('/submitSignedSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    const base64Data = req.body.image.replace(/^data:image\/png;base64,/, '');
+
+    const SelectedAgreementImgPath = req.session.selectedAgreementImagePath;
+
+    fs.writeFile(SelectedAgreementImgPath, base64Data, 'base64',  (error) => {
+      if (error)
+      {
+        console.log('Error while saving the image', error);
+        return res.status(500).send("Internal server error");
+      }
+        else
+      {
+        console.log('The image has been saved');
+        return res.send({ status: 'success', message: 'Wybrana zgoda wraz z podpisem została podpisana' });
       }
     });
   } catch (error) {

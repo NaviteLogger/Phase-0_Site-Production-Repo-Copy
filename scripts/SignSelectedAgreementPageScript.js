@@ -11,7 +11,7 @@ const ctx = canvas.getContext('2d');
 let isDrawing = false;
 
 const image = new Image();
-image.src = '/RODOAgreementImage';
+image.src = '/SelectedAgreementImage';
 image.onload = () => {
     console.log('Image loaded');
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
@@ -63,7 +63,7 @@ document.getElementById('submitSignature').addEventListener('click', () => {
     const dataURL = canvas.toDataURL();
 
     //Send this to the server
-    fetch('/submitSignedRODOAgreement', {
+    fetch('/submitSignedSelectedAgreement', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ document.getElementById('submitSignature').addEventListener('click', () => {
         if (data.status === 'success') {
             alert('Signature saved successfully!');
             setTimeout(() => {
-                window.location.href = '/signSelectedAgreement';
+                window.location.href = '/summaryPage';
               }, 1500); //Redirect to the clients portal page after 1,5 seconds      
         } else {
             alert('Failed to save the signature.');
