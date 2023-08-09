@@ -320,6 +320,18 @@ async function convertDocxToPDF(docxPath) {
   });
 }
 
+function convertPdfToImages(pdfPath, outputDir) {
+    return new Promise((resolve, reject) => {
+        exec(`python3 pdf_to_images.py ${pdfPath} ${outputDir}`, (error, stdout, stderr) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            resolve(stdout.trim().split("\n"));  // this assumes each line in stdout is a path to an image
+        });
+    });
+}
+
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
