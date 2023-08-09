@@ -654,8 +654,6 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
     const outputPDFPath = path.join(__dirname, 'agreements', 'output.pdf'); // Modify this path as necessary
     const stream = fs.createWriteStream(outputPDFPath);
       
-    doc.pipe(stream);
-      
     for(let i = 0; i < images.length; i++) {
       if (i !== 0) doc.addPage();
           
@@ -664,20 +662,32 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
       console.log("Data URL:", dataURL); 
       console.log("Buffer length:", imgBuffer.length);
          
-         // If the image dimension is different, you may need to adjust this:
+      // If the image dimension is different, you may need to adjust this:
       doc.image(imgBuffer, 0, 0/*, { fit: [595.28, 841.89] }*/); // A4 size in points
     }
-     
-    doc.on('end', () => {
+    
+    // Pipe the document after adding all content
+    doc.pipe(stream);
+    
+    // End the PDF document
+    doc.end();
+
+    stream.on('finish', () => {
       console.log("PDF has been generated");
-      res.send({ status: 'success', message: 'RODO agreement has been signed' });
+      res.json({ status: 'success', message: 'RODO agreement has been signed' });
+    });
+
+    stream.on('error', (err) => {
+      console.error("Stream Error:", err);
+      res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
     });
 
   } catch (error) {
       console.error('Error while receiving signed images and generating PDF:', error);
       res.status(500).json({ status: 'error', message: 'Internal server error' });
   }
-});  
+});
+ 
 
 app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
