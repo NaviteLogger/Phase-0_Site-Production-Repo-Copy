@@ -1,7 +1,3 @@
-document.getElementById('clients-portal').addEventListener('click', () => {
-    window.location.href = '/clientsPortalPage';
-});
-
 document.getElementById('clearDrawing').addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
@@ -89,6 +85,9 @@ function draw(event) {
 }
 
 document.getElementById('submitAllSignatures').addEventListener('click', () => {
+    // Save the current page's signature before checking or submitting
+    signatures[currentPage] = canvas.toDataURL();
+
     if (signatures.length < maxPages) {
         alert('Please sign all pages before submitting.');
         return;
