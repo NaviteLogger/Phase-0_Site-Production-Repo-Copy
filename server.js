@@ -590,8 +590,8 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
       // Convert DOCX to PDF
       const pdfPath = await convertDocxToPDF(RODOAgreementPath);
       const pdfBytes = await fsPromises.readFile(pdfPath) // Use the renamed class here
-      const pdfDoc = await PDFLibDocument.load(pdfBytes);  // Use the renamed class here
-      const numberOfPages = pdfDoc.getPageCount();
+      //const pdfDoc = await PDFDocument.load(pdfBytes);  // Use the renamed class here
+      //const numberOfPages = pdfDoc.getPageCount();
 
       // Convert each page of the PDF to an image
       let imagePaths = [];
