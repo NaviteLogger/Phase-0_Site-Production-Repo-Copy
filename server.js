@@ -331,7 +331,7 @@ function convertPdfToImages(pdfPath, outputDir) {
               reject(error);
               return;
           }
-          const imagePaths = stdout.trim().split("\n").map(line => path.join(outputDir, line)); // each line in stdout is the name of an image
+          const imagePaths = stdout.trim().split("\n").map(line => path.join(outputDir, line)); //each line in stdout is the name of an image
           resolve(imagePaths);
       });
   });
@@ -591,12 +591,12 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
       const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
       console.log("Final RODO agreement path: ", RODOAgreementPath);
 
-      // Convert DOCX to PDF
-      const pdfPath = await convertDocxToPDF(RODOAgreementPath);
-      const pdfBytes = await fsPromises.readFile(pdfPath);
-      const numberOfPages = await countPDFPages(pdfBytes);  // Use pdf-parse to get the page count
+      //Convert DOCX to PDF
+      var pdfPath = await convertDocxToPDF(RODOAgreementPath);
+      var pdfBytes = await fsPromises.readFile(pdfPath);
+      var numberOfPages = await countPDFPages(pdfBytes);  //Use pdf-parse to get the page count
 
-      // Convert each page of the PDF to an image
+      //Convert each page of the PDF to an image
       let imagePaths = [];
       for (let i = 0; i < numberOfPages; i++) {
         const imagePath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}_page_${i}.png`);
@@ -606,12 +606,13 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
         imagePaths.push(imagePath);
       }
       
-      req.session.RODOAgreementImagePaths = imagePaths; // Now it's an array of image paths
+      req.session.RODOAgreementImagePaths = imagePaths; //Now it's an array of image paths
 
       res.render('SignRODOAgreementPage', {
           imagePaths: imagePaths,
           numberOfPages: numberOfPages,
       });
+
   } catch (error) {
       console.log('Error while loading the RODO agreement overview page', error);
       res.status(500).send("Internal server error");
@@ -620,70 +621,75 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
 
 app.get('/RODOAgreementImage/:index', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-      const imageIndex = req.params.index;
-      const RODOAgreementImagePaths = req.session.RODOAgreementImagePaths;
+    var imageIndex = req.params.index;
+    var RODOAgreementImagePaths = req.session.RODOAgreementImagePaths;
 
-      if (!RODOAgreementImagePaths || !RODOAgreementImagePaths[imageIndex]) {
-          return res.status(404).send("Image of RODO agreement not found");
+    if (!RODOAgreementImagePaths || !RODOAgreementImagePaths[imageIndex]) 
+    {
+      return res.status(404).send("Image of RODO agreement not found");
+    }
+
+    var imagePath = RODOAgreementImagePaths[imageIndex];
+     console.log("Sending the RODO agreement image to the user", imagePath);
+
+    fs.access(imagePath, fs.F_OK, (error) => {
+      if (error) 
+      {
+        console.error(error);
+      return res.status(404).send("Image: 'RODO agreement' not found");
+      } 
+        else
+      {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.sendFile(imagePath);
       }
-
-      const imagePath = RODOAgreementImagePaths[imageIndex];
-      console.log("Sending the RODO agreement image to the user", imagePath);
-
-      fs.access(imagePath, fs.F_OK, (error) => {
-          if (error) {
-              console.error(error);
-              return res.status(404).send("Image: 'RODO agreement' not found");
-          } else {
-              res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-              res.sendFile(imagePath);
-          }
-      });
+    });
   } catch (error) {
       console.log('Error while loading the RODO agreement image overview page', error);
       res.status(500).send("Internal server error");
   }
 });
 
-app.post('/submitAllSignedRODOAgreements', async (req, res) => {
+app.post('/submitAllSignedRODOAgreements', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const images = req.body.images; // Assuming images is an array of dataURLs sent from the client.
-    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-    const formattedDate = req.session.formattedDate;
-    const finalPDFPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.pdf`);
+    var images = req.body.images; //Assuming images is an array of dataURLs sent from the client.
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
+    var finalPDFPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.pdf`);
 
     console.log("Number of images received:", images.length);
       
-    const doc = new PDFDocument();
+    var doc = new PDFDocument();
 
-    const outputPDFPath = finalPDFPath; // Modify this path as necessary
-    const stream = fs.createWriteStream(outputPDFPath);
+    var outputPDFPath = finalPDFPath; //Modify this path as necessary
+    var stream = fs.createWriteStream(outputPDFPath);
 
     doc.pipe(stream);
-    //doc.pipe(fs.createWriteStream('output.pdf'));
+    //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
       
-    for(let i = 0; i < images.length; i++) {
+    for(let i = 0; i < images.length; i++) 
+    {
       if (i !== 0) doc.addPage();
           
-      const dataURL = images[i].split(',')[1];
-      const imgBuffer = Buffer.from(dataURL, 'base64');
+      var dataURL = images[i].split(',')[1];
+      var imgBuffer = Buffer.from(dataURL, 'base64');
 
-      // try {
-      //   fs.writeFileSync("test.jpeg", imgBuffer);
-      // } catch (error) {
-      //   console.log("Error while writing the image to the file system:", error);
-      // }
+      //try { //For debugging purposes
+      //  fs.writeFileSync("test.jpeg", imgBuffer);
+      //} catch (error) {
+      //  console.log("Error while writing the image to the file system:", error);
+      //}
 
-      console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
+      //console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
       console.log("Data URL:", images[i]);
       console.log("Buffer:", imgBuffer); 
       console.log("Buffer length:", imgBuffer.length);
          
-      // If the image dimension is different, you may need to adjust this:
+      //If the image dimension is different, you may need to adjust this:
       doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
     }
     
-    // End the PDF document
+    //End the PDF document
     doc.end();
 
     stream.on('finish', () => {
@@ -713,20 +719,27 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
     const selectedAgreementPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.docx`);
     console.log("Final Selected agreement path: ", selectedAgreementPath);
 
-    // Convert DOCX to PDF
-    const pdfPath = await convertDocxToPDF(selectedAgreementPath);
-    
-    const pdf = fs.readFileSync(pdfPath, null);
-    const selectedAgreementImagePath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.docx`);
-    console.log("Selected agreement image path: ", selectedAgreementImagePath);
-    await pdftobuffer(pdf, 0).then((buffer) => {
-      fs.writeFileSync(selectedAgreementImagePath, buffer, null);
-    });
-    console.log("RODO agreement image has been converted to PNG");
-    console.log("Sending the RODO agreement image to the user");
-    req.session.selectedAgreementImagePath = selectedAgreementImagePath;
+    //Convert DOCX to PDF
+    var pdfPath = await convertDocxToPDF(selectedAgreementPath);
+    var pdfBytes = await fsPromises.readFile(pdfPath);
+    var numberOfPages = await countPDFPages(pdfBytes);  //Use pdf-parse to get the page count
 
-    res.render('SignSelectedAgreementPage');
+    //Convert each page of the PDF to an image
+    let imagePaths = [];
+    for (let i = 0; i < numberOfPages; i++) {
+      const imagePath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_page_${i}.png`);
+      await pdftobuffer(pdfBytes, i).then((buffer) => {
+        fs.writeFileSync(imagePath, buffer, null);
+      });
+      imagePaths.push(imagePath);
+    }
+
+    res.session.SelectedAgreementImagePaths = imagePaths; //Now it's an array of image paths
+
+    res.render('SignSelectedAgreementPage', {
+      imagePaths: imagePaths,
+      numberOfPages: numberOfPages,
+    });
 
   } catch (error) {
     console.log('Error while loading the selected agreement overview page', error);
@@ -734,29 +747,29 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
   }
 });
 
-app.get('/SelectedAgreementImage/:pageNumber', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.get('/SelectedAgreementImage/:index', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const pageNumber = req.params.pageNumber;
-    //const selectedAgreementImagePath = req.session.selectedAgreementImagePath;
-    const selectedAgreementImagePath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_${pageNumber}.png`);
+    var imageIndex = req.params.index;
+    var SelectedAgreementImagePaths = req.session.SelectedAgreementImagePaths;
 
-
-    if(!selectedAgreementImagePath)
+    if(!SelectedAgreementImagePaths ||  !SelectedAgreementImagePaths[imageIndex]) 
     {
       return res.status(404).send("Image of selected agreement not found");
     }
 
-    console.log("Sending the RODO agreement image to the user");
+    var imagePath = SelectedAgreementImagePaths[imageIndex];
+    console.log("Sending the Selected agreement image to the user", imagePath);
 
-    fs.access(selectedAgreementImagePath, fs.F_OK, (error) => {
-      if (error) {
+    fs.access(imagePath, fs.F_OK, (error) => {
+      if (error) 
+      {
         console.error(error);
         return res.status(404).send("Image: 'Selected agreement' not found");
       }
         else
       {
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-        res.sendFile(selectedAgreementImagePath);
+        res.sendFile(imagePath);
       }
     });
   } catch (error) {
@@ -767,23 +780,60 @@ app.get('/SelectedAgreementImage/:pageNumber', checkAuthentication, checkEmailCo
 
 app.post('/submitAllSignedSelectedAgreements', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const images = req.body.images;
-    const SelectedAgreementImgPaths = images.map((_, index) => {
-      return path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_${index + 1}.png`);
+    var images = req.body.images; //Assuming images is an array of dataURLs sent from the client.
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
+    var agreementPrefix = req.session.agreementPrefix;
+    var finalPDFPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.pdf`);
+
+    console.log("Number of images received:", images.length);
+
+    var doc = new PDFDocument();
+
+    var outputPDFPath = finalPDFPath; //Modify this path as necessary
+    var stream = fs.createWriteStream(outputPDFPath);
+
+    doc.pipe(stream);
+    //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
+
+    for(let i = 0; i < images.length; i++) 
+    {
+      if (i !== 0) doc.addPage();
+
+      var dataURL = images[i].split(',')[1];
+      var imgBuffer = Buffer.from(dataURL, 'base64');
+
+      //try { //For debugging purposes
+      //  fs.writeFileSync("test.jpeg", imgBuffer);
+      //} catch (error) {
+      //  console.log("Error while writing the image to the file system:", error);
+      //}
+
+      //console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
+      console.log("Data URL:", images[i]);
+      console.log("Buffer:", imgBuffer);
+      console.log("Buffer length:", imgBuffer.length);
+
+      //If the image dimension is different, you may need to adjust this:
+      doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
+    }
+
+    //End the PDF document
+    doc.end();
+
+    stream.on('finish', () => {
+      console.log("PDF has been generated");
+      res.json({ status: 'success', message: 'Wybrana zgoda została podpisana' });
     });
 
-    for (let i = 0; i < images.length; i++) {
-      const base64Data = images[i].replace(/^data:image\/png;base64,/, '');
-      fs.writeFileSync(SelectedAgreementImgPaths[i], base64Data, 'base64');
-    }
-    
-    // ... (any other logic you might want)
-
-    return res.send({ status: 'success', message: 'Wybrana zgoda wraz z podpisem została podpisana' });
+    stream.on('error', (err) => {
+      console.error("Stream Error:", err);
+      res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
+    });
 
   } catch (error) {
-    console.log('Error:', error);
-    res.status(500).send("Internal server error");
+    console.error('Error while receiving signed images and generating PDF:', error);
+    res.status(500).json({ status: 'error', message: 'Internal server error' });
   }
 });
 
