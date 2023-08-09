@@ -8,6 +8,8 @@ const maxPages = parseInt(document.body.getAttribute('data-page-count'), 10);
 document.getElementById('nextPage').addEventListener('click', () => {
     if (currentPage < maxPages - 1) {
         signatures[currentPage] = canvas.toDataURL();
+        console.log("Image Data URL:", signatures[currentPage]);
+
         currentPage++;
         loadImage();
         updatePageDisplay();
@@ -17,6 +19,8 @@ document.getElementById('nextPage').addEventListener('click', () => {
 document.getElementById('previousPage').addEventListener('click', () => {
     if (currentPage > 0) {
         signatures[currentPage] = canvas.toDataURL();
+        console.log("Image Data URL:", signatures[currentPage]);
+
         currentPage--;
         loadImage();
         updatePageDisplay();

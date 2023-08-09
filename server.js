@@ -648,6 +648,8 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, checkEmailConfirmatio
 app.post('/submitAllSignedRODOAgreements', async (req, res) => {
   try {
       const images = req.body.images; // Assuming images is an array of dataURLs sent from the client.
+      console.log("Number of images received:", images.length);
+      
       const doc = new PDFDocument();
       const outputPDFPath = path.join(__dirname, 'agreements', 'output.pdf'); // Modify this path as necessary
       const stream = fs.createWriteStream(outputPDFPath);
