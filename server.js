@@ -650,7 +650,7 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
     const agreementPrefix = req.session.agreementPrefix;
     console.log("The date saved to the session: ", formattedDate);
 
-    const selectedAgreementPath = `${agreementPrefix}_${formattedDate}_${userEmail}.docx`;
+    const selectedAgreementPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.docx`);
     console.log("Final Selected agreement path: ", selectedAgreementPath);
 
     // Convert DOCX to PDF
