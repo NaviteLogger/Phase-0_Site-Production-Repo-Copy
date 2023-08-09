@@ -651,11 +651,12 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
     console.log("Number of images received:", images.length);
       
     const doc = new PDFDocument();
-    doc.pipe(stream);
-    doc.pipe(fs.createWriteStream('output.pdf'));
 
     const outputPDFPath = path.join(__dirname, 'agreements', 'output.pdf'); // Modify this path as necessary
     const stream = fs.createWriteStream(outputPDFPath);
+
+    doc.pipe(stream);
+    doc.pipe(fs.createWriteStream('output.pdf'));
       
     for(let i = 0; i < images.length; i++) {
       if (i !== 0) doc.addPage();
