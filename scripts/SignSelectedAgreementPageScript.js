@@ -1,21 +1,51 @@
-document.getElementById('clients-portal').addEventListener('click', () => {
-    window.location.href = '/clientsPortalPage';
-});
-
 document.getElementById('clearDrawing').addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+});
+
+const maxPages = parseInt(document.body.getAttribute('data-page-count'), 10);
+
+document.getElementById('nextPage').addEventListener('click', () => {
+    if (currentPage < maxPages - 1) {
+        signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+
+        console.log("Image Data URL:", signatures[currentPage]);
+
+        currentPage++;
+        loadImage();
+        updatePageDisplay();
+    }
+});
+
+document.getElementById('previousPage').addEventListener('click', () => {
+    if (currentPage > 0) {
+        signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+
+        console.log("Image Data URL:", signatures[currentPage]);
+
+        currentPage--;
+        loadImage();
+        updatePageDisplay();
+    }
 });
 
 const canvas = document.getElementById('signatureCanvas');
 const ctx = canvas.getContext('2d');
 let isDrawing = false;
 
+let currentPage = 0;
 const image = new Image();
-image.src = '/SelectedAgreementImage';
-image.onload = () => {
-    console.log('Image loaded');
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+let signatures = [];
+
+function loadImage() {
+    signatures[currentPage] = canvas.toDataURL();
+    image.src = '/RODOAgreementImage/' + currentPage;
+    image.onload = () => {
+        console.log('Image loaded');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    }
 }
 
 canvas.addEventListener('mousedown', () => {
@@ -50,38 +80,57 @@ canvas.addEventListener('touchend', () => {
 });
 
 function draw(event) {
+    const position = getCursorPosition(canvas, event);
+
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.strokeStyle = 'black';
 
-    ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    ctx.lineTo(position.x, position.y);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    ctx.moveTo(position.x, position.y);
 }
 
-document.getElementById('submitSignature').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL();
+function getCursorPosition(canvas, event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    return { x, y };
+}
 
-    //Send this to the server
-    fetch('/submitSignedSelectedAgreement', {
+document.getElementById('submitAllSignatures').addEventListener('click', () => {
+    signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+
+    if (signatures.length < maxPages) {
+        alert('Please sign all pages before submitting.');
+        return;
+    }
+
+    sendAllSignatures();
+});
+
+function sendAllSignatures() {
+    fetch('/submitAllSignedSelectedAgreements', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ image: dataURL })
+        body: JSON.stringify({ images: signatures })
     })
     .then((response) => response.json())
     .then((data) => {
         if (data.status === 'success') {
-            alert('Signature saved successfully!');
+            alert('All signatures saved successfully!');
             setTimeout(() => {
-                window.location.href = '/summaryPage';
-              }, 1500); //Redirect to the clients portal page after 1,5 seconds      
+                window.location.href = '/signSelectedAgreement';
+            }, 1500);
         } else {
-            alert('Failed to save the signature.');
+            alert('Failed to save the signatures.');
         }
     }).catch((error) => {
         console.error('Error:', error);
     });
-});
+}
+
+loadImage();

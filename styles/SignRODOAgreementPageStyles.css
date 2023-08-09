@@ -3,6 +3,10 @@ canvas {
     cursor: crosshair;
 }
 
-.canvas-box {
-    align-items: center;
+.canvas-container {
+    display: flex;
+    flex-direction: column;  /* Stack children vertically */
+    align-items: center;     /* Center children horizontally */
+    justify-content: center; /* Optional: If you want to center vertically as well */
+    /*height: 100vh;    */       /* Optional: Take full viewport height. Adjust or remove as needed. */
 }
