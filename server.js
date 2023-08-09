@@ -656,7 +656,7 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
       
     const doc = new PDFDocument();
 
-    const outputPDFPath = path.join(__dirname, 'agreements', `${finalPDFPath}`); // Modify this path as necessary
+    const outputPDFPath = finalPDFPath; // Modify this path as necessary
     const stream = fs.createWriteStream(outputPDFPath);
 
     doc.pipe(stream);
