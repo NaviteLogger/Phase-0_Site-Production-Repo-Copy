@@ -659,6 +659,9 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
           
       const dataURL = images[i].split(',')[1];
       const imgBuffer = Buffer.from(dataURL, 'base64');
+
+      fs.writeFileSync("test.jpeg", imgBuffer);
+
       console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
       //console.log("Data URL:", dataURL); 
       console.log("Buffer length:", imgBuffer.length);

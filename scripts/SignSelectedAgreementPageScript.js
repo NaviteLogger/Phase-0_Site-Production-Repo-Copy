@@ -7,7 +7,10 @@ const maxPages = parseInt(document.body.getAttribute('data-page-count'), 10);
 
 document.getElementById('nextPage').addEventListener('click', () => {
     if (currentPage < maxPages - 1) {
-        signatures[currentPage] = canvas.toDataURL();
+        signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+
+        console.log("Image Data URL:", signatures[currentPage]);
+
         currentPage++;
         loadImage();
         updatePageDisplay();
@@ -16,7 +19,10 @@ document.getElementById('nextPage').addEventListener('click', () => {
 
 document.getElementById('previousPage').addEventListener('click', () => {
     if (currentPage > 0) {
-        signatures[currentPage] = canvas.toDataURL();
+        signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+
+        console.log("Image Data URL:", signatures[currentPage]);
+
         currentPage--;
         loadImage();
         updatePageDisplay();
@@ -74,19 +80,27 @@ canvas.addEventListener('touchend', () => {
 });
 
 function draw(event) {
+    const position = getCursorPosition(canvas, event);
+
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.strokeStyle = 'black';
 
-    ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    ctx.lineTo(position.x, position.y);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    ctx.moveTo(position.x, position.y);
+}
+
+function getCursorPosition(canvas, event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    return { x, y };
 }
 
 document.getElementById('submitAllSignatures').addEventListener('click', () => {
-    // Save the current page's signature before checking or submitting
-    signatures[currentPage] = canvas.toDataURL();
+    signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
 
     if (signatures.length < maxPages) {
         alert('Please sign all pages before submitting.');
