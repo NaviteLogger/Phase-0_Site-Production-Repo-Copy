@@ -647,31 +647,31 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, checkEmailConfirmatio
 
 app.post('/submitAllSignedRODOAgreements', async (req, res) => {
   try {
-      const images = req.body.images; // Assuming images is an array of dataURLs sent from the client.
-      console.log("Number of images received:", images.length);
+    const images = req.body.images; // Assuming images is an array of dataURLs sent from the client.
+    console.log("Number of images received:", images.length);
       
-      const doc = new PDFDocument();
-      const outputPDFPath = path.join(__dirname, 'agreements', 'output.pdf'); // Modify this path as necessary
-      const stream = fs.createWriteStream(outputPDFPath);
+    const doc = new PDFDocument();
+    const outputPDFPath = path.join(__dirname, 'agreements', 'output.pdf'); // Modify this path as necessary
+    const stream = fs.createWriteStream(outputPDFPath);
       
-      doc.pipe(stream);
+    doc.pipe(stream);
       
-      for(let i = 0; i < images.length; i++) {
-          if (i !== 0) doc.addPage();
+    for(let i = 0; i < images.length; i++) {
+      if (i !== 0) doc.addPage();
           
-          const dataURL = images[i].split(',')[1];
-          const imgBuffer = Buffer.from(dataURL, 'base64');
-          
-          // If the image dimension is different, you may need to adjust this:
-          doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] }); // A4 size in points
-      }
-      
-      doc.end();
-
-      stream.on('finish', function() {
-          // Do something after PDF generation finishes, e.g., send a success response
-          res.json({ status: 'success', message: 'All signed pages saved and merged into PDF.' });
-      });
+      const dataURL = images[i].split(',')[1];
+      const imgBuffer = Buffer.from(dataURL, 'base64');
+      console.log("Data URL:", dataURL); 
+      console.log("Buffer length:", imgBuffer.length);
+         
+         // If the image dimension is different, you may need to adjust this:
+      doc.image(imgBuffer, 0, 0/*, { fit: [595.28, 841.89] }*/); // A4 size in points
+    }
+     
+    doc.on('end', () => {
+      console.log("PDF has been generated");
+      res.send({ status: 'success', message: 'RODO agreement has been signed' });
+    });
 
   } catch (error) {
       console.error('Error while receiving signed images and generating PDF:', error);
