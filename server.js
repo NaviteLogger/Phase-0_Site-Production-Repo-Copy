@@ -39,7 +39,7 @@ const connection = mysql.createConnection({
 });
 
 //Parse JSON bodies (as sent by HTML forms)
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 //Parse URL-encoded bodies (as sent by HTML forms)
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
