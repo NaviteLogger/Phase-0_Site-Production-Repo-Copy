@@ -623,7 +623,7 @@ app.post('/submitSignedRODOAgreement', checkAuthentication, checkEmailConfirmati
 
     const RODOAgreementImgPath = req.session.RODOAgreementImagePath;
 
-    fs.writeFile(RODOimgPath, base64Data, 'base64',  (error) => {
+    fs.writeFile(RODOAgreementImgPath, base64Data, 'base64',  (error) => {
       if (error)
       {
         console.log('Error while saving the image', error);
