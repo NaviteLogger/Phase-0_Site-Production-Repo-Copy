@@ -592,6 +592,16 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
       const pdfBytes = await fsPromises.readFile(pdfPath) // Use the renamed class here
       const pdfDoc = await PDFLibDocument.load(pdfBytes);  // Use the renamed class here
       const numberOfPages = pdfDoc.getPageCount();
+
+      // Convert each page of the PDF to an image
+      let imagePaths = [];
+      for (let i = 0; i < numberOfPages; i++) {
+        const imagePath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}_page_${i}.png`);
+        await pdftobuffer(pdfBytes, i).then((buffer) => {
+          fs.writeFileSync(imagePath, buffer, null);
+        });
+        imagePaths.push(imagePath);
+      }
       
       req.session.RODOAgreementImagePaths = imagePaths; // Now it's an array of image paths
 
