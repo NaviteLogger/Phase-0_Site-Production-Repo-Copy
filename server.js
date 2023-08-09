@@ -649,7 +649,7 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
     console.log("The date saved to the session: ", formattedDate);
 
     const selectedAgreementPath = `${agreementPrefix}_${formattedDate}_${userEmail}.docx`;
-    console.log("Final RODO agreement path: ", selectedAgreementPath);
+    console.log("Final Selected agreement path: ", selectedAgreementPath);
 
     // Convert DOCX to PDF
     const pdfPath = await convertDocxToPDF(selectedAgreementPath);
