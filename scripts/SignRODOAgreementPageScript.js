@@ -7,10 +7,11 @@ document.getElementById('clearDrawing').addEventListener('click', () => {
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 });
 
-const maxPages = 10;
+const maxPages = parseInt(document.body.getAttribute('data-page-count'), 10);
 
 document.getElementById('nextPage').addEventListener('click', () => {
     if (currentPage < maxPages - 1) {
+        signatures[currentPage] = canvas.toDataURL();
         currentPage++;
         loadImage();
         updatePageDisplay();
@@ -19,6 +20,7 @@ document.getElementById('nextPage').addEventListener('click', () => {
 
 document.getElementById('previousPage').addEventListener('click', () => {
     if (currentPage > 0) {
+        signatures[currentPage] = canvas.toDataURL();
         currentPage--;
         loadImage();
         updatePageDisplay();
@@ -117,6 +119,5 @@ function sendAllSignatures() {
         console.error('Error:', error);
     });
 }
-
 
 loadImage();

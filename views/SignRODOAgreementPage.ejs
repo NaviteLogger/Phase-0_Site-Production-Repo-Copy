@@ -8,7 +8,7 @@
   <script src="../scripts/SignRODOAgreementPageScript.js" defer></script>
   <title>Sign RODO Agreement Page</title>
 </head>
-<body>
+<body data-page-count="<%= numberOfPages %>">
     <header>
         <div class="left">
             <a href="../pages/indexPage.html" class="nav-link">STRONA GŁÓWNA</a>
@@ -29,9 +29,11 @@
         <canvas id="signatureCanvas" width="800" height="1200"></canvas>
         <br>
         <button id="clearDrawing">Clear Drawing</button>
-        <button id="submitSignature">Submit Signature</button>
         <button id="previousPage">Previous Page</button>
         <button id="nextPage">Next Page</button>
+    </div>
+    <div class="submit-box">
+        <button id="submitAllSignatures">Submit Signatures</button>
     </div>
 </body>
 </html>

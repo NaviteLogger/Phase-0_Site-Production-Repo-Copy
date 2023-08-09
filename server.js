@@ -22,6 +22,9 @@ const PizZip = require('pizzip');
 //For converting files
 const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
+const PDFDocument = require('pdfkit');
+const PDFLib = require('pdf-lib');
+const imageToBase64 = require('image-to-base64');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -585,6 +588,9 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
 
       // Convert DOCX to PDF
       const pdfPath = await convertDocxToPDF(RODOAgreementPath);
+      const pdfBytes = fs.readFileSync(pdfPath);
+      const pdfDoc = await PDFLib.load(pdfBytes);
+      const numberOfPages = pdfDoc.getPageCount();
 
       // Convert PDF to images
       const outputDir = path.join(__dirname, 'agreements');
@@ -594,7 +600,8 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
       req.session.RODOAgreementImagePaths = imagePaths; // Now it's an array of image paths
 
       res.render('SignRODOAgreementPage', {
-          imagePaths: imagePaths
+          imagePaths: imagePaths,
+          numberOfPages: numberOfPages,
       });
   } catch (error) {
       console.log('Error while loading the RODO agreement overview page', error);
@@ -629,29 +636,37 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, checkEmailConfirmatio
   }
 });
 
-app.post('/submitSignedRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.post('/submitAllSignedRODOAgreements', async (req, res) => {
   try {
-    const base64Data = req.body.image.replace(/^data:image\/png;base64,/, '');
-
-    const RODOAgreementImgPath = req.session.RODOAgreementImagePath;
-
-    fs.writeFile(RODOAgreementImgPath, base64Data, 'base64',  (error) => {
-      if (error)
-      {
-        console.log('Error while saving the image', error);
-        return res.status(500).send("Internal server error");
+      const images = req.body.images; // Assuming images is an array of dataURLs sent from the client.
+      const doc = new PDFDocument();
+      const outputPDFPath = path.join(__dirname, 'path_to_save_signed_pdfs', 'output.pdf'); // Modify this path as necessary
+      const stream = fs.createWriteStream(outputPDFPath);
+      
+      doc.pipe(stream);
+      
+      for(let i = 0; i < images.length; i++) {
+          if (i !== 0) doc.addPage();
+          
+          const dataURL = images[i].split(',')[1];
+          const imgBuffer = Buffer.from(dataURL, 'base64');
+          
+          // If the image dimension is different, you may need to adjust this:
+          doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] }); // A4 size in points
       }
-        else
-      {
-        console.log('The image has been saved');
-        return res.send({ status: 'success', message: 'Zgoda RODO wraz z podpisem została podpisana' });
-      }
-    });
+      
+      doc.end();
+
+      stream.on('finish', function() {
+          // Do something after PDF generation finishes, e.g., send a success response
+          res.json({ status: 'success', message: 'All signed pages saved and merged into PDF.' });
+      });
+
   } catch (error) {
-    console.log('Error while loading the agreement overview page', error);
-    res.status(500).send("Internal server error");
+      console.error('Error while receiving signed images and generating PDF:', error);
+      res.status(500).json({ status: 'error', message: 'Internal server error' });
   }
-});
+});  
 
 app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
@@ -684,9 +699,12 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
   }
 });
 
-app.get('/SelectedAgreementImage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.get('/SelectedAgreementImage/:pageNumber', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const selectedAgreementImagePath = req.session.selectedAgreementImagePath;
+    const pageNumber = req.params.pageNumber;
+    //const selectedAgreementImagePath = req.session.selectedAgreementImagePath;
+    const selectedAgreementImagePath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_${pageNumber}.png`);
+
 
     if(!selectedAgreementImagePath)
     {
@@ -712,26 +730,24 @@ app.get('/SelectedAgreementImage', checkAuthentication, checkEmailConfirmation, 
   }
 });
 
-app.post('/submitSignedSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.post('/submitAllSignedSelectedAgreements', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const base64Data = req.body.image.replace(/^data:image\/png;base64,/, '');
-
-    const SelectedAgreementImgPath = req.session.selectedAgreementImagePath;
-
-    fs.writeFile(SelectedAgreementImgPath, base64Data, 'base64',  (error) => {
-      if (error)
-      {
-        console.log('Error while saving the image', error);
-        return res.status(500).send("Internal server error");
-      }
-        else
-      {
-        console.log('The image has been saved');
-        return res.send({ status: 'success', message: 'Wybrana zgoda wraz z podpisem została podpisana' });
-      }
+    const images = req.body.images;
+    const SelectedAgreementImgPaths = images.map((_, index) => {
+      return path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_${index + 1}.png`);
     });
+
+    for (let i = 0; i < images.length; i++) {
+      const base64Data = images[i].replace(/^data:image\/png;base64,/, '');
+      fs.writeFileSync(SelectedAgreementImgPaths[i], base64Data, 'base64');
+    }
+    
+    // ... (any other logic you might want)
+
+    return res.send({ status: 'success', message: 'Wybrana zgoda wraz z podpisem została podpisana' });
+
   } catch (error) {
-    console.log('Error while loading the agreement overview page', error);
+    console.log('Error:', error);
     res.status(500).send("Internal server error");
   }
 });
