@@ -651,6 +651,9 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
     console.log("Number of images received:", images.length);
       
     const doc = new PDFDocument();
+    doc.pipe(stream);
+    doc.pipe(fs.createWriteStream('output.pdf'));
+
     const outputPDFPath = path.join(__dirname, 'agreements', 'output.pdf'); // Modify this path as necessary
     const stream = fs.createWriteStream(outputPDFPath);
       
@@ -672,11 +675,8 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
       console.log("Buffer length:", imgBuffer.length);
          
       // If the image dimension is different, you may need to adjust this:
-      doc.image(imgBuffer, { fit: [595.28, 841.89], width: 595.28, height: 841.89 });
+      doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
     }
-    
-    // Pipe the document after adding all content
-    doc.pipe(stream);
     
     // End the PDF document
     doc.end();
