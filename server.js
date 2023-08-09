@@ -306,6 +306,7 @@ async function getAgreementFileNameById(agreementId) {
 //This function will convert the docx file to pdf
 async function convertDocxToPDF(docxPath) {
   return new Promise((resolve, reject) => {
+    console.log('Converting the docx file to pdf, calling convertDocxToPDF(): ' + docxPath);
     const pdfPath = path.resolve(__dirname, 'agreements', path.basename(docxPath).replace('.docx', '.pdf'));
     const cmd = `libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir ${path.dirname(pdfPath)} ${docxPath}`;
     exec(cmd, (error, stdout, stderr) => {
@@ -313,6 +314,7 @@ async function convertDocxToPDF(docxPath) {
         console.error(`exec error: ${error}`);
         reject(error);
       }
+      console.log('pdfPath: ' + pdfPath + ' has been created');
       resolve(pdfPath);
     });
   });
