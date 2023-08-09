@@ -660,10 +660,15 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
       const dataURL = images[i].split(',')[1];
       const imgBuffer = Buffer.from(dataURL, 'base64');
 
-      fs.writeFileSync("test.jpeg", imgBuffer);
+      try {
+        fs.writeFileSync("test.jpeg", imgBuffer);
+      } catch (error) {
+        console.log("Error while writing the image to the file system:", error);
+      }
 
       console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
-      //console.log("Data URL:", dataURL); 
+      console.log("Data URL:", images[i]);
+      console.log("Buffer:", imgBuffer); 
       console.log("Buffer length:", imgBuffer.length);
          
       // If the image dimension is different, you may need to adjust this:
