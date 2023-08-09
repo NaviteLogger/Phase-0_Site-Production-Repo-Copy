@@ -588,7 +588,7 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
 
       // Convert DOCX to PDF
       const pdfPath = await convertDocxToPDF(RODOAgreementPath);
-      const pdfBytes = await fs.readFile(pdfPath);
+      const pdfBytes = await fs.readFile(pdfPath, () => {}); // Use the renamed class here
       const pdfDoc = await PDFLibDocument.load(pdfBytes);  // Use the renamed class here
       const numberOfPages = pdfDoc.getPageCount();
       
