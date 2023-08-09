@@ -108,7 +108,7 @@ function sendAllSignatures() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ signatures: signatures })
+        body: JSON.stringify({ images: signatures })
     })
     .then((response) => response.json())
     .then((data) => {
