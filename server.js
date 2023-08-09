@@ -659,11 +659,12 @@ app.post('/submitAllSignedRODOAgreements', async (req, res) => {
           
       const dataURL = images[i].split(',')[1];
       const imgBuffer = Buffer.from(dataURL, 'base64');
-      console.log("Data URL:", dataURL); 
+      console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
+      //console.log("Data URL:", dataURL); 
       console.log("Buffer length:", imgBuffer.length);
          
       // If the image dimension is different, you may need to adjust this:
-      doc.image(imgBuffer, 0, 0/*, { fit: [595.28, 841.89] }*/); // A4 size in points
+      doc.image(imgBuffer, { fit: [595.28, 841.89], width: 595.28, height: 841.89 });
     }
     
     // Pipe the document after adding all content
