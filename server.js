@@ -22,8 +22,8 @@ const PizZip = require('pizzip');
 //For converting files
 const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
-const PDFDocument = require('pdfkit');
-const PDFLib = require('pdf-lib');
+const { PDFDocument: PDFKitDocument } = require('pdfkit'); 
+const { PDFDocument: PDFLibDocument } = require('pdf-lib'); 
 const imageToBase64 = require('image-to-base64');
 
 //Load environment variables from the .env file
@@ -588,14 +588,9 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
 
       // Convert DOCX to PDF
       const pdfPath = await convertDocxToPDF(RODOAgreementPath);
-      const pdfBytes = fs.readFileSync(pdfPath);
-      const pdfDoc = await PDFLib.load(pdfBytes);
+      const pdfBytes = await fs.readFile(pdfPath);
+      const pdfDoc = await PDFLibDocument.load(pdfBytes);  // Use the renamed class here
       const numberOfPages = pdfDoc.getPageCount();
-
-      // Convert PDF to images
-      const outputDir = path.join(__dirname, 'agreements');
-      const imagePaths = await convertPdfToImages(pdfPath, outputDir);
-      console.log("RODO agreement has been converted to PNGs");
       
       req.session.RODOAgreementImagePaths = imagePaths; // Now it's an array of image paths
 
