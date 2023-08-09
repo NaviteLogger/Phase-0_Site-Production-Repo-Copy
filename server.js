@@ -24,7 +24,7 @@ const PizZip = require('pizzip');
 const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
 const PDFDocument = require('pdfkit'); 
-//const { PDFDocument: PDFLibDocument } = require('pdf-lib'); 
+const pdf = require('pdf-parse');
 const imageToBase64 = require('image-to-base64');
 
 //Load environment variables from the .env file
@@ -577,7 +577,11 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
   }
 });
 
-//Handle the request to the agreement signing page
+async function countPDFPages(pdfBuffer) {
+  const data = await pdf(pdfBuffer);
+  return data.numpages;
+}
+
 app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
       const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
@@ -589,9 +593,8 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
 
       // Convert DOCX to PDF
       const pdfPath = await convertDocxToPDF(RODOAgreementPath);
-      const pdfBytes = await fsPromises.readFile(pdfPath) // Use the renamed class here
-      //const pdfDoc = await PDFDocument.load(pdfBytes);  // Use the renamed class here
-      //const numberOfPages = pdfDoc.getPageCount();
+      const pdfBytes = await fsPromises.readFile(pdfPath);
+      const numberOfPages = await countPDFPages(pdfBytes);  // Use pdf-parse to get the page count
 
       // Convert each page of the PDF to an image
       let imagePaths = [];
