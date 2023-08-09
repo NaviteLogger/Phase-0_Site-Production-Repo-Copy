@@ -1,7 +1,3 @@
-document.getElementById('clients-portal').addEventListener('click', () => {
-    window.location.href = '/clientsPortalPage';
-});
-
 document.getElementById('clearDrawing').addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
