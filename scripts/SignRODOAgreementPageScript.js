@@ -78,14 +78,23 @@ canvas.addEventListener('touchend', () => {
 });
 
 function draw(event) {
+    const position = getCursorPosition(canvas, event);
+
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.strokeStyle = 'black';
 
-    ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    ctx.lineTo(position.x, position.y);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    ctx.moveTo(position.x, position.y);
+}
+
+function getCursorPosition(canvas, event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left + window.scrollX;
+    const y = event.clientY - rect.top + window.scrollY;
+    return { x, y };
 }
 
 document.getElementById('submitAllSignatures').addEventListener('click', () => {
