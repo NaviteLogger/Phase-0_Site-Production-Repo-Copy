@@ -25,6 +25,8 @@ const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
 const PDFDocument = require('pdfkit'); 
 const pdf = require('pdf-parse');
+//For compressing files
+const pako = require('pako');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -767,7 +769,11 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, checkEmailConfirm
 
 app.post('/submitAllSignedSelectedAgreements', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    var images = req.body.images; //Assuming images is an array of dataURLs sent from the client.
+    var compressedData = req.body;
+    var decompressedData = pako.inflate(compressedData, { to: 'string' });
+
+    var images = JSON.parse(decompressedData);
+
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     var formattedDate = req.session.formattedDate;
     var agreementPrefix = req.session.agreementPrefix;

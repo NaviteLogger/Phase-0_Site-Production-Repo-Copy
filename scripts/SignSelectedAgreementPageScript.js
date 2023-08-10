@@ -120,12 +120,14 @@ document.getElementById('submitAllSignatures').addEventListener('click', () => {
 });
 
 function sendAllSignatures() {
+    const compressedData = pako.deflate(JSON.stringify(signatures), { to: 'string' });
+
     fetch('/submitAllSignedSelectedAgreements', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({ images: signatures })
+        body: compressedData
     })
     .then((response) => response.json())
     .then((data) => {
