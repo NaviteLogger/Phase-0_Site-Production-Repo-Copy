@@ -229,12 +229,12 @@ function checkAuthentication(req, res, next) {
   if (req.isAuthenticated()) //If the user is authenticated (the res.isAuthenticated() status is true), call next()
   {
     //if user is looged in, req.isAuthenticated() will return true 
-    console.log('User is authenticated');
+    //console.log('User is authenticated');
     return next(); //As this will act as a middleware, we must call next() to pass the request to the next function
   }
     else 
   {
-    console.log('User is not authenticated');
+    //console.log('User is not authenticated');
     res.sendFile(path.join(__dirname, '/pages/NotLoggedInPage.html')); //If the user is not authenticated, redirect the user to the login page
   }
 }
@@ -584,11 +584,11 @@ async function countPDFPages(pdfBuffer) {
 
 app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-      const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-      const formattedDate = req.session.formattedDate;
+      var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+      var formattedDate = req.session.formattedDate;
       console.log("The date saved to the session: ", formattedDate);
 
-      const RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
+      var RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
       console.log("Final RODO agreement path: ", RODOAgreementPath);
 
       //Convert DOCX to PDF
@@ -707,16 +707,15 @@ app.post('/submitAllSignedRODOAgreements', checkAuthentication, checkEmailConfir
       res.status(500).json({ status: 'error', message: 'Internal server error' });
   }
 });
- 
 
 app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-    const formattedDate = req.session.formattedDate;
-    const agreementPrefix = req.session.agreementPrefix;
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
+    var agreementPrefix = req.session.agreementPrefix;
     console.log("The date saved to the session: ", formattedDate);
 
-    const selectedAgreementPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.docx`);
+    var selectedAgreementPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.docx`);
     console.log("Final Selected agreement path: ", selectedAgreementPath);
 
     //Convert DOCX to PDF
