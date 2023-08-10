@@ -39,12 +39,21 @@ var image = new Image();
 let signatures = [];
 
 function loadImage() {
-    signatures[currentPage] = canvas.toDataURL();
+    // Load the agreement image
     image.src = '/SelectedAgreementImage/' + currentPage;
     image.onload = () => {
         console.log('Image loaded');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // Redraw the signature if it exists for the current page
+        if (signatures[currentPage]) {
+            let signatureImage = new Image();
+            signatureImage.src = signatures[currentPage];
+            signatureImage.onload = () => {
+                ctx.drawImage(signatureImage, 0, 0, canvas.width, canvas.height);
+            }
+        }
     }
 }
 
