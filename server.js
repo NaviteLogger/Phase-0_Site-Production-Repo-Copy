@@ -770,12 +770,13 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, async (req, res) 
 
 app.post('/uploadSignature', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-      var image = req.body;
-      
+      var imageData = req.body.image;
+      var pageIndex = req.body.pageIndex;
+
       var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
       var formattedDate = req.session.formattedDate;
       var agreementPrefix = req.session.agreementPrefix;
-      var pdfName = `${agreementPrefix}_${formattedDate}_${userEmail}_page${image.pageIndex}.pdf`;
+      var pdfName = `${agreementPrefix}_${formattedDate}_${userEmail}_page${pageIndex}.pdf`;
       var individualPDFPath = path.join(__dirname, 'agreements', pdfName);
 
       var doc = new PDFDocument();
@@ -783,16 +784,15 @@ app.post('/uploadSignature', checkAuthentication, checkEmailConfirmation, async 
 
       doc.pipe(stream);
 
-      var dataURL = image.data.split(',')[1];
-      var imgBuffer = Buffer.from(dataURL, 'base64');
+      var imgBuffer = Buffer.from(imageData, 'base64');
 
       doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
 
       doc.end();
 
       stream.on('finish', () => {
-          console.log("PDF has been generated for page:", image.pageIndex);
-          res.json({ status: 'success', message: `Page ${image.pageIndex} has been saved.` });
+          console.log("PDF has been generated for page:", pageIndex);
+          res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
       });
 
       stream.on('error', (err) => {
@@ -805,7 +805,6 @@ app.post('/uploadSignature', checkAuthentication, checkEmailConfirmation, async 
       res.status(500).json({ status: 'error', message: 'Internal server error' });
   }
 });
-
 
 app.post('/mergeSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
