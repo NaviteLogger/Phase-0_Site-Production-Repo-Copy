@@ -516,7 +516,7 @@ app.get('/agreementOverviewPage', checkAuthentication, checkEmailConfirmation, a
 });
 
 //Handle the incoming filled overview page
-app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.post('/postAgreementData', checkAuthentication, async (req, res) => {
   try {
     const dataToFill = {
       clientFullName: req.body.clientFullName,
@@ -571,7 +571,7 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
   }
 });
 
-app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.get('/signRODOAgreement', checkAuthentication, async (req, res) => {
   try {
       var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
       var formattedDate = req.session.formattedDate;
@@ -608,7 +608,7 @@ app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async
   }
 });
 
-app.get('/RODOAgreementImage/:index', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.get('/RODOAgreementImage/:index', checkAuthentication, async (req, res) => {
   try {
     var imageIndex = req.params.index;
     var RODOAgreementImagePaths = req.session.RODOAgreementImagePaths;
@@ -639,7 +639,7 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, checkEmailConfirmatio
   }
 });
 
-app.post('/submitAllSignedRODOAgreements', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.post('/submitAllSignedRODOAgreements', checkAuthentication, async (req, res) => {
   try {
     var images = req.body.images; //Assuming images is an array of dataURLs sent from the client.
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
@@ -697,7 +697,7 @@ app.post('/submitAllSignedRODOAgreements', checkAuthentication, checkEmailConfir
   }
 });
 
-app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.get('/signSelectedAgreement', checkAuthentication, async (req, res) => {
   try {
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     var formattedDate = req.session.formattedDate;
@@ -768,7 +768,7 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, async (req, res) 
   }
 });
 
-app.post('/uploadSignature', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.post('/uploadSignature', checkAuthentication, async (req, res) => {
   try {
       var imageData = req.body.image;
       var pageIndex = req.body.pageIndex;
@@ -784,7 +784,8 @@ app.post('/uploadSignature', checkAuthentication, checkEmailConfirmation, async 
 
       doc.pipe(stream);
 
-      var imgBuffer = Buffer.from(imageData, 'base64');
+      var dataURL = imageData.split(',')[1];
+      var imgBuffer = Buffer.from(dataURL, 'base64');
 
       doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
 
