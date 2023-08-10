@@ -110,6 +110,7 @@ function getCursorPosition(canvas, event) {
 
 document.getElementById('submitAllSignatures').addEventListener('click', () => {
     signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+    console.log("Signatures array:", signatures);
 
     if (signatures.length < maxPages) {
         alert('Please sign all pages before submitting.');
