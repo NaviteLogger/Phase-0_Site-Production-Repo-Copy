@@ -767,7 +767,7 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, checkEmailConfirm
   }
 });
 
-app.post('/submitAllSignedSelectedAgreements', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.post('/submitSignedSelectedAgreements', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     var compressedData = req.body;
     var decompressedData = pako.inflate(compressedData, { to: 'string' });

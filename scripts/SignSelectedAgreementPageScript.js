@@ -36,6 +36,8 @@ let isDrawing = false;
 let currentPage = 0;
 var image = new Image();
 
+var currentIndex = 0;
+
 let signatures = [];
 
 function loadImage() {
@@ -121,28 +123,31 @@ document.getElementById('submitAllSignatures').addEventListener('click', () => {
         console.log(`Signature ${i + 1} Length: ${signatures[i].length}`);
     }    
 
-    sendAllSignatures();
+    sendNextSignature();
 });
 
-function sendAllSignatures() {
-    const compressedData = pako.deflate(JSON.stringify(signatures), { to: 'string' });
+function sendNextSignature() {
+    if(currentIndex >= signatures.length) {
+        //All signatures have been sent
+        alert('All signatures saved successfully!');
+        return;
+    }
 
-    fetch('/submitAllSignedSelectedAgreements', {
+    fetch('/submitSignedSelectedAgreements', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json'
         },
-        body: compressedData
+        body: JSON.stringify({ image: signatures[currentIndex], pageIndex: currentIndex })
     })
     .then((response) => response.json())
     .then((data) => {
         if (data.status === 'success') {
-            alert('All signatures saved successfully!');
-            setTimeout(() => {
-                window.location.href = '/summaryPage';
-            }, 1500);
+            console.log(`Signature ${currentIndex + 1} saved successfully!`);
+            currentIndex++;
+            sendNextSignature();  // Recursive call to send the next signature
         } else {
-            alert('Failed to save the signatures.');
+            console.error(`Failed to save signature ${currentIndex + 1}.`);
         }
     }).catch((error) => {
         console.error('Error:', error);
