@@ -127,10 +127,16 @@ document.getElementById('submitAllSignatures').addEventListener('click', () => {
 });
 
 function sendNextSignature() {
+    let totalUploadedImages = signatures.length;
+
     if(currentIndex >= signatures.length) {
         // All signatures have been sent. Notify server to finalize processing.
         fetch('/mergeSelectedAgreement', {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ totalUploadedImages: totalUploadedImages })
         })
         .then((response) => response.json())
         .then((data) => {

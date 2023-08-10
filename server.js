@@ -809,28 +809,32 @@ app.post('/uploadSignature', checkAuthentication, async (req, res) => {
 
 app.post('/mergeSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-      var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-      var formattedDate = req.session.formattedDate;
-      var agreementPrefix = req.session.agreementPrefix;
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
+    var agreementPrefix = req.session.agreementPrefix;
 
-      var pdfFiles = [];
-      for (let i = 0; i < req.body.totalPages; i++) {
-          let pdfName = `${agreementPrefix}_${formattedDate}_${userEmail}_page${i}.pdf`;
-          pdfFiles.push(path.join(__dirname, 'agreements', pdfName));
-      }
+    var pdfFiles = [];
 
-      var finalPDFPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.pdf`);
+    //Dynamically generate the list of PDFs based on the number of uploaded images.
+    //I'm assuming that the frontend sends the total number of uploaded images in the request body.
+    let totalPages = req.body.totalUploadedImages;  // Adjust if needed.
+      
+    for (let i = 0; i < totalPages; i++) {
+        let pdfName = `${agreementPrefix}_${formattedDate}_${userEmail}_page${i}.pdf`;
+        pdfFiles.push(path.join(__dirname, 'agreements', pdfName));
+    }
 
-      PDFMerge(pdfFiles, finalPDFPath)
-          .then(() => {
-              console.log("All PDFs merged successfully");
-              res.json({ status: 'success', message: 'All signed agreements have been merged.' });
-          })
-          .catch(error => {
-              console.error('Error while merging PDFs:', error);
-              res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
-          });
+    var finalPDFPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.pdf`);
 
+    PDFMerge(pdfFiles, {output: finalPDFPath})
+      .then(() => {
+        console.log("All PDFs merged successfully");
+        res.json({ status: 'success', message: 'All signed agreements have been merged.' });
+      })
+      .catch(error => {
+        console.error('Error while merging PDFs:', error);
+        res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
+      });
   } catch (error) {
       console.error('Error during the merging process:', error);
       res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
