@@ -44,10 +44,10 @@ const connection = mysql.createConnection({
 });
 
 //Parse JSON bodies (as sent by HTML forms)
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '10mb' }));
 
 //Parse URL-encoded bodies (as sent by HTML forms)
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
 //Set up the view engine
 app.set('view engine', 'ejs');
