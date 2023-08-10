@@ -734,7 +734,7 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
       imagePaths.push(imagePath);
     }
 
-    res.session.SelectedAgreementImagePaths = imagePaths; //Now it's an array of image paths
+    req.session.SelectedAgreementImagePaths = imagePaths; //Now it's an array of image paths
 
     res.render('SignSelectedAgreementPage', {
       imagePaths: imagePaths,
