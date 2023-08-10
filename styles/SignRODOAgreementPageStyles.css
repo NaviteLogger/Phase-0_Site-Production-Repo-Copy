@@ -10,3 +10,28 @@ canvas {
     justify-content: center; /* Optional: If you want to center vertically as well */
     /*height: 100vh;    */       /* Optional: Take full viewport height. Adjust or remove as needed. */
 }
+
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button-container button {
+    background-color: #4CAF50; /* Green background */
+    border: none;
+    color: white; /* White text color */
+    padding: 10px 20px; /* Padding around text */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block; /* This makes the buttons sit side by side */
+    font-size: 16px;
+    margin: 4px 2px; /* Spacing between buttons */
+    cursor: pointer;
+    border-radius: 8px; /* Rounded corners */
+    transition-duration: 0.4s; /* Transition effect for hover state */
+}
+
+.button-container button:hover {
+    background-color: white; /* Dark green background on mouse-over */
+    color: #4CAF50;
+}
