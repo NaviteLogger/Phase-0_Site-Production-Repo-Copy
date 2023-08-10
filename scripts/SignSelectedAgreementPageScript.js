@@ -6,16 +6,20 @@ document.getElementById('clearDrawing').addEventListener('click', () => {
 const maxPages = parseInt(document.body.getAttribute('data-page-count'), 10);
 
 document.getElementById('nextPage').addEventListener('click', () => {
-    if (currentPage < maxPages - 1) {
-        signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
-
-        console.log("Image Data URL:", signatures[currentPage]);
-
-        currentPage++;
-        loadImage();
-        //updatePageDisplay();
-    }
+    console.log('Next Page Button Clicked');
 });
+
+// document.getElementById('nextPage').addEventListener('click', () => {
+//     if (currentPage < maxPages - 1) {
+//         signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+
+//         console.log("Image Data URL:", signatures[currentPage]);
+
+//         currentPage++;
+//         loadImage();
+//         //updatePageDisplay();
+//     }
+// });
 
 document.getElementById('previousPage').addEventListener('click', () => {
     if (currentPage > 0) {
