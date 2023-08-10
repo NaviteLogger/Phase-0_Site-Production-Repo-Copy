@@ -117,6 +117,10 @@ document.getElementById('submitAllSignatures').addEventListener('click', () => {
         return;
     }
 
+    for (let i = 0; i < signatures.length; i++) {
+        console.log(`Signature ${i + 1} Length: ${signatures[i].length}`);
+    }    
+
     sendAllSignatures();
 });
 
