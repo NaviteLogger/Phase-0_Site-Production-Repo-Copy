@@ -681,7 +681,7 @@ app.post('/submitAllSignedRODOAgreements', checkAuthentication, checkEmailConfir
       //}
 
       //console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
-      console.log("Data URL:", images[i]);
+      //console.log("Data URL:", images[i]);
       console.log("Buffer:", imgBuffer); 
       console.log("Buffer length:", imgBuffer.length);
          
@@ -810,7 +810,7 @@ app.post('/submitAllSignedSelectedAgreements', checkAuthentication, checkEmailCo
       //}
 
       //console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
-      console.log("Data URL:", images[i]);
+      //console.log("Data URL:", images[i]);
       console.log("Buffer:", imgBuffer);
       console.log("Buffer length:", imgBuffer.length);
 
