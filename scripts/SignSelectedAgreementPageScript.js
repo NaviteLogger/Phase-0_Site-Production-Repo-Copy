@@ -34,7 +34,7 @@ const ctx = canvas.getContext('2d');
 let isDrawing = false;
 
 let currentPage = 0;
-const image = new Image();
+var image = new Image();
 
 let signatures = [];
 

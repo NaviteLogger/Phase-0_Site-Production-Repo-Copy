@@ -25,7 +25,6 @@ const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
 const PDFDocument = require('pdfkit'); 
 const pdf = require('pdf-parse');
-const imageToBase64 = require('image-to-base64');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -324,17 +323,9 @@ async function convertDocxToPDF(docxPath) {
   });
 }
 
-function convertPdfToImages(pdfPath, outputDir) {
-  return new Promise((resolve, reject) => {
-      exec(`python3 pdf_to_images.py ${pdfPath} ${outputDir}`, (error, stdout, stderr) => {
-          if (error) {
-              reject(error);
-              return;
-          }
-          const imagePaths = stdout.trim().split("\n").map(line => path.join(outputDir, line)); //each line in stdout is the name of an image
-          resolve(imagePaths);
-      });
-  });
+async function countPDFPages(pdfBuffer) {
+  var data = await pdf(pdfBuffer);
+  return data.numpages;
 }
 
 app.post('/verifyEmailAddress', (req, res) => {
@@ -577,11 +568,6 @@ app.post('/postAgreementData', checkAuthentication, checkEmailConfirmation, asyn
   }
 });
 
-async function countPDFPages(pdfBuffer) {
-  const data = await pdf(pdfBuffer);
-  return data.numpages;
-}
-
 app.get('/signRODOAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
       var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
@@ -726,13 +712,14 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
     //Convert each page of the PDF to an image
     let imagePaths = [];
     for (let i = 0; i < numberOfPages; i++) {
-      const imagePath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_page_${i}.png`);
+      var imagePath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_page_${i}.png`);
       await pdftobuffer(pdfBytes, i).then((buffer) => {
         fs.writeFileSync(imagePath, buffer, null);
       });
       imagePaths.push(imagePath);
     }
 
+    console.log("Image paths:", imagePaths);
     req.session.SelectedAgreementImagePaths = imagePaths; //Now it's an array of image paths
 
     res.render('SignSelectedAgreementPage', {
