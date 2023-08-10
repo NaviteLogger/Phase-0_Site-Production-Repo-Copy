@@ -25,6 +25,7 @@ const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
 const PDFDocument = require('pdfkit'); 
 const pdf = require('pdf-parse');
+const PDFMerge = require('pdf-merge');
 //For compressing files
 const pako = require('pako');
 
@@ -735,7 +736,7 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
   }
 });
 
-app.get('/SelectedAgreementImage/:index', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.get('/SelectedAgreementImage/:index', checkAuthentication, async (req, res) => {
   try {
     console.log("Sending the Selected agreement image to the user", req.params.index);
     var imageIndex = req.params.index;
@@ -767,7 +768,7 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, checkEmailConfirm
   }
 });
 
-app.post('/submitSignedSelectedAgreements', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+app.post('/submitSelectedAgreementsSignature', checkAuthentication, async (req, res) => {
   try {
     var compressedData = req.body;
     var decompressedData = pako.inflate(compressedData, { to: 'string' });
@@ -827,6 +828,36 @@ app.post('/submitSignedSelectedAgreements', checkAuthentication, checkEmailConfi
   } catch (error) {
     console.error('Error while receiving signed images and generating PDF:', error);
     res.status(500).json({ status: 'error', message: 'Internal server error' });
+  }
+});
+
+app.post('/mergeSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+      var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+      var formattedDate = req.session.formattedDate;
+      var agreementPrefix = req.session.agreementPrefix;
+
+      var pdfFiles = [];
+      for (let i = 0; i < req.body.totalPages; i++) {
+          let pdfName = `${agreementPrefix}_${formattedDate}_${userEmail}_page${i}.pdf`;
+          pdfFiles.push(path.join(__dirname, 'agreements', pdfName));
+      }
+
+      var finalPDFPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.pdf`);
+
+      PDFMerge(pdfFiles, finalPDFPath)
+          .then(() => {
+              console.log("All PDFs merged successfully");
+              res.json({ status: 'success', message: 'All signed agreements have been merged.' });
+          })
+          .catch(error => {
+              console.error('Error while merging PDFs:', error);
+              res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
+          });
+
+  } catch (error) {
+      console.error('Error during the merging process:', error);
+      res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
   }
 });
 

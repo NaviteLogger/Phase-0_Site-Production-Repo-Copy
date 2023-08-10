@@ -128,12 +128,24 @@ document.getElementById('submitAllSignatures').addEventListener('click', () => {
 
 function sendNextSignature() {
     if(currentIndex >= signatures.length) {
-        //All signatures have been sent
-        alert('All signatures saved successfully!');
+        // All signatures have been sent. Notify server to finalize processing.
+        fetch('/mergeSelectedAgreement', {
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success') {
+                alert('All signatures saved and processed successfully!');
+            } else {
+                console.error('Failed to process signatures.');
+            }
+        }).catch((error) => {
+            console.error('Error:', error);
+        });
         return;
     }
 
-    fetch('/submitSignedSelectedAgreements', {
+    fetch('/uploadSignature', {  // Updated the endpoint name here
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -143,11 +155,11 @@ function sendNextSignature() {
     .then((response) => response.json())
     .then((data) => {
         if (data.status === 'success') {
-            console.log(`Signature ${currentIndex + 1} saved successfully!`);
+            console.log(`Signature ${currentIndex + 1} uploaded successfully!`);
             currentIndex++;
             sendNextSignature();  // Recursive call to send the next signature
         } else {
-            console.error(`Failed to save signature ${currentIndex + 1}.`);
+            console.error(`Failed to upload signature ${currentIndex + 1}.`);
         }
     }).catch((error) => {
         console.error('Error:', error);
