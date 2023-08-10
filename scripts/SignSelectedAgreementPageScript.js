@@ -13,7 +13,7 @@ document.getElementById('nextPage').addEventListener('click', () => {
 
         currentPage++;
         loadImage();
-        updatePageDisplay();
+        //updatePageDisplay();
     }
 });
 
@@ -25,7 +25,7 @@ document.getElementById('previousPage').addEventListener('click', () => {
 
         currentPage--;
         loadImage();
-        updatePageDisplay();
+        //updatePageDisplay();
     }
 });
 
