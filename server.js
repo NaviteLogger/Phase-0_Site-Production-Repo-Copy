@@ -768,68 +768,47 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, async (req, res) 
   }
 });
 
-app.post('/submitSelectedAgreementsSignature', checkAuthentication, async (req, res) => {
+app.post('/uploadSignature', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    var compressedData = req.body;
-    var decompressedData = pako.inflate(compressedData, { to: 'string' });
+      var compressedData = req.body;
+      var decompressedData = pako.inflate(compressedData, { to: 'string' });
 
-    var images = JSON.parse(decompressedData);
+      var image = JSON.parse(decompressedData);
+      
+      var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+      var formattedDate = req.session.formattedDate;
+      var agreementPrefix = req.session.agreementPrefix;
+      var pdfName = `${agreementPrefix}_${formattedDate}_${userEmail}_page${image.pageIndex}.pdf`;
+      var individualPDFPath = path.join(__dirname, 'agreements', pdfName);
 
-    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-    var formattedDate = req.session.formattedDate;
-    var agreementPrefix = req.session.agreementPrefix;
-    var finalPDFPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.pdf`);
+      var doc = new PDFDocument();
+      var stream = fs.createWriteStream(individualPDFPath);
 
-    console.log("Number of images received:", images.length);
+      doc.pipe(stream);
 
-    var doc = new PDFDocument();
-
-    var outputPDFPath = finalPDFPath; //Modify this path as necessary
-    var stream = fs.createWriteStream(outputPDFPath);
-
-    doc.pipe(stream);
-    //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
-
-    for(let i = 0; i < images.length; i++) 
-    {
-      if (i !== 0) doc.addPage();
-
-      var dataURL = images[i].split(',')[1];
+      var dataURL = image.data.split(',')[1];
       var imgBuffer = Buffer.from(dataURL, 'base64');
 
-      //try { //For debugging purposes
-      //  fs.writeFileSync("test.jpeg", imgBuffer);
-      //} catch (error) {
-      //  console.log("Error while writing the image to the file system:", error);
-      //}
-
-      //console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
-      //console.log("Data URL:", images[i]);
-      console.log("Buffer:", imgBuffer);
-      console.log("Buffer length:", imgBuffer.length);
-
-      //If the image dimension is different, you may need to adjust this:
       doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
-    }
 
-    //End the PDF document
-    doc.end();
+      doc.end();
 
-    stream.on('finish', () => {
-      console.log("PDF has been generated");
-      res.json({ status: 'success', message: 'Wybrana zgoda została podpisana' });
-    });
+      stream.on('finish', () => {
+          console.log("PDF has been generated for page:", image.pageIndex);
+          res.json({ status: 'success', message: `Page ${image.pageIndex} has been saved.` });
+      });
 
-    stream.on('error', (err) => {
-      console.error("Stream Error:", err);
-      res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
-    });
+      stream.on('error', (err) => {
+          console.error("Stream Error:", err);
+          res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
+      });
 
   } catch (error) {
-    console.error('Error while receiving signed images and generating PDF:', error);
-    res.status(500).json({ status: 'error', message: 'Internal server error' });
+      console.error('Error while receiving signed image and generating individual PDF:', error);
+      res.status(500).json({ status: 'error', message: 'Internal server error' });
   }
 });
+
 
 app.post('/mergeSelectedAgreement', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
