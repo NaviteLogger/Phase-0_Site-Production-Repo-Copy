@@ -770,10 +770,7 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, async (req, res) 
 
 app.post('/uploadSignature', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-      var compressedData = req.body;
-      var decompressedData = pako.inflate(compressedData, { to: 'string' });
-
-      var image = JSON.parse(decompressedData);
+      var image = req.body;
       
       var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
       var formattedDate = req.session.formattedDate;
