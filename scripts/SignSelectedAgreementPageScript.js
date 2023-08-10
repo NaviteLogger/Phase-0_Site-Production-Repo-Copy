@@ -40,7 +40,7 @@ let signatures = [];
 
 function loadImage() {
     signatures[currentPage] = canvas.toDataURL();
-    image.src = '/RODOAgreementImage/' + currentPage;
+    image.src = '/SelectedAgreementImage/' + currentPage;
     image.onload = () => {
         console.log('Image loaded');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
