@@ -15,6 +15,7 @@
     "morgan": "^1.10.0",
     "mysql2": "^3.5.2",
     "nodemailer": "^6.9.4",
+    "pako": "^2.1.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pdf-lib": "^1.17.1",
