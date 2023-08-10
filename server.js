@@ -837,6 +837,15 @@ app.post('/submitAllSignedSelectedAgreements', checkAuthentication, checkEmailCo
   }
 });
 
+app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
+  try {
+    res.render('SummaryPage');
+  } catch (error) {
+    console.log('Error while loading the summary page', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 //Handle the login request
 app.post('/login', (req, res, next) => {
   //Console.log it for debugging purposes

@@ -123,7 +123,7 @@ function sendAllSignatures() {
         if (data.status === 'success') {
             alert('All signatures saved successfully!');
             setTimeout(() => {
-                window.location.href = '/signSelectedAgreement';
+                window.location.href = '/summaryPage';
             }, 1500);
         } else {
             alert('Failed to save the signatures.');
