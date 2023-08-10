@@ -616,7 +616,7 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, checkEmailConfirmatio
     }
 
     var imagePath = RODOAgreementImagePaths[imageIndex];
-     console.log("Sending the RODO agreement image to the user", imagePath);
+     console.log("Sending the RODO agreement image to the user: ", imagePath);
 
     fs.access(imagePath, fs.F_OK, (error) => {
       if (error) 
@@ -735,6 +735,7 @@ app.get('/signSelectedAgreement', checkAuthentication, checkEmailConfirmation, a
 
 app.get('/SelectedAgreementImage/:index', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
+    console.log("Sending the Selected agreement image to the user", req.params.index);
     var imageIndex = req.params.index;
     var SelectedAgreementImagePaths = req.session.SelectedAgreementImagePaths;
 
@@ -744,7 +745,7 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, checkEmailConfirm
     }
 
     var imagePath = SelectedAgreementImagePaths[imageIndex];
-    console.log("Sending the Selected agreement image to the user", imagePath);
+    console.log("Sending the Selected agreement image to the user: ", imagePath);
 
     fs.access(imagePath, fs.F_OK, (error) => {
       if (error) 
