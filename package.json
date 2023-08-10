@@ -19,6 +19,7 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pdf-lib": "^1.17.1",
+    "pdf-merge": "^1.2.0",
     "pdf-parse": "^1.1.1",
     "pdfkit": "^0.13.0",
     "pdftopic": "^0.2.0",
