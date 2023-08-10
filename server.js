@@ -841,6 +841,16 @@ app.post('/mergeSelectedAgreement', checkAuthentication, checkEmailConfirmation,
   }
 });
 
+app.get('/displayInterview', checkAuthentication, async (req, res) => {
+  try {
+    console.log("Sending the interview page to the user");
+    res.render('InterviewPage');
+  } catch (error) {
+    console.log('Error while loading the display interview page', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     res.render('SummaryPage');
