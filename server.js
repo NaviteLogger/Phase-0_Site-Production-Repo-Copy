@@ -267,7 +267,7 @@ function checkEmailConfirmation(req, res, next) {
 //Preinsert questions for the interview on each run of the server
 async function insertQuestionsFromFile(filePath, category) {
   try {
-    const data = await fs.readFile(filePath, 'utf-8');
+    const data = await fsPromises.readFile(filePath, 'utf-8');
     const questions = data.split('\n').filter(q => q.trim() !== '');
 
     for (let question of questions) {
