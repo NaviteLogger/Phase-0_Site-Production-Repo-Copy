@@ -1,0 +1,51 @@
+Czy przyjmuje Pan/i jakieś leki?
+Czy przyjmuje Pan/i jakieś leki?
+Czy jest Pan/i podczas terapii retinoidami?
+Czy przyjmuje Pani leki antykoncepcyjne?
+Czy stosuje Pan/i antykoncepcje?
+Czy choruje Pan/i na coś?
+Czy ma Pan/i na coś uczulenie?
+Czy ma Pan/i uczulenie na środki biologiczne?
+Czy ma Pan/i uczulenie na środki chemiczne?
+Czy ma Pan/i uczulenie na jakieś substancje kosmetyczne ?
+Czy ma Pan/i uczulenie na jakieś środki czystości?
+Czy ma Pan/i uczulenie na jakieś pokarmy?
+Czy ma Pan/i uczulenie na jakieś substancje kosmetyczne ?
+Czy w ostatnim czasie przeszła Pan/i jakieś zabiegi kosmetyczne ?
+Czy ma Pan/i w najbliższym czasie zaplanowane  jakieś zabiegi kosmetyczne ?
+Czy w ostatnim czasie przeszła/przeszedł Pan/i zabiegi medyczne ?
+Czy ma Pan/i w najbliższym czasie zaplanowane zabiegi medyczne ?
+Czy w ostatnim czasie leczył/a się Pan/i u dermatologa?
+Czy korzystała Pan/i z zabiegów kosmetycznych 
+Czy ma Pan/i implanty metalowe w ciele?
+Czy ma Pan/i sztuczne stawy?
+Czy ma Pan/i protezy?
+Czy ma Pan/i implanty metalowe w ciele?
+Czy ma Pan/i problemy z sercem?
+Czy ma Pan/i problemy naczyniowe?
+Czy ma Pan/i skłonności do przebarwień?
+Czy ma Pan/i skłonności do powstawania blizn?
+Czy zmaga się Pan/i z chorobą nowotworową?
+Czy zmagała się Pan/i z chorobą nowotworową?
+Czy choruje Pan/i na opryszczkę?
+Czy choruje Pan/i jakieś stany ropne?
+Czy choruje Pan/i na grzybicę skóry?
+Czy choruje Pan/i na cukrzyce?
+Czy choruje Pan/i na łuszczyce?
+Czy choruje Pan/i na choroby Bürgera?
+Czy ma Pan/i zaburzenia układu pokarmowego?
+Czy ma Pan/i zaburzenia układu moczowego?
+Czy ma Pani zaburzenia menstruacji?
+Czy ma Pani/ choroby genetyczne?
+Czy ma Pan/i problemy z tarczyca?
+Czy ma Pan/i problemy z ciśnieniem?
+Czy ma Pan/i zaburzenia układu hormonalnego?
+Czy w przeszłości po jakimkolwiek zabiegu kosmetycznym  wystąpiły u Pan/i reakcje niepożądane?
+Czy w przeszłości po jakimkolwiek zabiegu medycznym wystąpiły u Pan/i reakcje niepożądane?
+Czy w przeszłości po nałożeniu jakiegokolwiek kosmetyku wystąpiły u Pan/i reakcje niepożdane?
+Czy często się Pan/i opala?
+Czy korzysta Pan/i z solarium?
+Czy pali Pan/i papierosy?
+Czy uprawia Pan/i aktywności fizyczne?
+Czy pije Pan/i alkoholu?
+Czy stosuje Pan/i inne używki?
