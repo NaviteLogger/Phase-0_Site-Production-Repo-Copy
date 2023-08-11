@@ -295,9 +295,9 @@ async function insertQuestionsFromFile(filePath, category) {
 }
 
 async function initializeQuestions() {
-  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'TrueFalseQuestions.txt'), 'True_False');
-  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'TrueFalseQuestionsWithExplanation.txt'), 'True_False_With_Explanation');
-  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'DescriptiveQuestions.txt'), 'Descriptive');
+  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'TrueFalseQuestions.txt'), 'TF');
+  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'TrueFalseQuestionsWithExplanation.txt'), 'TF_EXPLANATION');
+  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'DescriptiveQuestions.txt'), 'DESCRIPTIVE');
 }
 
 initializeQuestions()
