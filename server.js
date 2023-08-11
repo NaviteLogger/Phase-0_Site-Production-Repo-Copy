@@ -272,7 +272,7 @@ async function insertQuestionsFromFile(filePath, category) {
 
     for (let question of questions) {
       await new Promise((resolve, reject) => {
-        connection.query('INSERT INTO Questions (question, category) VALUES (?, ?)', [question, category], (error, results) => {
+        connection.query('INSERT INTO Questions (content, category) VALUES (?, ?)', [question, category], (error, results) => {
           if (error) {
             if (error.code === 'ER_DUP_ENTRY') {
               console.log('Question: ' + question + ' already exists in the Questions table');
