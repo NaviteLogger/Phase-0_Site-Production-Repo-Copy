@@ -143,7 +143,7 @@ function sendNextSignature() {
             if (data.status === 'success') {
                 alert('All signatures saved and processed successfully!');
                 setTimeout(() => {
-                    window.location.href = '/';  // Redirect to the home page
+                    window.location.href = '/displayInterview';  // Redirect to the home page
                 }, 1000);
             } else {
                 console.error('Failed to process signatures.');
