@@ -28,12 +28,12 @@
     <p>Wywiad z klientem</p>
     <% questions.forEach((question, index) => { %>
         <div class="questions">
-            <label><%= question.content %></label>
+            <label class="question-label"><%= question.content %></label>
     
-            <% if (question.category === 'TF_EXPLANATION') { %>
+            <% if (question.category === 'TF') { %>
                 <input type="radio" name="question_<%= question.question_id %>" value="true" data-index="<%= index %>"> True
                 <input type="radio" name="question_<%= question.question_id %>" value="false" data-index="<%= index %>"> False
-            <% } else if (question.category === 'TF') { %>
+            <% } else if (question.category === 'TF_EXPLANATION') { %>
                 <input type="radio" name="question_<%= question.question_id %>" value="true" data-index="<%= index %>"> True
                 <input type="radio" name="question_<%= question.question_id %>" value="false" data-index="<%= index %>"> False
                 <textarea name="explanation_<%= question.question_id %>" class="explanation-textarea" data-index="<%= index %>" placeholder="Please clarify..." disabled></textarea>
