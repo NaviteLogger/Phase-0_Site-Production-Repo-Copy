@@ -894,9 +894,9 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
         FROM Questions
         ORDER BY
           CASE
-            WHEN question_type = 'TF' THEN 1
-            WHEN question_type = 'TF_EXPLANATION' THEN 2
-            WHEN question_type = 'DESCRIPTIVE' THEN 3
+            WHEN category = 'TF' THEN 1
+            WHEN category = 'TF_EXPLANATION' THEN 2
+            WHEN category = 'DESCRIPTIVE' THEN 3
             ELSE 4
           END
         `, (error, results) => {
