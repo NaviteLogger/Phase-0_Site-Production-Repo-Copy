@@ -905,6 +905,7 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
     const questions = results[0];
 
     console.log("Rendering the interview page");
+    console.log(typeof questions);
     res.render('InterviewPage', { questions: questions });
 
   } catch (error) {
