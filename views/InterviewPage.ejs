@@ -26,24 +26,16 @@
         </div>
     </header>
     <p>Wywiad z klientem</p>
-    <% questions.forEach(question => { %>
+    <% questions.forEach((question, index) => { %>
         <div class="question">
             <label><%= question.content %></label>
     
-            <% if (question.category === 'TF') { %>
-                <input type="radio" name="question_<%= question.question_id %>" value="true"> True
-                <input type="radio" name="question_<%= question.question_id %>" value="false"> False
-            <% } %>
-    
             <% if (question.category === 'TF_EXPLANATION') { %>
-                <input type="radio" name="question_<%= question.question_id %>" value="true"> True
-                <input type="radio" name="question_<%= question.question_id %>" value="false"> False
-                <textarea name="explanation_<%= question.question_id %>" placeholder="Please clarify..."></textarea>
-            <% } %>
-    
-            <% if (question.category === 'DESCRIPTIVE') { %>
-                <textarea name="question_<%= question.question_id %>"></textarea>
-            <% } %>
+                <input type="radio" name="question_<%= question.question_id %>" value="true" data-index="<%= index %>"> True
+                <input type="radio" name="question_<%= question.question_id %>" value="false" data-index="<%= index %>"> False
+                <textarea name="explanation_<%= question.question_id %>" class="explanation-textarea" data-index="<%= index %>" placeholder="Please clarify..." disabled></textarea>
+            <% } else { %>
+                <input type="radio" name="question_<%= question.question_id %>" value="true" data-index="<%= index %>"> Yes
         </div>
     <% }); %>
 </body>
