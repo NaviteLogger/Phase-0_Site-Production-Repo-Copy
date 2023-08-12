@@ -1,5 +1,7 @@
-.question {
-    margin-bottom: 20px;
+.questions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 textarea {
