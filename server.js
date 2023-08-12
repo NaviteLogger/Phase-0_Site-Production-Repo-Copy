@@ -888,7 +888,7 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
     console.log("Sending the interview page to the user: ", req.session.passport.user.email);
 
     //Query the database to retrieve the interview questions
-    const [questions] = await new Promise((resolve, reject) => {
+    const results = await new Promise((resolve, reject) => {
       connection.query('SELECT * FROM Questions ORDER BY category', (error, results) => {
         if (error) {
           console.log('Error while querying the database', error);
@@ -902,8 +902,10 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
       });
     });
 
+    const questions = results[0];
+
     console.log("Rendering the interview page");
-    res.render('InterviewPage', { questions });
+    res.render('InterviewPage', { questions: questions });
 
   } catch (error) {
     console.log('Error while loading the display interview page', error);
