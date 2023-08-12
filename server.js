@@ -885,8 +885,26 @@ app.post('/mergeSelectedAgreement', checkAuthentication, checkEmailConfirmation,
 
 app.get('/displayInterview', checkAuthentication, async (req, res) => {
   try {
-    console.log("Sending the interview page to the user");
-    res.render('InterviewPage');
+    console.log("Sending the interview page to the user: ", req.session.passport.user.email);
+
+    //Query the database to retrieve the interview questions
+    const [questions] = await new Promise((resolve, reject) => {
+      connection.query('SELECT * FROM Questions ORDER BY category', (error, results) => {
+        if (error) {
+          console.log('Error while querying the database', error);
+          reject(error); //if there's an error, reject the Promise
+        }
+          else
+        {
+          console.log('Interview questions have been retrieved from the database');
+          resolve(results); //if everything's okay, resolve the Promise with the results
+        }
+      });
+    });
+
+    console.log("Rendering the interview page");
+    res.render('InterviewPage', { questions });
+
   } catch (error) {
     console.log('Error while loading the display interview page', error);
     res.status(500).send("Internal server error");
