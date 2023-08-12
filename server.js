@@ -889,7 +889,17 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
 
     //Query the database to retrieve the interview questions
     const results = await new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM Questions ORDER BY category', (error, results) => {
+      connection.query(`
+        SELECT * 
+        FROM Questions
+        ORDER BY
+          CASE
+            WHEN question_type = 'TF' THEN 1
+            WHEN question_type = 'TF_EXPLANATION' THEN 2
+            WHEN question_type = 'DESCRIPTIVE' THEN 3
+            ELSE 4
+          END
+        `, (error, results) => {
         if (error) {
           console.log('Error while querying the database', error);
           reject(error); //if there's an error, reject the Promise
