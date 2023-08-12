@@ -903,7 +903,7 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
     });
 
     console.log(results);
-    const questions = results[0];
+    const questions = results;
 
     console.log("Rendering the interview page");
     console.log(typeof questions);
