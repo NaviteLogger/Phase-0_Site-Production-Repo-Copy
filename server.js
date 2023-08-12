@@ -902,6 +902,7 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
       });
     });
 
+    console.log(results);
     const questions = results[0];
 
     console.log("Rendering the interview page");
