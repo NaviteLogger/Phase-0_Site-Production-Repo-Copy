@@ -902,11 +902,11 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
       });
     });
 
-    console.log(results);
+    //console.log(results);
     const questions = results;
 
     console.log("Rendering the interview page");
-    console.log(typeof questions);
+    //console.log(typeof questions);
     res.render('InterviewPage', { questions: questions });
 
   } catch (error) {
