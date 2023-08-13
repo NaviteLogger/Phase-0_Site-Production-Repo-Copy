@@ -928,6 +928,11 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
 app.post('/submitInterview', checkAuthentication, async (req, res) => {
   try {
     console.log("Received the interview answers from the user: ", req.session.passport.user.email);
+    const formData = req.body;
+
+    //Generate the document
+    const documentPath = await generateDocument(formData);
+
   } catch (error) {
     console.log('Error while submitting the interview', error);
     res.status(500).send("Internal server error");
