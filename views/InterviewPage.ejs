@@ -30,11 +30,11 @@
         <% questions.forEach((question) => { %>
             <div class="question 
                 <% if (question.category === 'TF') { %>
-                    tf-question
+                    tf-category
                 <% } else if (question.category === 'TF_EXPLANATION') { %>
-                    tf-explanation-question
+                    tf-explanation-category
                 <% } else if (question.category === 'DESCRIPTIVE') { %>
-                    descriptive-question
+                    descriptive-category
                 <% } else { %>
                     default-category
                 <% } %>">
