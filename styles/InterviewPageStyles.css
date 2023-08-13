@@ -1,18 +1,21 @@
-.questions {
-    display: flex;
+/* Container for each question */
+.question {
+    display: grid;
+    grid-template-columns: 1fr auto auto; /* 1 fraction for the question, auto for the radio buttons and textarea */
     align-items: center;
-    justify-content: center;
+    gap: 10px; /* Space between grid items */
+    margin-bottom: 20px;
 }
 
+/* Styling for the question label */
 .question-label {
     font-size: 20px;
     font-weight: bold;
-    margin-right: 10px;
 }
 
+/* Styling for the textarea */
 textarea {
     width: 100%;
     max-width: 400px;
     height: 100px;
-    margin-top: 10px;
 }
