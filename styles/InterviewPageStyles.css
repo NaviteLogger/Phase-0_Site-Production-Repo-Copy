@@ -1,4 +1,4 @@
-.interview-page {
+.interview-container {
     font-size: 30px;
 }
 
@@ -14,7 +14,7 @@
 
 /* Styling for the question label */
 .question-label {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
     text-align: justify; /* Justify the question text */
 }
