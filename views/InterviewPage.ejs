@@ -26,25 +26,22 @@
         </div>
     </header>
     <p>Wywiad z klientem</p>
-    <% questions.forEach((question, index) => { %>
+    <% questions.forEach((question) => { %>
         <div class="question">
             <label class="question-label"><%= question.content %></label>
+            
+            <div class="radio-container">
+                <% if (question.category === 'TF' || question.category === 'TF_EXPLANATION') { %>
+                    <input type="radio" name="question_<%= question.question_id %>" value="true"> True
+                    <input type="radio" name="question_<%= question.question_id %>" value="false"> False
+                <% } %>
+            </div>
     
-            <div class="radio-container">
-            <% if (question.category === 'TF') { %>
-                <input type="radio" name="question_<%= question.question_id %>" value="true" data-index="<%= index %>"> True
-                <input type="radio" name="question_<%= question.question_id %>" value="false" data-index="<%= index %>"> False
-            </div>
-            <% } else if (question.category === 'TF_EXPLANATION') { %>
-            <div class="radio-container">
-                <input type="radio" name="question_<%= question.question_id %>" value="true" data-index="<%= index %>"> True
-                <input type="radio" name="question_<%= question.question_id %>" value="false" data-index="<%= index %>"> False
-            </div>
-                <textarea name="explanation_<%= question.question_id %>" class="explanation-textarea" data-index="<%= index %>" placeholder="Please clarify..." disabled></textarea>
-            <% } else { %>
-                <textarea name="explanation_<%= question.question_id %>" class="explanation-textarea" data-index="<%= index %>" placeholder="Please clarify..." disabled></textarea>
+            <% if (question.category === 'TF_EXPLANATION') { %>
+                <textarea name="explanation_<%= question.question_id %>" placeholder="Please clarify..."></textarea>
             <% } %>
         </div>
     <% }); %>
+    
 </body>
 </html>
