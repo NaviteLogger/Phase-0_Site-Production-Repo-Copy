@@ -18,8 +18,9 @@
 /* Container for the radio buttons */
 .radio-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    gap:  10px;
 }
 
 /* Styling for the textarea */
