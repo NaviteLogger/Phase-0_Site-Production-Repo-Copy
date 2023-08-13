@@ -39,8 +39,8 @@
             <div class="radio-container">
                 <input type="radio" name="question_<%= question.question_id %>" value="true" data-index="<%= index %>"> True
                 <input type="radio" name="question_<%= question.question_id %>" value="false" data-index="<%= index %>"> False
-                <textarea name="explanation_<%= question.question_id %>" class="explanation-textarea" data-index="<%= index %>" placeholder="Please clarify..." disabled></textarea>
             </div>
+                <textarea name="explanation_<%= question.question_id %>" class="explanation-textarea" data-index="<%= index %>" placeholder="Please clarify..." disabled></textarea>
             <% } else { %>
                 <textarea name="explanation_<%= question.question_id %>" class="explanation-textarea" data-index="<%= index %>" placeholder="Please clarify..." disabled></textarea>
             <% } %>
