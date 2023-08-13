@@ -1,3 +1,7 @@
+.interview-page {
+    font-size: 30px;
+}
+
 /* Container for each question */
 .question {
     display: grid;
