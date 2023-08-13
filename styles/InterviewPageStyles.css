@@ -1,29 +1,30 @@
-.interview-page {
-    font-size: 1.5em;
-}
-
 /* Container for each question */
 .question {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto auto; /* 1 fraction for the question, auto for the radio buttons and textarea */
     align-items: center;
-    justify-content: space-between;
+    gap: 20px; /* Space between grid items */
     margin-bottom: 20px;
     border-bottom: 1px solid #ccc; /* Add a bottom border to each question */
-}
-
-.question > *:not(:last-child) {
-    border-right: 1px solid #ccc; /* Add a right border to all grid items except the last one */
 }
 
 /* Styling for the question label */
 .question-label {
     font-size: 20px;
     font-weight: bold;
+    text-align: justify; /* Justify the question text */
+}
+
+/* Container for the radio buttons */
+.radio-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Styling for the textarea */
 textarea {
     width: 100%;
-    max-width: 200px;
+    max-width: 300px;
     height: 100px;
 }

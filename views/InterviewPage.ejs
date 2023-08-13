@@ -38,10 +38,12 @@
             </div>
     
             <% if (question.category === 'TF_EXPLANATION' || question.category === 'DESCRIPTIVE') { %>
-                <textarea name="explanation_<%= question.question_id %>" placeholder="Proszę opisać i sprecyzować"></textarea>
+                <textarea name="explanation_<%= question.question_id %>" placeholder="Please clarify..."></textarea>
+            <% } else { %>
+                <!-- Empty div to maintain grid structure -->
+                <div></div>
             <% } %>
         </div>
-    <% }); %>
-    
+    <% }); %>    
 </body>
 </html>
