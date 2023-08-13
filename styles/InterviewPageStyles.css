@@ -4,11 +4,15 @@
 
 /* Container for each question */
 .question {
-    display: grid;
-    grid-template-columns: 1fr auto auto; /* 1 fraction for the question, auto for the radio buttons and textarea */
+    display: flex;
     align-items: center;
-    gap: 10px; /* Space between grid items */
+    justify-content: space-between;
     margin-bottom: 20px;
+    border-bottom: 1px solid #ccc; /* Add a bottom border to each question */
+}
+
+.question > *:not(:last-child) {
+    border-right: 1px solid #ccc; /* Add a right border to all grid items except the last one */
 }
 
 /* Styling for the question label */
