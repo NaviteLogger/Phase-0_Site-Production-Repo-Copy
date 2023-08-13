@@ -32,13 +32,13 @@
             
             <div class="radio-container">
                 <% if (question.category === 'TF' || question.category === 'TF_EXPLANATION') { %>
-                    <input type="radio" name="question_<%= question.question_id %>" value="true"> True
-                    <input type="radio" name="question_<%= question.question_id %>" value="false"> False
+                    <input type="radio" name="question_<%= question.question_id %>" value="true"> Tak
+                    <input type="radio" name="question_<%= question.question_id %>" value="false"> Nie
                 <% } %>
             </div>
     
             <% if (question.category === 'TF_EXPLANATION' || question.category === 'DESCRIPTIVE') { %>
-                <textarea name="explanation_<%= question.question_id %>" placeholder="Please clarify..."></textarea>
+                <textarea name="explanation_<%= question.question_id %>" placeholder="Proszę opisać..."></textarea>
             <% } %>
         </div>
     <% }); %>
