@@ -25,27 +25,36 @@
             <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
         </div>
     </header>
-<div class="interview-container">
-    <p class="interview-title">Wywiad z klientem</p>
-    <% questions.forEach((question) => { %>
-        <div class="question">
-            <label class="question-label"><%= question.content %></label>
+    <div class="interview-container">
+        <p class="interview-title">Wywiad z klientem</p>
+        <% questions.forEach((question) => { %>
+            <div class="question 
+                <% if (question.category === 'TF') { %>
+                    tf-question
+                <% } else if (question.category === 'TF_EXPLANATION') { %>
+                    tf-explanation-question
+                <% } else if (question.category === 'DESCRIPTIVE') { %>
+                    descriptive-question
+                <% } else { %>
+                    default-category
+                <% } %>">
+                    <label class="question-label"><%= question.content %></label>
             
-            <div class="radio-container">
-                <% if (question.category === 'TF' || question.category === 'TF_EXPLANATION') { %>
-                    <input type="radio" name="question_<%= question.question_id %>" value="true"> Tak
-                    <input type="radio" name="question_<%= question.question_id %>" value="false"> Nie
-                <% } %>
-            </div>
+                    <div class="radio-container">
+                        <% if (question.category === 'TF' || question.category === 'TF_EXPLANATION') { %>
+                            <input type="radio" name="question_<%= question.question_id %>" value="true"> Tak
+                            <input type="radio" name="question_<%= question.question_id %>" value="false"> Nie
+                        <% } %>
+                    </div>
     
-            <% if (question.category === 'TF_EXPLANATION' || question.category === 'DESCRIPTIVE') { %>
-                <textarea name="explanation_<%= question.question_id %>" placeholder="Jakie? Proszę sprecyzować"></textarea>
-            <% } else { %>
-                <!-- Empty div to maintain grid structure -->
-                <div></div>
-            <% } %>
-        </div>
-    <% }); %>  
-</div>  
+                    <% if (question.category === 'TF_EXPLANATION' || question.category === 'DESCRIPTIVE') { %>
+                        <textarea name="explanation_<%= question.question_id %>" placeholder="Jakie? Proszę sprecyzować"></textarea>
+                    <% } else { %>
+                        <!-- Empty div to maintain grid structure -->
+                        <div></div>
+                    <% } %>
+            </div>
+        <% }); %>  
+    </div>  
 </body>
 </html>
