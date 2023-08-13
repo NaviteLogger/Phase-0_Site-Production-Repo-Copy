@@ -8,11 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
     radioButtons.forEach(radio => {
         radio.addEventListener('change', function() {
             const questionContainer = this.closest('.question');
+            const questionLabel = questionContainer.querySelector('.question-label');
 
-            if (this.value === 'true') {
-                questionContainer.style.color = 'red';
-            } else if (this.value === 'false') {
-                questionContainer.style.color = 'green';
+            if (questionContainer.classList.contains('tf-category')) {
+                if (this.value === 'true') {
+                    questionLabel.style.color = 'red';
+                } else if (this.value === 'false') {
+                    questionLabel.style.color = 'green';
+                }
             }
         });
     });
