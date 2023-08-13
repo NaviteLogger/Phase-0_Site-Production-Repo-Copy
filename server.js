@@ -925,6 +925,15 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
   }
 });
 
+app.post('/submitInterview', checkAuthentication, async (req, res) => {
+  try {
+    console.log("Received the interview answers from the user: ", req.session.passport.user.email);
+  } catch (error) {
+    console.log('Error while submitting the interview', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     res.render('SummaryPage');

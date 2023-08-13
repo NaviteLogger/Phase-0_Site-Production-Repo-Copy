@@ -32,4 +32,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch('/submitInterview', {
+            method: 'POST',
+            body: formData
+        }).then((response) => {
+            if (response.ok) {
+                alert('Interview submitted successfully!');
+            } 
+                else 
+            {
+                alert('Error submitting interview!');
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+    });    
 });
