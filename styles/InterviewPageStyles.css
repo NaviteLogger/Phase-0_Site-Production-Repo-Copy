@@ -1,5 +1,8 @@
 .interview-container {
     font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
 }
 
 /* Container for each question */
