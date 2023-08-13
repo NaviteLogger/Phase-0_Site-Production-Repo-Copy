@@ -2,26 +2,18 @@ document.getElementById('clients-portal').addEventListener('click', () => {
     window.location.href = '/clientsPortalPage';
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const questions = document.querySelectorAll('.question');
+document.addEventListener('DOMContentLoaded', function() {
+    const radioButtons = document.querySelectorAll('.radio-container input[type="radio"]');
 
-    questions.forEach(question => {
-        const radios = question.querySelectorAll('input[type="radio"]');
-        const textarea = question.querySelector('.clarify');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const questionContainer = this.closest('.question');
 
-        // Initially hide the textarea if it exists
-        if (textarea) {
-            textarea.style.display = 'none';
-        }
-
-        radios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'true' && textarea) {
-                    textarea.style.display = 'block';
-                } else if (textarea) {
-                    textarea.style.display = 'none';
-                }
-            });
+            if (this.value === 'true') {
+                questionContainer.style.backgroundColor = 'red';
+            } else if (this.value === 'false') {
+                questionContainer.style.backgroundColor = 'green';
+            }
         });
     });
 });
