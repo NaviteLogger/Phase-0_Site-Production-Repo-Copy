@@ -48,7 +48,7 @@
                     </div>
     
                     <% if (question.category === 'TF_EXPLANATION' || question.category === 'DESCRIPTIVE') { %>
-                        <textarea name="explanation_<%= question.question_id %>" placeholder="Jakie? Proszę sprecyzować"></textarea>
+                        <textarea name="explanation_<%= question.question_id %>" placeholder="Jakie? Proszę sprecyzować" required></textarea>
                     <% } else { %>
                         <!-- Empty div to maintain grid structure -->
                         <div></div>
