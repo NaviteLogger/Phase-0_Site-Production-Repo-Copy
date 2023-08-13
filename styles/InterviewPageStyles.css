@@ -1,8 +1,12 @@
+.interview-title {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 .interview-container {
     font-size: 30px;
-    display: flex;
-    align-items: center;
-    justify-items: center;
 }
 
 /* Container for each question */
