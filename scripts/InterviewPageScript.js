@@ -10,9 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const questionContainer = this.closest('.question');
 
             if (this.value === 'true') {
-                questionContainer.style.backgroundColor = 'red';
+                questionContainer.style.color = 'red';
             } else if (this.value === 'false') {
-                questionContainer.style.backgroundColor = 'green';
+                questionContainer.style.color = 'green';
             }
         });
     });

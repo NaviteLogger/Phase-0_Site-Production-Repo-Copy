@@ -17,6 +17,7 @@
     gap: 20px; /* Space between grid items */
     margin-bottom: 20px;
     border-bottom: 1px solid #ccc; /* Add a bottom border to each question */
+    transition: color 0.3s ease; /* Add a transition effect to the background color */
 }
 
 /* Styling for the question label */
