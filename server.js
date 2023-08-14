@@ -964,6 +964,7 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
         });
 
         const questionContentFromDB = results[0].content; // Renamed for clarity
+        console.log(questionContentFromDB);
 
         doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
       }
