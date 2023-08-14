@@ -934,79 +934,42 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
 
     const doc = new PDFDocument();
 
-    // Pipe its output somewhere, like to a file or HTTP response
-    // Here we're writing it to a file
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${req.session.formattedDate}.pdf`);
     doc.pipe(fs.createWriteStream(pathToInterviewDocument));
 
-    // Add content to the PDF
     doc.fontSize(20).text('Interview Responses', { align: 'center' });
 
-    for (let key in formData) 
-    {
-      if (key.startsWith('question_')) 
-      {
-        var questionId = key.split('_')[1];
-        var questionContent = formData[key];
+    for (let key in formData) {
+      if (key.startsWith('question_')) {
+        const questionId = key.split('_')[1];
+        const userResponse = formData[key]; // Renamed for clarity
 
-        //Query the database to retrieve the question content
-        var results = await new Promise ((resolve, reject) => {
+        const results = await new Promise((resolve, reject) => {
           connection.query('SELECT question_content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
-            if (error)
-            {
+            if (error) {
               console.log('Error while querying the database', error);
-              reject(error); //if there's an error, reject the Promise
-            }
-              else
-            {
+              reject(error);
+            } else {
               console.log('Question content has been retrieved from the database');
-              resolve(results); //if everything's okay, resolve the Promise with the results
+              resolve(results);
             }
           });
         });
 
-        let questionContent = results[0].content;
+        const questionContentFromDB = results[0].content; // Renamed for clarity
 
-        //Insert the question content along with the content to the pdf document
-        doc.fontSize(15).text(`${questionContent}: ${questionContent}`, { align: 'left' });
+        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
 
-        if(explanation)
-        {
+        const explanationKey = 'explanation_' + questionId;
+        if (formData.hasOwnProperty(explanationKey)) {
+          const explanation = formData[explanationKey];
           doc.fontSize(15).text(`Wyjaśnienie: ${explanation}`, { align: 'left' });
         }
-      }
-        else if (key.startsWith('explanation_') && !formData['question_' + key.split('_')[1]])
-      {
-        //This will deal with the DESCRIPTIVE category questions
-        questionId = key.split('_')[1];
-        explanation = formData[key];
-
-        //Query the database to retrieve the question content
-        var results = await new Promise ((resolve, reject) => {
-          connection.query('SELECT question_content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
-            if (error)
-            {
-              console.log('Error while querying the database', error);
-              reject(error); //if there's an error, reject the Promise
-            }
-              else
-            {
-              console.log('Question content has been retrieved from the database');
-              resolve(results); //if everything's okay, resolve the Promise with the results
-            }
-          });
-        });
-
-        let questionContent = results[0].content;
-
-        //Insert the question content along with the content to the pdf document
-        doc.fontSize(15).text(`${questionContent}: ${explanation}`, { align: 'left' });
       }
     }
 
     doc.end();
 
-    //Store the document path in the session
     req.session.interviewDocumentPath = pathToInterviewDocument;
 
   } catch (error) {
