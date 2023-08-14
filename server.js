@@ -934,7 +934,9 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
     console.log(formData);
 
     const doc = new PDFDocument();
-    const formattedDate = req.session.formattedDate;
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
+
     console.log(`The formatted date is ${formattedDate}`)
 
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${formattedDate}.pdf`);
