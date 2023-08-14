@@ -957,6 +957,7 @@ app.post('/submitInterview', checkAuthentication, async (req, res) => {
   try {
     console.log("Received the interview answers from the user: ", req.session.passport.user.email);
     const formData = req.body;
+    console.log(formData);
 
     //Generate the document
     const interviewDocumentPath = await generatePDF(formData);
