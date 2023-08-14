@@ -934,9 +934,9 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
     console.log(formData);
 
     const doc = new PDFDocument();
-    const currentDate = new Date();
-    doc.font(path.join(__dirname, 'fonts', 'futuraFontMedium.ttf'));
+    doc.font(path.join(__dirname, 'fonts', 'arialFont.ttf'));
     
+    const currentDate = new Date();
     const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
 
     console.log(`The formatted date is ${formattedDate}`)
