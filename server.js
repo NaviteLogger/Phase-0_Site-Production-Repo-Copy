@@ -962,12 +962,28 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
         const questionContentFromDB = results[0].content; // Renamed for clarity
 
         doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
+      }
 
-        const explanationKey = 'explanation_' + questionId;
-        if (Object.prototype.hasOwnProperty.call(formData, explanationKey)) {
-          const explanation = formData[explanationKey];
-          doc.fontSize(15).text(`Wyjaśnienie: ${explanation}`, { align: 'left' });
-        }
+      if(key.startsWith('explanation_'))
+      {
+        const questionId = key.split('_')[1];
+        const userResponse = formData[key]; // Renamed for clarity
+
+        const results = await new Promise((resolve, reject) => {
+          connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
+            if (error) {
+              console.log('Error while querying the database', error);
+              reject(error);
+            } else {
+              console.log('Question content has been retrieved from the database');
+              resolve(results);
+            }
+          });
+        });
+
+        const questionContentFromDB = results[0].content; // Renamed for clarity
+
+        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
       }
     }
 
