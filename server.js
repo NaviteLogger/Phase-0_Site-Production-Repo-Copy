@@ -933,6 +933,8 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
     const formData = req.body;
 
     const doc = new PDFDocument();
+    doc.font(path.join(__dirname, 'fonts', 'futuraFontMedium.ttf'));
+    
     const formattedDate = req.session.formattedDate;
     console.log(`The formatted date is ${formattedDate}`)
 
