@@ -377,7 +377,7 @@ function generatePDF(formData) {
   const doc = new PDFDocument();
 
   // Define the output path for the PDF
-  const outputPath = path.join(__dirname, 'agreements', 'interview.pdf');
+  const outputPath = path.join(__dirname, 'agreements', 'interviewPDF.pdf');
   const writeStream = fs.createWriteStream(outputPath);
   doc.pipe(writeStream);
 
