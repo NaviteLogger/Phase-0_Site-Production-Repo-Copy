@@ -373,6 +373,30 @@ async function countPDFPages(pdfBuffer) {
   return data.numpages;
 }
 
+async function generatePDF (formData) {
+  const doc = new PDFDocument();
+
+  //Define the output path for the generated PDF
+  const outputPath = path.join(__dirname, 'agreements', 'interviewGeneratedPDF.pdf');
+  const writeSteam = fs.createWriteStream(outputPath);
+  doc.pipe(writeSteam);
+
+  //Add the content to the PDF
+  doc.fontSize(25).text('Interview Response', { align: 'center' }).moveDown();
+
+  for (let key in formData) 
+  {
+    if (formData.hasOwnProperty(key)) 
+    {
+      doc.fontSize(14).text(key + ': ' + formData[key]).moveDown(0.5);
+    }
+  }
+
+  doc.end();
+
+  return outputPath;
+}
+
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -931,7 +955,10 @@ app.post('/submitInterview', checkAuthentication, async (req, res) => {
     const formData = req.body;
 
     //Generate the document
-    const documentPath = await generateDocument(formData);
+    const interviewDocumentPath = await generatePDF(formData);
+
+    //Store the document path in the session
+    req.session.interviewDocumentPath = interviewDocumentPath;
 
   } catch (error) {
     console.log('Error while submitting the interview', error);
