@@ -931,6 +931,7 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
 app.post('/submitInterview', upload.none(), async (req, res) => {
   try {
     const formData = req.body;
+    console.log(formData);
 
     const doc = new PDFDocument();
     const formattedDate = req.session.formattedDate;
