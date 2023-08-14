@@ -26,6 +26,9 @@ const { pdftobuffer } = require('pdftopic');
 const PDFDocument = require('pdfkit'); 
 const pdf = require('pdf-parse');
 const PDFMerge = require('pdf-merge');
+//For managin the form data
+const multer = require('multer');
+const upload = multer();
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -953,7 +956,7 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
   }
 });
 
-app.post('/submitInterview', checkAuthentication, async (req, res) => {
+app.post('/submitInterview', upload.none(), checkAuthentication, async (req, res) => {
   try {
     console.log("Received the interview answers from the user: ", req.session.passport.user.email);
     const formData = req.body;
