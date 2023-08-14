@@ -934,6 +934,7 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
 
     const doc = new PDFDocument();
     const formattedDate = req.session.formattedDate;
+    console.log(`The formatted date is ${formattedDate}`)
 
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${formattedDate}.pdf`);
     doc.pipe(fs.createWriteStream(pathToInterviewDocument));
