@@ -928,40 +928,45 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
   }
 });
 
-app.post('/submitInterview', upload.none(), checkAuthentication, async (req, res) => {
+app.post('/submitInterview', upload.none(), (req, res) => {
   try {
-    console.log("Received the interview answers from the user: ", req.session.passport.user.email);
     const formData = req.body;
-    console.log(formData);
 
     const doc = new PDFDocument();
 
-    const interviewDocumentPath = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${req.session.formattedDate}.pdf`);
+    // Pipe its output somewhere, like to a file or HTTP response
+    // Here we're writing it to a file
+    doc.pipe(fs.createWriteStream('output.pdf'));
 
-    //Pipe its output somewhere, like to a file or HTTP response
-    //Here we are writing it to a file
-    doc.pipe(fs.createWriteStream(interviewDocumentPath));
+    // Add content to the PDF
+    doc.fontSize(20).text('Interview Responses', { align: 'center' });
 
-    doc.fontSize(25).text('Wyniki ankiety', { align: 'center' });
-
-    for(let key in formData) 
+    for (let key in formData) 
     {
       if (key.startsWith('question_')) 
       {
-        const questionId = key.split('_')[1];
-        const response = formData[key];
-        const explanation = formData['explanation_' + questionId];
+          const questionId = key.split('_')[1];
+          const response = formData[key];
+          const explanation = formData['explanation_' + questionId];
 
-        doc.fontSize(14).text(`Question ID: ${questionId}`, { continued: true }).fontSize(14).text(` Response: ${response}`);
-        if (explanation) 
-        {
-            doc.text(`Explanation: ${explanation}`);
-        }
+          doc.fontSize(14).text(`Question ID: ${questionId}`, { continued: true }).fontSize(14).text(` Response: ${response}`);
+          if (explanation) 
+          {
+              doc.text(`Explanation: ${explanation}`);
+          }
+      } 
+        else if (key.startsWith('explanation_') && !formData['question_' + key.split('_')[1]])
+      {
+          // This handles the DESCRIPTIVE category questions
+          const questionId = key.split('_')[1];
+          const response = formData[key];
+
+          doc.fontSize(14).text(`Question ID (Descriptive): ${questionId}`, { continued: true }).fontSize(14).text(` Response: ${response}`);
       }
     }
 
     doc.end();
-
+    // ... rest of your logic ...
     //Store the document path in the session
     req.session.interviewDocumentPath = interviewDocumentPath;
 
