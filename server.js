@@ -946,7 +946,7 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
         const userResponse = formData[key]; // Renamed for clarity
 
         const results = await new Promise((resolve, reject) => {
-          connection.query('SELECT question_content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
+          connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
             if (error) {
               console.log('Error while querying the database', error);
               reject(error);
