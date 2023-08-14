@@ -373,23 +373,27 @@ async function countPDFPages(pdfBuffer) {
   return data.numpages;
 }
 
-async function generatePDF (formData) {
+function generatePDF(formData) {
   const doc = new PDFDocument();
 
-  //Define the output path for the generated PDF
-  const outputPath = path.join(__dirname, 'agreements', 'interviewGeneratedPDF.pdf');
-  const writeSteam = fs.createWriteStream(outputPath);
-  doc.pipe(writeSteam);
+  // Define the output path for the PDF
+  const outputPath = 'path_to_save/output.pdf';
+  const writeStream = fs.createWriteStream(outputPath);
+  doc.pipe(writeStream);
 
-  //Add the content to the PDF
-  doc.fontSize(25).text('Interview Response', { align: 'center' }).moveDown();
+  // Add content to the PDF based on form data
+  doc.fontSize(20).text('Interview Responses', { align: 'center' }).moveDown();
 
-  for (let key in formData) 
-  {
-    if (formData.hasOwnProperty(key)) 
-    {
-      doc.fontSize(14).text(key + ': ' + formData[key]).moveDown(0.5);
-    }
+  for (let key in formData) {
+      if (formData.hasOwnProperty(key)) {
+          if (key.startsWith('question_')) {
+              const questionId = key.split('_')[1];
+              doc.fontSize(14).text('Question ' + questionId + ': ' + formData[key]).moveDown(0.5);
+          } else if (key.startsWith('explanation_')) {
+              const questionId = key.split('_')[1];
+              doc.fontSize(14).text('Explanation for Question ' + questionId + ': ' + formData[key]).moveDown(0.5);
+          }
+      }
   }
 
   doc.end();
