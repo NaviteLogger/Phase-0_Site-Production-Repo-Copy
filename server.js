@@ -931,11 +931,14 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
 app.post('/submitInterview', upload.none(), async (req, res) => {
   try {
     const formData = req.body;
+    console.log(formData);
 
     const doc = new PDFDocument();
+    const currentDate = new Date();
     doc.font(path.join(__dirname, 'fonts', 'futuraFontMedium.ttf'));
     
-    const formattedDate = req.session.formattedDate;
+    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
+
     console.log(`The formatted date is ${formattedDate}`)
 
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${formattedDate}.pdf`);
@@ -963,12 +966,28 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
         const questionContentFromDB = results[0].content; // Renamed for clarity
 
         doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
+      }
 
-        const explanationKey = 'explanation_' + questionId;
-        if (Object.prototype.hasOwnProperty.call(formData, explanationKey)) {
-          const explanation = formData[explanationKey];
-          doc.fontSize(15).text(`Wyjaśnienie: ${explanation}`, { align: 'left' });
-        }
+      if(key.startsWith('explanation_'))
+      {
+        const questionId = key.split('_')[1];
+        const userResponse = formData[key]; // Renamed for clarity
+
+        const results = await new Promise((resolve, reject) => {
+          connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
+            if (error) {
+              console.log('Error while querying the database', error);
+              reject(error);
+            } else {
+              console.log('Question content has been retrieved from the database');
+              resolve(results);
+            }
+          });
+        });
+
+        const questionContentFromDB = results[0].content; // Renamed for clarity
+
+        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
       }
     }
 

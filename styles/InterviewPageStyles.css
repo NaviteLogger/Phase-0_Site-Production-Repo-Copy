@@ -35,6 +35,10 @@
     gap:  10px;
 }
 
+input[type="radio"] {
+    transform: scale(1.5);
+}
+
 /* Styling for the textarea */
 textarea {
     width: 100%;
