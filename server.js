@@ -376,34 +376,6 @@ async function countPDFPages(pdfBuffer) {
   return data.numpages;
 }
 
-function generatePDF(formData) {
-  const doc = new PDFDocument();
-
-  // Define the output path for the PDF
-  const outputPath = path.join(__dirname, 'agreements', 'interviewPDF.pdf');
-  const writeStream = fs.createWriteStream(outputPath);
-  doc.pipe(writeStream);
-
-  // Add content to the PDF based on form data
-  doc.fontSize(20).text('Interview Responses', { align: 'center' }).moveDown();
-
-  for (let key in formData) {
-      if (formData.hasOwnProperty(key)) {
-          if (key.startsWith('question_')) {
-              const questionId = key.split('_')[1];
-              doc.fontSize(14).text('Question ' + questionId + ': ' + formData[key]).moveDown(0.5);
-          } else if (key.startsWith('explanation_')) {
-              const questionId = key.split('_')[1];
-              doc.fontSize(14).text('Explanation for Question ' + questionId + ': ' + formData[key]).moveDown(0.5);
-          }
-      }
-  }
-
-  doc.end();
-
-  return outputPath;
-}
-
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -962,8 +934,33 @@ app.post('/submitInterview', upload.none(), checkAuthentication, async (req, res
     const formData = req.body;
     console.log(formData);
 
-    //Generate the document
-    const interviewDocumentPath = await generatePDF(formData);
+    const doc = new PDFDocument();
+
+    const interviewDocumentPath = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${req.session.formattedDate}.pdf`);
+
+    //Pipe its output somewhere, like to a file or HTTP response
+    //Here we are writing it to a file
+    doc.pipe(fs.createWriteStream(interviewDocumentPath));
+
+    doc.fontSize(25).text('Wyniki ankiety', { align: 'center' });
+
+    for(let key in formData) 
+    {
+      if (key.startsWith('question_')) 
+      {
+        const questionId = key.split('_')[1];
+        const response = formData[key];
+        const explanation = formData['explanation_' + questionId];
+
+        doc.fontSize(14).text(`Question ID: ${questionId}`, { continued: true }).fontSize(14).text(` Response: ${response}`);
+        if (explanation) 
+        {
+            doc.text(`Explanation: ${explanation}`);
+        }
+      }
+    }
+
+    doc.end();
 
     //Store the document path in the session
     req.session.interviewDocumentPath = interviewDocumentPath;
