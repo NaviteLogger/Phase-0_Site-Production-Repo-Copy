@@ -936,7 +936,8 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
 
     // Pipe its output somewhere, like to a file or HTTP response
     // Here we're writing it to a file
-    doc.pipe(fs.createWriteStream('output.pdf'));
+    const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${req.session.formattedDate}.pdf`);
+    doc.pipe(fs.createWriteStream(pathToInterviewDocument));
 
     // Add content to the PDF
     doc.fontSize(20).text('Interview Responses', { align: 'center' });
@@ -977,8 +978,8 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
         else if (key.startsWith('explanation_') && !formData['question_' + key.split('_')[1]])
       {
         //This will deal with the DESCRIPTIVE category questions
-        var questionId = key.split('_')[1];
-        var explanation = formData[key];
+        questionId = key.split('_')[1];
+        explanation = formData[key];
 
         //Query the database to retrieve the question content
         var results = await new Promise ((resolve, reject) => {
@@ -1002,11 +1003,11 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
         doc.fontSize(15).text(`${questionContent}: ${explanation}`, { align: 'left' });
       }
     }
-    
+
     doc.end();
 
     //Store the document path in the session
-    req.session.interviewDocumentPath = interviewDocumentPath;
+    req.session.interviewDocumentPath = pathToInterviewDocument;
 
   } catch (error) {
     console.log('Error while submitting the interview', error);
