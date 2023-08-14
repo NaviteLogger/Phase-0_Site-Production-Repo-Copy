@@ -44,39 +44,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData(form);
 
-        const tfQuestions = document.querySelectorAll('.tf-category, .tf-explanation-category');
-        tfQuestions.forEach(question => {
-            const radioButtons = question.querySelectorAll('input[type="radio"]');
-            const textarea = question.querySelector('textarea');
+        // const tfQuestions = document.querySelectorAll('.tf-category, .tf-explanation-category');
+        // tfQuestions.forEach(question => {
+        //     const radioButtons = question.querySelectorAll('input[type="radio"]');
+        //     const textarea = question.querySelector('textarea');
 
-            //Check if any radio button is checked
-            if(!Array.from(radioButtons).some(radio => radio.checked)) 
-            {
-                isAllAnswered = false;
-            }
+        //     //Check if any radio button is checked
+        //     if(!Array.from(radioButtons).some(radio => radio.checked)) 
+        //     {
+        //         isAllAnswered = false;
+        //     }
 
-            //For the TF_EXPLANATION category, check if the textarea is filled
-            if (question.classList.contains('tf-explanation-category')) 
-            {
-                const yesSelected = Array.from(radioButtons).find(radio => radio.value === 'true' && radio.checked);
-                if (yesSelected && (!textarea || textarea.value.trim() === ''))
-                {
-                    isAllExplained = false;
-                }
-            }
-        });
+        //     //For the TF_EXPLANATION category, check if the textarea is filled
+        //     if (question.classList.contains('tf-explanation-category')) 
+        //     {
+        //         const yesSelected = Array.from(radioButtons).find(radio => radio.value === 'true' && radio.checked);
+        //         if (yesSelected && (!textarea || textarea.value.trim() === ''))
+        //         {
+        //             isAllExplained = false;
+        //         }
+        //     }
+        // });
 
-        if (!isAllAnswered) 
-        {
-            alert('Please answer all questions!');
-            return;
-        }
+        // if (!isAllAnswered) 
+        // {
+        //     alert('Please answer all questions!');
+        //     return;
+        // }
 
-        if (!isAllExplained)
-        {
-            alert('Please explain all "Yes" answers!');
-            return;
-        }
+        // if (!isAllExplained)
+        // {
+        //     alert('Please explain all "Yes" answers!');
+        //     return;
+        // }
 
         fetch('/submitInterview', {
             method: 'POST',

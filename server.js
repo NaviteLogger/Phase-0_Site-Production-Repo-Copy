@@ -962,7 +962,7 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
         doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
 
         const explanationKey = 'explanation_' + questionId;
-        if (formData.hasOwnProperty(explanationKey)) {
+        if (Object.prototype.hasOwnProperty.call(formData, explanationKey)) {
           const explanation = formData[explanationKey];
           doc.fontSize(15).text(`Wyjaśnienie: ${explanation}`, { align: 'left' });
         }
