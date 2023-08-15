@@ -1220,6 +1220,13 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
       }
     });
 
+    //Now it is time to delete all the remainings
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+
+    //Delete the RODO agreement
+    deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
+    deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
+
     res.render('SummaryPage', { userEmail: req.session.passport.user.email, selectedAgreementName: req.session.selectedAgreementName });
 
   } catch (error) {
