@@ -931,7 +931,6 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
       {
         const questionId = key.split('_')[1];
         const userResponse = formData[key]; // Renamed for clarity
-        const userResponseInPolish = userResponse === 'true' ? 'Tak' : 'Nie';
 
         const results = await new Promise((resolve, reject) => {
           connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
@@ -947,7 +946,7 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
 
         const questionContentFromDB = results[0].content; // Renamed for clarity
 
-        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponseInPolish}`, { align: 'left' });
+        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
       }
     }
 
