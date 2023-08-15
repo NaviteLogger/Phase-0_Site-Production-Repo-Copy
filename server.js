@@ -649,7 +649,7 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, async (req, res) => {
 
 app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) => {
   try {
-    var imageData = req.body.images; //Assuming images is an array of dataURLs sent from the client.
+    var imageData = req.body.image; //Assuming images is an array of dataURLs sent from the client.
     var pageIndex = req.body.pageIndex;
 
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
