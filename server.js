@@ -938,10 +938,11 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
     
     const currentDate = new Date();
     const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
 
     console.log(`The formatted date is ${formattedDate}`)
 
-    const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${formattedDate}.pdf`);
+    const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${userEmail}_${formattedDate}.pdf`);
     doc.pipe(fs.createWriteStream(pathToInterviewDocument));
 
     doc.fontSize(20).text('Wywiad oraz odpowiedzi', { align: 'center' });
