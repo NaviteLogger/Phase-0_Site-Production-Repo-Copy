@@ -252,7 +252,6 @@ function checkEmailConfirmation(req, res, next) {
 
   console.log('');
   console.log('Checking email confirmation for: ' + email + ', calling checkEmailConfirmation()');
-  console.log('');
 
   //Query the database to find the user with the given email
   connection.query('SELECT * FROM Email_Verifications WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
@@ -262,11 +261,13 @@ function checkEmailConfirmation(req, res, next) {
 
     if (results[0].is_verified === 1) {
       console.log('Email: ' + email + ' is verified');
+      console.log('');
       return next();
     }
       else
     {
       console.log('Email: ' + email + ' is not yet verified');
+      console.log('');
       res.sendFile(path.join(__dirname, 'protected', 'EmailVerificationPage.html'));
       //res.json({ status: 'not_verified', message: 'Email nie został potwierdzony' });  
     }
@@ -993,7 +994,7 @@ app.post('/postInterviewData', upload.none(), async (req, res) => {
         const questionContentFromDB = results[0].content; // Renamed for clarity
         console.log(questionContentFromDB);
 
-        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponseInPolish}`, { align: 'left' });
+        doc.fontSize(15).text(`${questionContentFromDB} : ${userResponseInPolish}`, { align: 'left' });
       }
 
       if(key.startsWith('explanation_'))
@@ -1015,7 +1016,7 @@ app.post('/postInterviewData', upload.none(), async (req, res) => {
 
         const questionContentFromDB = results[0].content; // Renamed for clarity
 
-        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
+        doc.fontSize(15).text(`${questionContentFromDB} : ${userResponse}`, { align: 'left' });
       }
     }
 
@@ -1184,6 +1185,7 @@ app.post('/mergeInterview', checkAuthentication, async (req, res) => {
 
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
 
     let emailOptions = {
       from: 'pomoc@prawokosmetyczne.pl',
@@ -1192,18 +1194,18 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
       text: 'W załączniku znajdują się podpisane zgody z dnia ' + req.session.formattedDate,
       attachments: [
         {
-          filename: 'RODO_agreement_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf',
-          path: path.join(__dirname, 'agreements', 'RODO_agreement_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf'),
+          filename: 'RODO_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+          path: path.join(__dirname, 'agreements', 'RODO_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
           contentType: 'application/pdf'
         },
         {
-          filename: req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf',
-          path: path.join(__dirname, 'agreements', req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf'),
+          filename: req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+          path: path.join(__dirname, 'agreements', req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
           contentType: 'application/pdf'
         },
         {
-          filename: 'interview_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf',
-          path: path.join(__dirname, 'interviews', 'interview_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf'),
+          filename: 'interview_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+          path: path.join(__dirname, 'interviews', 'interview_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
           contentType: 'application/pdf'
         }
       ]
@@ -1220,8 +1222,7 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
       }
     });
 
-    //Now it is time to delete all the remainings
-    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    //Now it is time to delete all the remainings:
 
     //Delete the RODO agreement
     deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
