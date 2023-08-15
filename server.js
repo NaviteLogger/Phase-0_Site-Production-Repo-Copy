@@ -1212,7 +1212,7 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
     };
 
     //Send the email with the signed agreements
-    transporter.sendMail(emailOptions, (error, info) => {
+    await transporter.sendMail(emailOptions, (error, info) => {
       if (error) 
       {
         console.log('Error while sending the email', error);
@@ -1220,13 +1220,14 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
       } else {
         console.log('Email sent: ' + info.response);
       }
+    }).then(() => {
+      console.log("Email has been sent to the user");
+      console.log("Deleting all the agreement files from the server");
+      deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
+    }).then(() => {
+      console.log("Deleting all the interview files from the server");
+      deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
     });
-
-    //Now it is time to delete all the remainings:
-
-    //Delete the RODO agreement
-    deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
-    deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
 
     res.render('SummaryPage', { userEmail: req.session.passport.user.email, selectedAgreementName: req.session.selectedAgreementName });
 
