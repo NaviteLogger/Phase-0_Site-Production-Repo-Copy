@@ -267,50 +267,6 @@ function checkEmailConfirmation(req, res, next) {
   });
 }
 
-//Preinsert questions for the interview on each run of the server
-async function insertQuestionsFromFile(filePath, category) {
-  try {
-    const data = await fsPromises.readFile(filePath, 'utf-8');
-    const questions = data.split('\n').filter(q => q.trim() !== '');
-
-    for (let question of questions) {
-      await new Promise((resolve, reject) => {
-        connection.query('INSERT INTO Questions (content, category) VALUES (?, ?)', [question, category], (error, results) => {
-          if (error) {
-            if (error.code === 'ER_DUP_ENTRY') {
-              console.log('Question: ' + question + ' already exists in the Questions table');
-              resolve();
-            }
-              else
-            {
-              throw error;
-            }
-          } else {
-            console.log('Question: ' + question + ' has been inserted into the Questions table');
-            resolve();
-          }
-        });
-      });
-    }
-  } catch (error) {
-    console.log('Error while inserting questions from file', error);
-  }
-}
-
-async function initializeQuestions() {
-  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'TrueFalseQuestions.txt'), 'TF');
-  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'TrueFalseQuestionsWithExplanation.txt'), 'TF_EXPLANATION');
-  await insertQuestionsFromFile(path.join(__dirname, 'questions', 'DescriptiveQuestions.txt'), 'DESCRIPTIVE');
-}
-
-initializeQuestions()
-  .then(() => {
-    console.log('Questions have been inserted successfully');
-  })
-  .catch((error) => {
-    console.log('Error while inserting questions', error);
-  });
-
 const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDate, prefix) => {
   const docPath = path.join(__dirname, 'agreements', fileName);
   const content = fs.readFileSync(docPath, 'binary');
