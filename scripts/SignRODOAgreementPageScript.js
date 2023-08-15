@@ -42,7 +42,7 @@ let signatures = [];
 
 function loadImage() {
     // Load the agreement image
-    image.src = '/SelectedAgreementImage/' + currentPage;
+    image.src = '/RODOAgreementImage/' + currentPage;
     image.onload = () => {
         console.log('Image loaded');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
