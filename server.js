@@ -657,7 +657,7 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
 
     var pdfName = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.pdf`);
 
-    console.log("Number of images received:", images.length);
+    console.log("Number of images received:", imageData.length);
       
     var doc = new PDFDocument();
     var stream = fs.createWriteStream(pdfName);
