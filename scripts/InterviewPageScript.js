@@ -81,14 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/submitInterview', {
             method: 'POST',
             body: formData
-        }).then((response) => {
-            if (response.ok) {
-                alert('Interview submitted successfully!');
-            } 
-                else 
-            {
-                alert('Error submitting interview!');
-            }
         }).catch((error) => {
             console.error(error);
         });
