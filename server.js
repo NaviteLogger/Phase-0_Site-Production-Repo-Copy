@@ -976,6 +976,11 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
     console.log("Image paths:", imagePaths);
     req.session.interviewImagePaths = imagePaths; //Now it's an array of image paths
 
+    res.render('SignInterviewPage', {
+      imagePaths: imagePaths,
+      numberOfPages: numberOfPages,
+    });
+
   } catch (error) {
     console.log('Error while submitting the interview', error);
     res.status(500).send("Internal server error");
