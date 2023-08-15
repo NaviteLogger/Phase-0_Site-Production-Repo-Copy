@@ -1068,7 +1068,7 @@ app.get('/InterviewImage/:index', checkAuthentication, async (req, res) => {
   }
 });
 
-app.post('uploadInterviewSignature', checkAuthentication, async (req, res) => {
+app.post('/uploadInterviewSignature', checkAuthentication, async (req, res) => {
   try {
     var imageData = req.body.image;
     var pageIndex = req.body.pageIndex;
@@ -1135,7 +1135,7 @@ app.post('/mergeInterview', checkAuthentication, async (req, res) => {
         console.error('Error while merging PDFs:', error);
         res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
       });
-      
+
   } catch (error) {
     console.error('Error during the merging process:', error);
     res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
