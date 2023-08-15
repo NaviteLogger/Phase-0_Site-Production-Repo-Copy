@@ -225,6 +225,8 @@ passport.deserializeUser((user, done) => {
   });
 });
 
+
+
 //This is the function which checks if the user is authenticated
 function checkAuthentication(req, res, next) {
   console.log('');
@@ -270,6 +272,8 @@ function checkEmailConfirmation(req, res, next) {
     }
   });
 }
+
+
 
 const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDate, prefix) => {
   const docPath = path.join(__dirname, 'agreements', fileName);
@@ -336,6 +340,32 @@ async function countPDFPages(pdfBuffer) {
   return data.numpages;
 }
 
+function deleteFilesInDirectory(directory, keyword) {
+  fs.readdir(directory, (error, files) => {
+    if (error)
+    {
+      console.log('Error while reading the directory', error);
+      return;
+    }
+
+    const fileToBeDeleted = files.filter(file => file.includes(keyword));
+
+    fileToBeDeleted.forEach(file => {
+      const filePath = path.join(directory, file);
+      fs.unlink(filePath, error => {
+        if (error)
+        {
+          console.log('Error while deleting the file', error);
+          return;
+        }
+        console.log('File: ' + filePath + ' has been deleted');
+      });
+    });
+  });
+}
+
+
+
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -372,6 +402,8 @@ app.post('/verifyEmailAddress', (req, res) => {
     }
   });
 });
+
+
 
 //Handle the request to the client's portal page,
 app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
