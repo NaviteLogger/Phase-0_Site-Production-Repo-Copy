@@ -13,7 +13,7 @@ document.getElementById('nextPage').addEventListener('click', () => {
 
         currentPage++;
         loadImage();
-        updatePageDisplay();
+        //updatePageDisplay();
     }
 });
 
@@ -25,7 +25,7 @@ document.getElementById('previousPage').addEventListener('click', () => {
 
         currentPage--;
         loadImage();
-        updatePageDisplay();
+        //updatePageDisplay();
     }
 });
 
@@ -36,15 +36,26 @@ let isDrawing = false;
 let currentPage = 0;
 var image = new Image();
 
+var currentIndex = 0;
+
 let signatures = [];
 
 function loadImage() {
-    signatures[currentPage] = canvas.toDataURL();
-    image.src = '/RODOAgreementImage/' + currentPage;
+    // Load the agreement image
+    image.src = '/SelectedAgreementImage/' + currentPage;
     image.onload = () => {
         console.log('Image loaded');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // Redraw the signature if it exists for the current page
+        if (signatures[currentPage]) {
+            let signatureImage = new Image();
+            signatureImage.src = signatures[currentPage];
+            signatureImage.onload = () => {
+                ctx.drawImage(signatureImage, 0, 0, canvas.width, canvas.height);
+            }
+        }
     }
 }
 
@@ -101,32 +112,63 @@ function getCursorPosition(canvas, event) {
 
 document.getElementById('submitAllSignatures').addEventListener('click', () => {
     signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+    console.log("Signatures array:", signatures);
 
     if (signatures.length < maxPages) {
         alert('Please sign all pages before submitting.');
         return;
     }
 
-    sendAllSignatures();
+    for (let i = 0; i < signatures.length; i++) {
+        console.log(`Signature ${i + 1} Length: ${signatures[i].length}`);
+    }    
+
+    sendNextSignature();
 });
 
-function sendAllSignatures() {
-    fetch('/submitAllSignedRODOAgreements', {
+function sendNextSignature() {
+    let totalUploadedImages = signatures.length;
+
+    if(currentIndex >= signatures.length) {
+        // All signatures have been sent. Notify server to finalize processing.
+        fetch('/mergeRODOAgreement', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ totalUploadedImages: totalUploadedImages })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === 'success') {
+                alert('All signatures saved and processed successfully!');
+                setTimeout(() => {
+                    window.location.href = '/signSelectedAgreement';  // Redirect to the home page
+                }, 1000);
+            } else {
+                console.error('Failed to process signatures.');
+            }
+        }).catch((error) => {
+            console.error('Error:', error);
+        });
+        return;
+    }
+
+    fetch('/uploadRODOAgreementSignature', {  // Updated the endpoint name here
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ images: signatures })
+        body: JSON.stringify({ image: signatures[currentIndex], pageIndex: currentIndex })
     })
     .then((response) => response.json())
     .then((data) => {
         if (data.status === 'success') {
-            alert('All signatures saved successfully!');
-            setTimeout(() => {
-                window.location.href = '/signSelectedAgreement';
-            }, 1500);
+            console.log(`Signature ${currentIndex + 1} uploaded successfully!`);
+            currentIndex++;
+            sendNextSignature();  // Recursive call to send the next signature
         } else {
-            alert('Failed to save the signatures.');
+            console.error(`Failed to upload signature ${currentIndex + 1}.`);
         }
     }).catch((error) => {
         console.error('Error:', error);

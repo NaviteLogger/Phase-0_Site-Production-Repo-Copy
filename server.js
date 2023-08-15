@@ -573,6 +573,8 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
 });
 
 
+
+//After filling the client's and employee's data, this will handle the conversion of RODO agreement to images
 app.get('/signRODOAgreement', checkAuthentication, async (req, res) => {
   try {
       var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
@@ -641,51 +643,35 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, async (req, res) => {
   }
 });
 
-app.post('/submitAllSignedRODOAgreements', checkAuthentication, async (req, res) => {
+app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) => {
   try {
-    var images = req.body.images; //Assuming images is an array of dataURLs sent from the client.
+    var imageData = req.body.images; //Assuming images is an array of dataURLs sent from the client.
+    var pageIndex = req.body.pageIndex;
+
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     var formattedDate = req.session.formattedDate;
-    var finalPDFPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.pdf`);
+
+    var pdfName = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.pdf`);
 
     console.log("Number of images received:", images.length);
       
     var doc = new PDFDocument();
-
-    var outputPDFPath = finalPDFPath; //Modify this path as necessary
-    var stream = fs.createWriteStream(outputPDFPath);
+    var stream = fs.createWriteStream(pdfName);
 
     doc.pipe(stream);
     //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
+
+    var dataURL = imageData.split(',')[1];
+    var imgBuffer = Buffer.from(dataURL, 'base64');
+
+    doc.image(imgBuffer, 0, 0, { fit: [595.29, 841.89] });
       
-    for(let i = 0; i < images.length; i++) 
-    {
-      if (i !== 0) doc.addPage();
-          
-      var dataURL = images[i].split(',')[1];
-      var imgBuffer = Buffer.from(dataURL, 'base64');
-
-      //try { //For debugging purposes
-      //  fs.writeFileSync("test.jpeg", imgBuffer);
-      //} catch (error) {
-      //  console.log("Error while writing the image to the file system:", error);
-      //}
-
-      //console.log("First 100 characters of Data URL:", dataURL.substring(0, 100));
-      //console.log("Data URL:", images[i]);
-      console.log("Buffer:", imgBuffer); 
-      console.log("Buffer length:", imgBuffer.length);
-         
-      //If the image dimension is different, you may need to adjust this:
-      doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
-    }
-    
     //End the PDF document
     doc.end();
 
     stream.on('finish', () => {
-      console.log("PDF has been generated");
-      res.json({ status: 'success', message: 'RODO agreement has been signed' });
+      console.log("PDF has been generated for page:" + pageIndex);
+      res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
     });
 
     stream.on('error', (err) => {
@@ -699,7 +685,44 @@ app.post('/submitAllSignedRODOAgreements', checkAuthentication, async (req, res)
   }
 });
 
+app.post('/mergeRODOAgreement', checkAuthentication, async (req, res) => {
+  try {
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
 
+    var pdfFiles = [];
+
+    //Dynamically generate the list of PDfs based on the number of uploaded images.
+    //I'm assuming that the frontend sends the total number of uploaded images in the request body.
+    let totalPages = req.body.totalUploadedImages;
+
+    for (let i = 0; i < totalPages; i++) 
+    {
+      let pdfName = `RODO_agreement_${formattedDate}_${userEmail}_page${i}.pdf`;
+      pdfFiles.push(path.join(__dirname, 'agreements', pdfName));
+    }
+
+    var finalPDFPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.pdf`);
+
+    PDFMerge(pdfFiles, { output: finalPDFPath })
+      .then((buffer) => {
+        console.log('PDF has been merged');
+        res.json({ status: 'success', message: 'PDF has been merged' });
+      })
+      .catch((error) => {
+        console.error('Error while merging the RODO agreement:', error);
+        res.status(500).json({ status: 'error', message: 'Internal server error' });
+      });
+
+  } catch (error) {
+    console.error('Error while merging the RODO agreement:', error);
+    res.status(500).json({ status: 'error', message: 'Internal server error' });
+  }
+});
+
+
+
+//After filling the client's and employee's data, this will handle the conversion of the selected agreement to images
 app.get('/signSelectedAgreement', checkAuthentication, async (req, res) => {
   try {
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
@@ -774,30 +797,32 @@ app.get('/SelectedAgreementImage/:index', checkAuthentication, async (req, res) 
 
 app.post('/uploadSelectedAgreementSignature', checkAuthentication, async (req, res) => {
   try {
-      var imageData = req.body.image;
+      var imageData = req.body.image; //Assuming images is an array of dataURLs sent from the client.
       var pageIndex = req.body.pageIndex;
 
       var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
       var formattedDate = req.session.formattedDate;
       var agreementPrefix = req.session.agreementPrefix;
-      var pdfName = `${agreementPrefix}_${formattedDate}_${userEmail}_page${pageIndex}.pdf`;
-      var individualPDFPath = path.join(__dirname, 'agreements', pdfName);
+
+      var pdfName = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
       var doc = new PDFDocument();
-      var stream = fs.createWriteStream(individualPDFPath);
+      var stream = fs.createWriteStream(pdfName);
 
       doc.pipe(stream);
+      //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
 
       var dataURL = imageData.split(',')[1];
       var imgBuffer = Buffer.from(dataURL, 'base64');
 
       doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
 
+      //End the PDF document
       doc.end();
 
       stream.on('finish', () => {
-          console.log("PDF has been generated for page:", pageIndex);
-          res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
+        console.log("PDF has been generated for page:", pageIndex);
+        res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
       });
 
       stream.on('error', (err) => {
@@ -839,11 +864,13 @@ app.post('/mergeSelectedAgreement', checkAuthentication, async (req, res) => {
         console.error('Error while merging PDFs:', error);
         res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
       });
+
   } catch (error) {
       console.error('Error during the merging process:', error);
       res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
   }
 });
+
 
 
 app.get('/displayInterview', checkAuthentication, async (req, res) => {
@@ -888,8 +915,7 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
   }
 });
 
-
-app.post('/submitInterview', upload.none(), async (req, res) => {
+app.post('/postInterviewData', upload.none(), async (req, res) => {
   try {
     const formData = req.body;
     console.log(formData);
@@ -959,8 +985,30 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
 
     req.session.interviewDocumentPath = pathToInterviewDocument;
 
-    //Convert the PDF to images and send them to the user for signing
-    var pdfBytes = await fsPromises.readFile(pathToInterviewDocument);
+    console.log("Interview document path has been passed to the session, the Interview has been saved");
+    res.json({ status: 'success', message: 'Wywiad został zapisany' });
+
+  } catch (error) {
+    console.log('Error while submitting the interview', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+
+
+app.get('/signInterview', checkAuthentication, async (req, res) => {
+  try {
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
+
+    console.log("The date saved to the session: ", formattedDate);
+
+    //var interviewDocumentPath = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
+    var interviewDocumentPath = req.session.interviewDocumentPath;
+    console.log("Final interview document path: ", interviewDocumentPath);
+
+    //As the format is PDF, we don't need to convert it to PDF, but we still need to get the number of pages
+    var pdfBytes = await fsPromises.readFile(interviewDocumentPath);
     var numberOfPages = await countPDFPages(pdfBytes);  //Use pdf-parse to get the page count
 
     //Convert each page of the PDF to an image
@@ -982,12 +1030,12 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
     });
 
   } catch (error) {
-    console.log('Error while submitting the interview', error);
+    console.log('Error while loading the interview overview page', error);
     res.status(500).send("Internal server error");
   }
 });
 
-app.get('/interviewImage/:index', checkAuthentication, async (req, res) => {
+app.get('/InterviewImage/:index', checkAuthentication, async (req, res) => {
   try {
     console.log("Sending the interview image to the user", req.params.index);
     var imageIndex = req.params.index;
@@ -1027,19 +1075,21 @@ app.post('uploadInterviewSignature', checkAuthentication, async (req, res) => {
 
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     var formattedDate = req.session.formattedDate;
-    var pdfName = `interview_${formattedDate}_${userEmail}_page${pageIndex}.pdf`;
-    var individualPDFPath = path.join(__dirname, 'interviews', pdfName);
+
+    var pdfName = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
     var doc = new PDFDocument();
-    var stream = fs.createWriteStream(individualPDFPath);
+    var stream = fs.createWriteStream(pdfName);
 
     doc.pipe(stream);
+    //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
 
     var dataURL = imageData.split(',')[1];
     var imgBuffer = Buffer.from(dataURL, 'base64');
 
     doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
 
+    //End the PDF document
     doc.end();
 
     stream.on('finish', () => {
@@ -1085,11 +1135,13 @@ app.post('/mergeInterview', checkAuthentication, async (req, res) => {
         console.error('Error while merging PDFs:', error);
         res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
       });
+      
   } catch (error) {
     console.error('Error during the merging process:', error);
     res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
   }
 });
+
 
 
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {

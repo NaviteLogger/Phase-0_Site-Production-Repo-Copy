@@ -78,9 +78,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        fetch('/submitInterview', {
+        fetch('/postInterviewData', {
             method: 'POST',
             body: formData
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert('Interview submitted successfully!');
+                setTimeout(() => {
+                    window.location.href = '/signInterview';
+                }, 1000);
+            } else {
+                alert('Error submitting interview!');
+            }
         }).catch((error) => {
             console.error(error);
         });
