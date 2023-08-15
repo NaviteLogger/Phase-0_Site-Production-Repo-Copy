@@ -944,12 +944,13 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${req.session.passport.user.email}_${formattedDate}.pdf`);
     doc.pipe(fs.createWriteStream(pathToInterviewDocument));
 
-    doc.fontSize(20).text('Interview Responses', { align: 'center' });
+    doc.fontSize(20).text('Wywiad oraz odpowiedzi', { align: 'center' });
 
     for (let key in formData) {
       if (key.startsWith('question_')) {
         const questionId = key.split('_')[1];
         const userResponse = formData[key]; // Renamed for clarity
+        const userResponseInPolish = userResponse === 'true' ? 'Tak' : 'Nie';
 
         const results = await new Promise((resolve, reject) => {
           connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
@@ -966,13 +967,14 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
         const questionContentFromDB = results[0].content; // Renamed for clarity
         console.log(questionContentFromDB);
 
-        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
+        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponseInPolish}`, { align: 'left' });
       }
 
       if(key.startsWith('explanation_'))
       {
         const questionId = key.split('_')[1];
         const userResponse = formData[key]; // Renamed for clarity
+        const userResponseInPolish = userResponse === 'true' ? 'Tak' : 'Nie';
 
         const results = await new Promise((resolve, reject) => {
           connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
@@ -988,7 +990,7 @@ app.post('/submitInterview', upload.none(), async (req, res) => {
 
         const questionContentFromDB = results[0].content; // Renamed for clarity
 
-        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponse}`, { align: 'left' });
+        doc.fontSize(15).text(`${questionContentFromDB}: ${userResponseInPolish}`, { align: 'left' });
       }
     }
 
