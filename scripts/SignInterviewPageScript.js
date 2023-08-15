@@ -42,7 +42,7 @@ let signatures = [];
 
 function loadImage() {
     // Load the agreement image
-    image.src = '/SelectedAgreementImage/' + currentPage;
+    image.src = '/interviewImage/' + currentPage;
     image.onload = () => {
         console.log('Image loaded');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -131,7 +131,7 @@ function sendNextSignature() {
 
     if(currentIndex >= signatures.length) {
         // All signatures have been sent. Notify server to finalize processing.
-        fetch('/mergeSelectedAgreement', {
+        fetch('/mergeInterview', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -143,7 +143,7 @@ function sendNextSignature() {
             if (data.status === 'success') {
                 alert('All signatures saved and processed successfully!');
                 setTimeout(() => {
-                    window.location.href = '/displayInterview';  // Redirect to the home page
+                    window.location.href = '/summaryPage';  // Redirect to the home page
                 }, 1000);
             } else {
                 console.error('Failed to process signatures.');
@@ -154,7 +154,7 @@ function sendNextSignature() {
         return;
     }
 
-    fetch('/uploadSelectedAgreementSignature', {  // Updated the endpoint name here
+    fetch('/uploadInterviewSignature', {  // Updated the endpoint name here
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
