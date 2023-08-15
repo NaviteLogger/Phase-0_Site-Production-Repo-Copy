@@ -227,8 +227,10 @@ passport.deserializeUser((user, done) => {
 
 //This is the function which checks if the user is authenticated
 function checkAuthentication(req, res, next) {
+  console.log('');
   console.log('Checking authentication, calling checkAuthentication()');
   console.log('User is authenticated: ' + req.isAuthenticated());
+  console.log('');
   if (req.isAuthenticated()) //If the user is authenticated (the res.isAuthenticated() status is true), call next()
   {
     //if user is looged in, req.isAuthenticated() will return true 
@@ -246,7 +248,9 @@ function checkAuthentication(req, res, next) {
 function checkEmailConfirmation(req, res, next) {
   const email = req.session.passport.user.email; 
 
+  console.log('');
   console.log('Checking email confirmation for: ' + email + ', calling checkEmailConfirmation()');
+  console.log('');
 
   //Query the database to find the user with the given email
   connection.query('SELECT * FROM Email_Verifications WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)', [email], (error, results) => {
