@@ -495,6 +495,8 @@ app.post('/agreementSelectionPage', checkAuthentication, checkEmailConfirmation,
       });
     });
 
+    req.session.selectedAgreementName = results[0].agreement_name;
+
     //Console.log it for debugging purposes
     console.log('Received a request to the fill the selected agreement page: ', results[0].agreement_name);
 
@@ -1150,7 +1152,44 @@ app.post('/mergeInterview', checkAuthentication, async (req, res) => {
 
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-    res.render('SummaryPage');
+
+    let emailOptions = {
+      from: 'pomoc@prawokosmetyczne.pl',
+      to: req.session.passport.user.email,
+      subject: 'Zgody dnia ' + req.session.formattedDate,
+      text: 'W załączniku znajdują się podpisane zgody z dnia ' + req.session.formattedDate,
+      attachments: [
+        {
+          filename: 'RODO_agreement_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf',
+          path: path.join(__dirname, 'agreements', 'RODO_agreement_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf'),
+          contentType: 'application/pdf'
+        },
+        {
+          filename: req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf',
+          path: path.join(__dirname, 'agreements', req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf'),
+          contentType: 'application/pdf'
+        },
+        {
+          filename: 'interview_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf',
+          path: path.join(__dirname, 'interviews', 'interview_' + req.session.formattedDate + '_' + req.session.passport.user.email + '.pdf'),
+          contentType: 'application/pdf'
+        }
+      ]
+    };
+
+    //Send the email with the signed agreements
+    transporter.sendMail(emailOptions, (error, info) => {
+      if (error) 
+      {
+        console.log('Error while sending the email', error);
+        res.status(500).send("Internal server error");
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
+    res.render('SummaryPage', { userEmail: req.session.passport.user.email, selectedAgreementName: req.session.selectedAgreementName });
+
   } catch (error) {
     console.log('Error while loading the summary page', error);
     res.status(500).send("Internal server error");

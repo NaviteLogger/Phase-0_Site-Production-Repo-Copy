@@ -1,0 +1,60 @@
+.agreement-overview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#date {
+    align-self: flex-end;
+    margin: 20px;
+    font-size: 20px;
+}
+
+#agreement-overview-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-field {
+    text-align: center;
+    width: 50%;
+    padding: 10px;
+    font-size: 24px;
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.information-table {
+    text-align: center;
+    width: 50%;
+}
+
+#submit-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.table-data {
+    border: 1px solid black;
+    padding: 20px;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#message {
+    text-align: center;
+}

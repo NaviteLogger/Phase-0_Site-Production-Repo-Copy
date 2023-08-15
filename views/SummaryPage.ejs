@@ -6,7 +6,7 @@
   <link href="../styles/GlobalStyles.css" rel="stylesheet" type="text/css">
   <link href="../styles/SummaryPageStyles.css" rel="stylesheet" type="text/css">
   <script src="../scripts/SummaryPageScript.js" defer></script>
-  <title>Sign RODO Agreement Page</title>
+  <title>Summary Page</title>
 </head>
 <body>
     <header>
@@ -25,6 +25,24 @@
             <button type="button" class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
         </div>
     </header>
-    <p>Podsumowanko</p>
+    <div class="summary-container">
+        <p>Podsumowanie: na Twój adres email <%= userEmail %> zostaną za chwile wysłane następujące zgody:</p>
+        <div class="table-container">
+            <table class="information-table">
+                <tr class="table-row">
+                    <td class="table-data">Zgoda na przetwarzanie danych osobowych (RODO)</td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-data">Wywiad z klientem</td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-data">Zgoda na zabieg: wybrana zgoda to: <%= selectedAgreementName %></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-data">Zgoda na zdjęcie</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
