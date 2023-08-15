@@ -655,7 +655,7 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     var formattedDate = req.session.formattedDate;
 
-    var pdfName = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.pdf`);
+    var pdfName = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
     console.log("Number of images received:", imageData.length);
       
