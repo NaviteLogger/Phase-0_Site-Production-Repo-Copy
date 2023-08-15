@@ -1212,23 +1212,30 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
     };
 
     //Send the email with the signed agreements
-    await transporter.sendMail(emailOptions, (error, info) => {
-      if (error) 
-      {
-        console.log('Error while sending the email', error);
-        res.status(500).send("Internal server error");
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    }).then(() => {
-      console.log("Email has been sent to the user");
-      console.log("Deleting all the agreement files from the server");
-      deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
-    }).then(() => {
-      console.log("Deleting all the interview files from the server");
-      deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(emailOptions, function (error, info) {
+        if (error)
+        {
+          console.log('Error while sending the email', error);
+          reject(error);
+        }
+          else
+        {
+          console.log('Email sent: ' + info.response);
+          resolve(info.response);
+        }
+      });
     });
 
+    console.log("Email with the signed agreements has been sent to the user");
+
+    //Delete the files from the server
+    console.log("Deleting all the agreement files from the server");
+    deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
+
+    console.log("Deleting all the interview files from the server");
+    deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
+    
     res.render('SummaryPage', { userEmail: req.session.passport.user.email, selectedAgreementName: req.session.selectedAgreementName });
 
   } catch (error) {
