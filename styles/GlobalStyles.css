@@ -76,8 +76,8 @@ html {
     .nav-link-middle {
       font-size: 0.8rem;
       max-width: 40%;
-      padding-right: 0%;
-      padding-left: 0%;
+      padding-right: 1%;
+      padding-left: 1%;
     }
   }
   
