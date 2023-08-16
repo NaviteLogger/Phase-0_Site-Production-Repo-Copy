@@ -46,12 +46,17 @@
 
   .buy-button {
     flex: 1;              /* All buttons take up equal space */
-    margin: 10px;         /* Add some margin around each button */
+    margin: 5px;         /* Add some margin around each button */
     text-align: center;   /* Center the text on the button */
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
     /* Set a minimum size if you want to */
     min-width: 50px;
-    min-height: 25px;
+    min-height: 10px;
     padding: 1.5%;
+    padding-bottom: 1%;
+
   }
 
   #generator-button-top, #generator-button-bottom {
