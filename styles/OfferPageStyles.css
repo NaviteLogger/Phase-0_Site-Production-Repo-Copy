@@ -1,7 +1,21 @@
 /*This is where the body of the page begins*/
 html {
-  font-size: 18px;
+  font-size: 16px;
 }
+
+  /* On screens that are 890px or wider */
+  @media screen and (min-width: 890px) {
+    html {
+      font-size: 20px;
+    }
+  }
+  
+  /* On screens that are 650px or smaller */
+  @media screen and (max-width: 650px) {
+    html {
+      font-size: 10px;
+    }
+  }
 
 .offer {
   display: flex;
