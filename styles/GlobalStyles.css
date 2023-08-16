@@ -33,14 +33,14 @@ html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    padding: 2%;
+    padding: 20px;
   }
   
   .nav-link {
     text-decoration: none;
     color: black;
-    margin: 10px;
+    max-width: 30%;
+    min-width: 5%;
   }
   
   .nav-link:hover {
@@ -50,14 +50,32 @@ html {
   .nav-link.active {
     font-weight: bold;
   }
+
+  .left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .middle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  :right {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   
   #logo {
     max-width: 50%;
     min-width: 50%;
     min-width: auto;
     min-height: auto;
-
-    /* margin: 1%; */
+    padding: 1%;
+    margin: 1%;
   }
   
   .clients-portal {
