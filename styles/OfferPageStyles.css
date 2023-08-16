@@ -82,3 +82,7 @@ h2 {
   font-weight: bold;
   cursor: pointer;
 }
+
+p {
+  padding: 5px;
+}
