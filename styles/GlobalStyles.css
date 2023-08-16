@@ -44,7 +44,8 @@ html {
     color: black;
     max-width: 20%;
     min-width: 15%;
-    padding-right: auto;
+    padding-right: 1%;
+    padding-left: 1%;
     padding-top: 0%;
     padding-bottom: 0%;
   }
@@ -79,7 +80,7 @@ html {
     }
   }
 
-  @media screen and (max-width: 950px) {
+  @media screen and (max-width: 1050px) {
     .nav-link {
       font-size: 0.8rem;
       max-width: 40%;
