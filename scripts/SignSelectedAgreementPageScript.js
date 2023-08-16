@@ -115,7 +115,7 @@ document.getElementById('submitAllSignatures').addEventListener('click', () => {
     console.log("Signatures array:", signatures);
 
     if (signatures.length < maxPages) {
-        alert('Please sign all pages before submitting.');
+        alert('Proszę podpisać wszystkie strony (jeśli nie ma wyznaczonego miejsca to na dole strony).');
         return;
     }
 
@@ -141,7 +141,7 @@ function sendNextSignature() {
         .then((response) => response.json())
         .then((data) => {
             if (data.status === 'success') {
-                alert('All signatures saved and processed successfully!');
+                alert('Wszystkie podpisy zostały pomyślnie zapisane.');
                 setTimeout(() => {
                     window.location.href = '/displayInterview';  // Redirect to the home page
                 }, 1000);
