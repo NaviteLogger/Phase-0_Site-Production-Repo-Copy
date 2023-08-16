@@ -1,26 +1,104 @@
 @font-face {
     font-family: 'Futura';
-    src: url(../fonts/futuraFontMedium.ttf) format('truetype');
+    src: url(../fonts/futuraFont.ttf) format('truetype');
     font-weight: normal;
   }
+
+html {
+    font-size: 16px;
+}
+
+  /* On screens that are 890px or wider */
+@media screen and (min-width: 890px) {
+  html {
+    font-size: 20px;
+  }
+}
+
+/* On screens that are 650px or smaller */
+@media screen and (max-width: 650px) {
+  html {
+    font-size: 10px;
+  }
+}
   
   body {
     font-family: 'Futura', sans-serif;
     margin: 0;
+    padding: 0;
   }
   
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    padding: 20px;
+    padding-top: 0%;
+    padding-bottom: 0%;
+    padding-left: 1%;
+    padding-right: 1%;
   }
   
   .nav-link {
     text-decoration: none;
+    text-align: center;
     color: black;
-    margin: 10px;
+    max-width: 20%;
+    min-width: 15%;
+    padding-right: 1%;
+    padding-left: 1%;
+    padding-top: 0%;
+    padding-bottom: 0%;
+  }
+
+  .nav-link-middle {
+    text-decoration: none;
+    color: black;
+    max-width: 60%;
+    min-width: 15%;
+    padding-right: 0%;
+    padding-left: 0%;
+  }
+
+  .nav-link-right {
+    padding-right: 5%;
+  }
+
+  @media screen and (max-width: 480px) {
+    .nav-link {
+      font-size: 0.8rem;
+      max-width: 40%;
+      padding: 12%;
+      padding-left: 4%;
+      padding-right: 3%;
+    }
+
+    .nav-link-middle {
+      font-size: 0.8rem;
+      max-width: 40%;
+      padding-right: 1%;
+      padding-left: 1%;
+    }
+
+    .nav-link-right {
+      padding-right: 12%;
+    }
+  }
+
+  @media screen and (max-width: 1050px) {
+    .nav-link {
+      font-size: 0.8rem;
+      max-width: 40%;
+      padding: 12%;
+      padding-left: 2%;
+      padding-right: 2%;
+    }
+
+    .nav-link-middle {
+      font-size: 0.8rem;
+      max-width: 40%;
+      padding-right: 1%;
+      padding-left: 1%;
+    }
   }
   
   .nav-link:hover {
@@ -30,24 +108,79 @@
   .nav-link.active {
     font-weight: bold;
   }
+
+  .left, .right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .left {
+    justify-content: flex-start;
+  }
+  
+  .right {
+    justify-content: flex-end;
+  }  
+
+  .middle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0.5;
+    max-width: 1000%;
+    padding-right: 0%;
+    padding-left: 0%;
+  }
+
+  @media screen and (max-width: 480px) {
+    .left, .right {
+      justify-content: center;
+      align-items: center;
+    }
+
+    .middle {
+      max-width: 40%;
+      padding-right: 0%;
+      padding-left: 0%;
+    }
+  }
   
   #logo {
-    width: 100px; /* Adjust as needed */
-    height: auto;
-    margin: 5px;
+    width: 80%;
+    height: 80%;
+  }
+
+  @media screen and (max-width: 480px) {
+    #logo {
+      width: 60%;
+      height: 60%;
+    }
   }
   
   .clients-portal {
     background-color: black;
     color: white;
     border: none;
-    padding: 10px 20px;
+    font-size: 1.1rem;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 3%;
+    padding-bottom: 3%;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
     cursor: pointer;
+  }
+
+  @media screen and (max-width: 480px) {
+    .clients-portal {
+      font-size: 0.8rem;
+      padding-left: 1.5%;
+      padding-right: 1.5%;
+      padding-top: 5%;
+      padding-bottom: 5%;
+    }
   }
   
   .clients-portal:hover {
