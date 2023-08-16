@@ -1,9 +1,14 @@
-.not-logged-in-info {
+.not-logged-in-info-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 24px;
+  }
+
+  .not-logged-in-info {
+    margin-top: 10%;
+    margin-bottom: 10%;
   }
 
 .nav-link-login {
