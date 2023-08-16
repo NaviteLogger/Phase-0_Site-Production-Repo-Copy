@@ -18,7 +18,7 @@ html {
 /* On screens that are 480px or smaller */
 @media screen and (max-width: 480px) {
   html {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
   
@@ -39,14 +39,15 @@ html {
     text-decoration: none;
     color: black;
     max-width: 80%;
-    min-width: 5%;
-    padding: 2%;
+    min-width: 20%;
+    padding: 10%;
   }
 
   @media screen and (max-width: 480px) {
     .nav-link {
       font-size: 0.8rem;
       max-width: 40%;
+      padding: 12%;
     }
   }
   
@@ -87,15 +88,16 @@ html {
   }
   
   #logo {
-    width: 100%;
-    height: auto;
+    width: 80%;
+    height: 80%;
     padding: 1%;
     margin: 1%;
   }
 
   @media screen and (max-width: 480px) {
     #logo {
-      max-width: 50%;
+      width: 80%;
+      height: 80%;
     }
   }
   
