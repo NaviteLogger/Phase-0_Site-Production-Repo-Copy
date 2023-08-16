@@ -44,8 +44,6 @@ html {
     color: black;
     max-width: 20%;
     min-width: 15%;
-    padding-left: 2%;
-    padding-right: 2%;
     padding-right: auto;
     padding-top: 0%;
     padding-bottom: 0%;
@@ -97,7 +95,6 @@ html {
 
   .left {
     justify-content: flex-start;
-    padding: 2%;
   }
   
   .right {
