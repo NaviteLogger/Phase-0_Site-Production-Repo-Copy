@@ -11,7 +11,7 @@ html {
   /* On screens that are 890px or wider */
 @media screen and (min-width: 890px) {
   html {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
