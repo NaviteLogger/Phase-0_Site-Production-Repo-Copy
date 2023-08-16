@@ -1,12 +1,32 @@
 @font-face {
     font-family: 'Futura';
-    src: url(../fonts/futuraFontMedium.ttf) format('truetype');
+    src: url(../fonts/arialFont.ttf) format('truetype');
     font-weight: normal;
   }
+
+html {
+    font-size: 18px;
+}
+
+  /* On screens that are 768px or wider */
+@media screen and (min-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* On screens that are 480px or smaller */
+@media screen and (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+}
+
   
   body {
     font-family: 'Futura', sans-serif;
     margin: 0;
+    padding: 0;
   }
   
   header {

@@ -1,3 +1,7 @@
+body {
+  font-size: 1em;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;
