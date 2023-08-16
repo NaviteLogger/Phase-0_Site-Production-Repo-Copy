@@ -1,4 +1,7 @@
 /* This is the main container for the Clients Portal page */
+  header {
+    padding: 1%;
+  }
 
   .clients-portal-container {
     text-align: center;
@@ -48,6 +51,7 @@
     /* Set a minimum size if you want to */
     min-width: 50px;
     min-height: 25px;
+    padding: 1.5%;
   }
 
   #generator-button-top, #generator-button-bottom {
