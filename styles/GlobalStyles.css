@@ -9,14 +9,14 @@ html {
 }
 
   /* On screens that are 768px or wider */
-@media screen and (min-width: 820px) {
+@media screen and (min-width: 890px) {
   html {
     font-size: 22px;
   }
 }
 
 /* On screens that are 480px or smaller */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 650px) {
   html {
     font-size: 10px;
   }
