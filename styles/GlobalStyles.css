@@ -44,7 +44,7 @@ html {
     color: black;
     max-width: 20%;
     min-width: 15%;
-    padding-right: 1%;
+    padding-right: 2%;
     padding-left: 1%;
     padding-top: 0%;
     padding-bottom: 0%;
@@ -60,7 +60,7 @@ html {
   }
 
   .nav-link-right {
-    padding-right: 8%;
+    padding-right: 10%;
   }
 
   @media screen and (max-width: 480px) {
