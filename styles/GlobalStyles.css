@@ -78,6 +78,23 @@ html {
       padding-left: 1%;
     }
   }
+
+  @media screen and (max-width: 950px) {
+    .nav-link {
+      font-size: 0.8rem;
+      max-width: 40%;
+      padding: 12%;
+      padding-left: 2%;
+      padding-right: 2%;
+    }
+
+    .nav-link-middle {
+      font-size: 0.8rem;
+      max-width: 40%;
+      padding-right: 1%;
+      padding-left: 1%;
+    }
+  }
   
   .nav-link:hover {
     text-decoration: underline;
@@ -154,8 +171,8 @@ html {
   @media screen and (max-width: 480px) {
     .clients-portal {
       font-size: 0.8rem;
-      padding-left: 1%;
-      padding-right: 1%;
+      padding-left: 3%;
+      padding-right: 3%;
       padding-top: 5%;
       padding-bottom: 5%;
     }
