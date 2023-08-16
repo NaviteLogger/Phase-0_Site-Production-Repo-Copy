@@ -42,7 +42,19 @@ html {
     color: black;
     max-width: 80%;
     min-width: 20%;
-    padding: 10%;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-top: 0%;
+    padding-bottom: 0%;
+  }
+
+  .nav-link-middle {
+    text-decoration: none;
+    color: black;
+    max-width: 80%;
+    min-width: 20%;
+    padding-right: 0%;
+    padding-left: 0%;
   }
 
   @media screen and (max-width: 480px) {
@@ -50,6 +62,13 @@ html {
       font-size: 0.8rem;
       max-width: 40%;
       padding: 12%;
+    }
+
+    .nav-link-middle {
+      font-size: 0.8rem;
+      max-width: 40%;
+      padding-right: 0%;
+      padding-left: 0%;
     }
   }
   
@@ -80,6 +99,8 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-right: 0%;
+    padding-left: 0%;
   }
 
   @media screen and (max-width: 480px) {
@@ -92,8 +113,6 @@ html {
   #logo {
     width: 80%;
     height: 80%;
-    padding: 1%;
-    margin: 1%;
   }
 
   @media screen and (max-width: 480px) {
