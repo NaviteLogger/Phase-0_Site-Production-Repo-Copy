@@ -43,8 +43,8 @@ html {
     color: black;
     max-width: 20%;
     min-width: 15%;
-    padding-left: 1%;
-    padding-right: 1%;
+    padding-left: 2%;
+    padding-right: 2%;
     padding-right: auto;
     padding-top: 0%;
     padding-bottom: 0%;
@@ -53,8 +53,8 @@ html {
   .nav-link-middle {
     text-decoration: none;
     color: black;
-    max-width: 80%;
-    min-width: 20%;
+    max-width: 60%;
+    min-width: 15%;
     padding-right: 0%;
     padding-left: 0%;
   }
@@ -105,14 +105,22 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 0.5;
+    max-width: 1000%;
     padding-right: 0%;
     padding-left: 0%;
   }
 
   @media screen and (max-width: 480px) {
-    .left, .middle, .right {
+    .left, .right {
       justify-content: center;
       align-items: center;
+    }
+
+    .middle {
+      max-width: 40%;
+      padding-right: 0%;
+      padding-left: 0%;
     }
   }
   
@@ -123,8 +131,8 @@ html {
 
   @media screen and (max-width: 480px) {
     #logo {
-      width: 80%;
-      height: 80%;
+      width: 60%;
+      height: 60%;
     }
   }
   
@@ -140,7 +148,6 @@ html {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    margin-top: 5px;
     cursor: pointer;
   }
 
