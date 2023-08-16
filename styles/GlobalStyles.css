@@ -68,7 +68,7 @@ html {
       font-size: 0.8rem;
       max-width: 40%;
       padding: 12%;
-      padding-left: 3%;
+      padding-left: 4%;
       padding-right: 3%;
     }
 
@@ -80,7 +80,7 @@ html {
     }
 
     .nav-link-right {
-      padding-right: 8%;
+      padding-right: 12%;
     }
   }
 
