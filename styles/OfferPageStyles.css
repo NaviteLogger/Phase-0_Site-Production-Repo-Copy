@@ -1,4 +1,21 @@
 /*This is where the body of the page begins*/
+html {
+  font-size: 16px;
+}
+
+  /* On screens that are 890px or wider */
+  @media screen and (min-width: 890px) {
+    html {
+      font-size: 20px;
+    }
+  }
+  
+  /* On screens that are 650px or smaller */
+  @media screen and (max-width: 650px) {
+    html {
+      font-size: 10px;
+    }
+  }
 
 .offer {
   display: flex;
@@ -9,15 +26,16 @@
 
 .box {
   width: 200px;
-  height: 250px;
+  height: 300px;
   border: 1px solid black;
   background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 10px;
-  padding: 20px;
+  text-align: center;
+  margin: 5px;
+  padding: 10px;
 }
 
 .box h3 {
@@ -63,4 +81,8 @@ h2 {
   color: white;
   font-weight: bold;
   cursor: pointer;
+}
+
+p {
+  padding: 5px;
 }
