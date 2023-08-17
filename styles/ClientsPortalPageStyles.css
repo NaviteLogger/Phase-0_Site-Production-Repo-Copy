@@ -51,10 +51,16 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    /* Set a minimum size if you want to */
     min-width: 50px;
     min-height: 10px;
     padding: 1.5%;
+  }
+
+  @media screen and (max-width: 1200px) {
+    .clients-portal {
+        font-size: 0.8rem;
+        padding: 1% 1%;
+    }
   }
 
   #generator-button-top, #generator-button-bottom {
