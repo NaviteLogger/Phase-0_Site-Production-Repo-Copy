@@ -105,12 +105,27 @@ header {
   }
   
   #logo {
-      width: 40%; /* Reduced the size of the logo on smaller screens */
+      width: 30%; /* Reduced the size of the logo on smaller screens */
       height: auto;
   }
 
+  .left {
+    flex-direction: row;
+    flex: 60%;
+    justify-content: space-between;
+  }
+
   .left .nav-link {
-      margin-right: 10px; /* Adjust the margin for smaller screens */
+      margin-right: 5px; /* Adjust the margin for smaller screens */
+      font-size: 0.8rem; /* Adjust the font size for smaller screens */
+  }
+
+  .middle {
+      flex: 20%;
+  }
+
+  .right {
+      flex: 20%;
   }
 }
 
