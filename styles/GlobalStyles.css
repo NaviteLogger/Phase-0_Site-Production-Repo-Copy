@@ -1,188 +1,137 @@
 @font-face {
-    font-family: 'Futura';
-    src: url(../fonts/futuraFont.ttf) format('truetype');
-    font-weight: normal;
-  }
-
-html {
-    font-size: 16px;
+  font-family: 'Futura';
+  src: url(../fonts/futuraFont.ttf) format('truetype');
+  font-weight: normal;
+  font-display: swap;
 }
 
-  /* On screens that are 890px or wider */
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Futura', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1%;
+}
+
+.nav-link,
+.nav-link-middle,
+.nav-link-right {
+  text-decoration: none;
+  color: black;
+  padding: 0 1%;
+}
+
+.nav-link {
+  flex: 1;
+}
+
+.nav-link-right {
+  padding-right: 2%;
+}
+
+.left, .right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.left {
+  justify-content: flex-start;
+}
+
+.right {
+  justify-content: flex-end;
+}
+
+.middle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0.5;
+}
+
+#logo {
+  width: 80%;
+  height: 80%;
+}
+
+.clients-portal {
+  background-color: black;
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  padding: 3% 2%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.nav-link:hover,
+.clients-portal:hover {
+  text-decoration: underline;
+}
+
+.nav-link.active {
+  font-weight: bold;
+}
+
+/* On screens that are 890px or wider */
 @media screen and (min-width: 890px) {
   html {
-    font-size: 18px;
+      font-size: 18px;
   }
 }
 
 /* On screens that are 650px or smaller */
 @media screen and (max-width: 650px) {
   html {
-    font-size: 9px;
+      font-size: 9px;
   }
 }
-  
-  body {
-    font-family: 'Futura', sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 1%;
-    padding-bottom: 0%;
-    padding-left: 1%;
-    padding-right: 1%;
-  }
-  
-  .nav-link {
-    text-decoration: none;
-    text-align: center;
-    color: black;
-    max-width: 20%;
-    min-width: 15%;
-    padding-right: 2%;
-    padding-left: 1%;
-    padding-top: 0%;
-    padding-bottom: 0%;
-  }
 
-  .nav-link-middle {
-    text-decoration: none;
-    color: black;
-    max-width: 60%;
-    min-width: 15%;
-    padding-right: 0%;
-    padding-left: 0%;
-  }
-
-  .nav-link-right {
-    padding-right: 10%;
-  }
-
-  @media screen and (max-width: 580px) {
-    .nav-link {
-      font-size: 0.8rem;
-      max-width: 40%;
-      padding: 12%;
-      padding-left: 4%;
-      padding-right: 3%;
-    }
-
-    .nav-link-middle {
-      font-size: 0.8rem;
-      max-width: 40%;
-      padding-right: 1%;
-      padding-left: 1%;
-    }
-
-    .nav-link-right {
-      padding-right: 28%;
-    }
-  }
-
-  @media screen and (max-width: 1050px) {
-    .nav-link {
-      font-size: 0.8rem;
-      max-width: 40%;
-      padding: 12%;
-      padding-left: 2%;
-      padding-right: 2%;
-    }
-
-    .nav-link-middle {
-      font-size: 0.8rem;
-      max-width: 40%;
-      padding-right: 1%;
-      padding-left: 1%;
-    }
-  }
-  
-  .nav-link:hover {
-    text-decoration: underline;
-  }
-  
-  .nav-link.active {
-    font-weight: bold;
-  }
-
-  .left, .right {
-    flex: 1;
-    display: flex;
-    align-items: center;
-  }
-
-  .left {
-    justify-content: flex-start;
-  }
-  
-  .right {
-    justify-content: flex-end;
-  }  
-
-  .middle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0.5;
-    max-width: 1000%;
-    padding-right: 0%;
-    padding-left: 0%;
-  }
-
-  @media screen and (max-width: 580px) {
-    .left, .right {
-      justify-content: center;
-      align-items: center;
-    }
-
-    .middle {
-      max-width: 40%;
-      padding-right: 0%;
-      padding-left: 0%;
-    }
-  }
-  
+/* Mobile View */
+@media screen and (max-width: 580px) {
   #logo {
-    width: 80%;
-    height: 80%;
-  }
-
-  @media screen and (max-width: 580px) {
-    #logo {
       width: 60%;
       height: 60%;
-    }
   }
   
-  .clients-portal {
-    background-color: black;
-    color: white;
-    border: none;
-    font-size: 1.1rem;
-    padding-left: 2%;
-    padding-right: 2%;
-    padding-top: 3%;
-    padding-bottom: 3%;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    cursor: pointer;
-  }
-
-  @media screen and (max-width: 1200px) {
-    .clients-portal {
+  .nav-link,
+  .nav-link-middle {
       font-size: 0.8rem;
-      padding-left: 1%;
-      padding-right: 1%;
-      padding-top: 5%;
-      padding-bottom: 5%;
-    }
+      flex: 1;
+      padding: 12% 4%;
   }
   
-  .clients-portal:hover {
-    text-decoration: underline;
+  .middle {
+      flex: 1;
   }
+}
+
+/* Tablet View */
+@media screen and (max-width: 1050px) {
+  .nav-link,
+  .nav-link-middle {
+      font-size: 0.8rem;
+      max-width: 40%;
+      padding: 12% 2%;
+  }
+}
+
+/* Large Tablet to Small Desktop View */
+@media screen and (max-width: 1200px) {
+  .clients-portal {
+      font-size: 0.8rem;
+      padding: 5% 1%;
+  }
+}

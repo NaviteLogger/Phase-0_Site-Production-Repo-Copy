@@ -1473,7 +1473,7 @@ app.post('/register', async (req, res) => {
 //Handle the logout request
 app.get('/logout', checkAuthentication, checkEmailConfirmation, (req, res) => {
   req.logout(() => {});
-  res.redirect('/');
+  res.redirect('/pages/index.html');
 });
 
 //Prevent the idling of the db connection
