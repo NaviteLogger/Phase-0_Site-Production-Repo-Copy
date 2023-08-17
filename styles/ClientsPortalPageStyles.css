@@ -65,6 +65,7 @@
     .buy-button.clients-portal {
       font-size: 0.8rem;
       padding: 1% 1%;
+      padding-bottom: 0%;
     }
   }
 
