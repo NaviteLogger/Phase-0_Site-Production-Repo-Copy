@@ -95,7 +95,7 @@ header {
 /* On screens that are 650px or smaller */
 @media screen and (max-width: 650px) {
   html {
-      font-size: 9px;
+      font-size: 8px;
   }
 
   .left,
