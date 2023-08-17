@@ -61,6 +61,11 @@
         font-size: 0.8rem;
         padding: 5% 1%;
     }
+
+    .buy-button.clients-portal {
+      font-size: 0.8rem;
+      padding: 1% 1%;
+    }
   }
 
   #generator-button-top, #generator-button-bottom {
