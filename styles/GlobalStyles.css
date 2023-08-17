@@ -111,7 +111,7 @@ header {
 
   .left {
     flex-direction: row;
-    flex: 50%;
+    flex: 45%;
     justify-content: space-between;
   }
 
@@ -125,7 +125,7 @@ header {
   }
 
   .right {
-      flex: 25%;
+      flex: 30%;
   }
 }
 
