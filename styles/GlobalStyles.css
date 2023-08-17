@@ -112,7 +112,7 @@ header {
   .left {
     flex-direction: row;
     flex: 45%;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .left .nav-link {
