@@ -116,16 +116,17 @@ header {
   }
 
   .left .nav-link {
-      margin-right: 5px; /* Adjust the margin for smaller screens */
-      font-size: 0.8rem; /* Adjust the font size for smaller screens */
+    margin-right: 5px; /* Adjust the margin for smaller screens */
+    font-size: 0.8rem; /* Adjust the font size for smaller screens */
   }
 
   .middle {
-      flex: 25%;
+    flex: 25%;
   }
 
   .right {
-      flex: 30%;
+    flex: 30%;
+    font-size: 0.8rem; /* Adjust the font size for smaller screens */
   }
 }
 
