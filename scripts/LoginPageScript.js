@@ -10,6 +10,45 @@ loginForm.addEventListener('submit', (event) => {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
+  //Regular expression for email validation
+  let emailRegularExpression = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/i;
+
+  //Regular expression for SQL Injection prevention
+  let sqlInjectionPrevention = /[<>"'/\\|?=*]/;
+
+  //Define max length of the email and password
+  const MaxLength = 51;
+
+  const messageElement = document.getElementById('message');
+
+  //Check if the email is valid
+  if (!emailRegularExpression.test(email) || !emailRegularExpression.test(repeatedEmail))
+  {
+      messageElement.innerHTML = 'Adres email zawiera niedozwolone znaki!';
+      return false;
+  }
+
+  //Check if the email is within acceptable length
+  if (email.length > MaxLength || email.length < 1 || repeatedEmail.length > MaxLength || repeatedEmail.length < 1) 
+  {
+      messageElement.innerHTML = 'Adres email musi zawierać od 1 do 50 znaków!';
+      return false;
+  }
+
+  //Check if the password is within acceptable length
+  if (password.length > MaxLength || password.length < 1 || repeatedPassword.length > MaxLength || repeatedPassword.length < 1)
+  {
+      messageElement.innerHTML = 'Hasło musi zawierać od 1 do 50 znaków!';
+      return false;
+  }
+
+  //Check if the password is valid
+  if (sqlInjectionPrevention.test(password) || sqlInjectionPrevention.test(repeatedPassword))
+  {
+      messageElement.innerHTML = 'Hasło zawiera niedozwolone znaki!';
+      return false;
+  }
+
   //Create an object to send as JSON data in the request body
   const requestBody = {
     email: email,
@@ -26,8 +65,8 @@ loginForm.addEventListener('submit', (event) => {
   })
     .then ((response) => response.json()) //Parse the incoming JSON response
     .then ((data) => {
-      const messageElement = document.getElementById('message');
-      messageElement.innerHTML = data.message;
+      const serverMessageElement = document.getElementById('message');
+      serverMessageElement.innerHTML = data.message;
 
       if (data.status === 'logged_in')
       {

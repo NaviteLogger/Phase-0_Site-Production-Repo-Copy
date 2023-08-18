@@ -32,14 +32,14 @@ registrationForm.addEventListener('submit', (event) => {
     //Check if the email is within acceptable length
     if (email.length > MaxLength || email.length < 1 || repeatedEmail.length > MaxLength || repeatedEmail.length < 1) 
     {
-        messageElement.innerHTML = 'Email must be between 1 and 50 characters long!';
+        messageElement.innerHTML = 'Adres email musi zawierać od 1 do 50 znaków!';
         return false;
     }
 
     //Check if the password is within acceptable length
     if (password.length > MaxLength || password.length < 1 || repeatedPassword.length > MaxLength || repeatedPassword.length < 1)
     {
-        messageElement.innerHTML = 'Password must be between 1 and 50 characters long!';
+        messageElement.innerHTML = 'Hasło musi zawierać od 1 do 50 znaków!';
         return false;
     }
 
