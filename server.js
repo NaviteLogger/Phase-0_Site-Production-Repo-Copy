@@ -406,6 +406,18 @@ app.post('/verifyEmailAddress', (req, res) => {
 
 
 
+app.post('/buySelectedAgreements', (req, res) => {
+  try {
+    
+
+  } catch (error) {
+    console.log('Error while buying selected agreements', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+
+
 //Handle the request to the client's portal page,
 app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   
