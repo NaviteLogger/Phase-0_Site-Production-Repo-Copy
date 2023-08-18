@@ -1246,6 +1246,22 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
 
 //Handle the login request
 app.post('/login', (req, res, next) => {
+  //First, check for any sql injection attempts
+  const sqlInjectionPrevention = /[<>"'/\\|?=*]/;
+
+  //Check if the email is valid
+  if (sqlInjectionPrevention.test(req.body.email))
+  {
+    return res.json({ status: 'invalid_email', message: 'Podany adres email zawiera niedozwolone znaki!' });
+  }
+
+  //Check if the password is valid
+  if (sqlInjectionPrevention.test(req.body.password))
+  {
+    return res.json({ status: 'invalid_password', message: 'Podane hasło zawiera niedozwolone znaki!' });
+  }
+
+  //Now that we made sure the email and password are valid, we can proceed with the authentication process
   //Console.log it for debugging purposes
   console.log('Received a request to login, calling passport.authenticate');
   //Call the authenticate function of passport, using the 'local' strategy
