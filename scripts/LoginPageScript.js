@@ -22,28 +22,28 @@ loginForm.addEventListener('submit', (event) => {
   const messageElement = document.getElementById('message');
 
   //Check if the email is valid
-  if (!emailRegularExpression.test(email) || !emailRegularExpression.test(repeatedEmail))
+  if (!emailRegularExpression.test(email))
   {
       messageElement.innerHTML = 'Adres email zawiera niedozwolone znaki!';
       return false;
   }
 
   //Check if the email is within acceptable length
-  if (email.length > MaxLength || email.length < 1 || repeatedEmail.length > MaxLength || repeatedEmail.length < 1) 
+  if (email.length > MaxLength || email.length < 1) 
   {
       messageElement.innerHTML = 'Adres email musi zawierać od 1 do 50 znaków!';
       return false;
   }
 
   //Check if the password is within acceptable length
-  if (password.length > MaxLength || password.length < 1 || repeatedPassword.length > MaxLength || repeatedPassword.length < 1)
+  if (password.length > MaxLength || password.length < 1)
   {
       messageElement.innerHTML = 'Hasło musi zawierać od 1 do 50 znaków!';
       return false;
   }
 
   //Check if the password is valid
-  if (sqlInjectionPrevention.test(password) || sqlInjectionPrevention.test(repeatedPassword))
+  if (sqlInjectionPrevention.test(password))
   {
       messageElement.innerHTML = 'Hasło zawiera niedozwolone znaki!';
       return false;

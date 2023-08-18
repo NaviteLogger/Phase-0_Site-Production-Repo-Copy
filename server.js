@@ -408,7 +408,11 @@ app.post('/verifyEmailAddress', (req, res) => {
 
 app.post('/buySelectedAgreements', (req, res) => {
   try {
+
+    const selectedAgreements = req.body;
+
     
+
 
   } catch (error) {
     console.log('Error while buying selected agreements', error);
