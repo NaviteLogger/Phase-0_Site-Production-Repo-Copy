@@ -17,6 +17,14 @@ html {
     }
   }
 
+.offer-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+  
 .offer {
   display: flex;
   justify-content: center;
@@ -54,9 +62,8 @@ html {
   color: red;
 }
 
-h2 {
+.center-alignment {
   text-align: center;
-  margin-top: 30px;
 }
 
 .agreements-table {
