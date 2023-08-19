@@ -141,7 +141,7 @@ function sendNextSignature() {
         .then((response) => response.json())
         .then((data) => {
             if (data.status === 'success') {
-                alert('Wszystkie podpisy zostały pomyślnie zapisane.');
+                alert('Wszystkie podpisy zostały pomyślnie zapisane!');
                 setTimeout(() => {
                     window.location.href = '/displayInterview';  // Redirect to the home page
                 }, 1000);

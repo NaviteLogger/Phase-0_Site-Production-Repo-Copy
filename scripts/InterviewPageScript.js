@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then((response) => response.json())
         .then((data) => {
             if (data.status === 'success') {
-                alert('Interview submitted successfully!');
+                alert('Wywiad został pomyślnie zapisany!');
                 setTimeout(() => {
                     window.location.href = '/signInterview';
                 }, 1000);
