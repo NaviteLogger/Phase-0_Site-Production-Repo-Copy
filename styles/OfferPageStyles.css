@@ -26,6 +26,7 @@ html {
 }
   
 .offer {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,8 +34,8 @@ html {
 }
 
 .box {
-  width: 200px;
-  height: 300px;
+  max-width: 200px;
+  max-height: 300px;
   border: 1px solid black;
   background-color: white;
   display: flex;
