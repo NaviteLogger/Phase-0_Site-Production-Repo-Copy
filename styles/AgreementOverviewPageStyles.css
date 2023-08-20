@@ -19,6 +19,10 @@
     gap: 10px;
 }
 
+.user-input {
+    margin: 5px;
+}
+
 .input-field {
     text-align: center;
     width: 50%;
