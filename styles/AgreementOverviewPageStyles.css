@@ -19,8 +19,12 @@
     gap: 10px;
 }
 
+label {
+    margin: 5%;
+}
+
 .user-input {
-    margin: 5px;
+    margin: 5%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,7 +33,7 @@
 
 .input-field {
     text-align: center;
-    width: 50%;
+    width: 100%;
     padding: 10px;
     font-size: 24px;
 }
