@@ -18,7 +18,6 @@ html {
   }
 
 .offer-container {
-  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
