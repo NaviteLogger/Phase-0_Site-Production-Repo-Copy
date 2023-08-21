@@ -1,6 +1,6 @@
 document.getElementById('clearDrawing').addEventListener('click', () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 });
 
 const maxPages = parseInt(document.body.getAttribute('data-number-of-pages'), 10);
@@ -31,6 +31,9 @@ document.getElementById('previousPage').addEventListener('click', () => {
 });
 
 const canvas = document.getElementById('signatureCanvas');
+var canvasWidth = 1190;
+var canvasHeight = 1684;
+
 const ctx = canvas.getContext('2d');
 let isDrawing = false;
 
@@ -45,15 +48,15 @@ function loadImage() {
     image.src = '/RODOAgreementImage/' + currentPage;
     image.onload = () => {
         console.log('Image loaded');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
         // Redraw the signature if it exists for the current page
         if (signatures[currentPage]) {
             let signatureImage = new Image();
             signatureImage.src = signatures[currentPage];
             signatureImage.onload = () => {
-                ctx.drawImage(signatureImage, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(signatureImage, 0, 0, canvasWidth, canvasHeight);
             }
         }
     }
@@ -118,8 +121,8 @@ function getCursorPosition(canvas, event) {
     //let y = event.clientY - rect.top;
 
     //Calculate the scale factors for X and Y
-    let scaleX = canvas.width / rect.width;
-    let scaleY = canvas.height / rect.height;
+    let scaleX = canvasWidth / rect.width;
+    let scaleY = canvasHeight / rect.height;
 
     // Adjust the coordinates according to the scale factors
     const x = (event.clientX - rect.left) * scaleX;
