@@ -34,7 +34,6 @@ const canvas = document.getElementById('signatureCanvas');
 const ctx = canvas.getContext('2d');
 let isDrawing = false;
 
-let currentPage = 0;
 var image = new Image();
 
 var currentIndex = 0;
