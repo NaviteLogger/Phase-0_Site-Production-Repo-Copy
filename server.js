@@ -480,7 +480,7 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
     deleteFilesInDirectory(path.join(__dirname, 'interviews'), modifiedUserEmail);
 
     //Send the client's portal page, iff the user is authenticated
-    res.render('ClientsPortalPage', { agreements: results, email: modifiedUserEmail });
+    res.render('ClientsPortalPage', { agreements: results, email: userEmail });
 
   } catch (error) {
     console.log('Error while querying the database', error);
