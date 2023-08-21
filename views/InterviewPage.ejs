@@ -44,8 +44,8 @@
             
                         <div class="radio-container">
                            <% if (question.category === 'TF' || question.category === 'TF_EXPLANATION') { %>
-                                <input type="radio" name="question_<%= question.question_id %>" value="true"> Tak
-                                <input type="radio" name="question_<%= question.question_id %>" value="false"> Nie
+                                <input type="radio" class="radio-option" name="question_<%= question.question_id %>" value="true"> Tak
+                                <input type="radio" class="radio-option" name="question_<%= question.question_id %>" value="false"> Nie
                             <% } %>
                         </div>
     

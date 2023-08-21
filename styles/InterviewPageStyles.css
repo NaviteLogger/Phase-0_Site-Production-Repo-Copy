@@ -39,6 +39,10 @@ input[type="radio"] {
     transform: scale(1.5);
 }
 
+.radio-option {
+    margin: 5px;
+}
+
 /* Styling for the textarea */
 textarea {
     width: 100%;
