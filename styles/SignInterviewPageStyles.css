@@ -13,6 +13,8 @@ canvas {
 
 #signatureCanvas {
     touch-action: none;
+    width: 595px;
+    height: 842px;
 }
 
 #pageIndicator {
