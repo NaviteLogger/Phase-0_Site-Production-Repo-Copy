@@ -11,6 +11,10 @@ canvas {
     /*height: 100vh;    */       /* Optional: Take full viewport height. Adjust or remove as needed. */
 }
 
+#signatureCanvas {
+    touch-action: none;
+}
+
 .button-container {
     text-align: center;
     margin-top: 20px;
