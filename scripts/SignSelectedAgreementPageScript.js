@@ -4,6 +4,7 @@ document.getElementById('clearDrawing').addEventListener('click', () => {
 });
 
 const maxPages = parseInt(document.body.getAttribute('data-number-of-pages'), 10);
+var currentPage = 0; //Give that we start from the first page
 
 document.getElementById('nextPage').addEventListener('click', () => {
     if (currentPage < maxPages - 1) {
@@ -13,7 +14,7 @@ document.getElementById('nextPage').addEventListener('click', () => {
 
         currentPage++;
         loadImage();
-        //updatePageDisplay();
+        updatePageDisplay();
     }
 });
 
@@ -25,7 +26,7 @@ document.getElementById('previousPage').addEventListener('click', () => {
 
         currentPage--;
         loadImage();
-        //updatePageDisplay();
+        updatePageDisplay();
     }
 });
 
@@ -57,6 +58,15 @@ function loadImage() {
             }
         }
     }
+}
+
+function updatePageDisplay() {
+    var pageIndicator = document.getElementById('pageIndicator');
+    pageIndicator.innerHTML = `Proszę podpisać wszystkie strony w wyznaczonych miejscach (W przypadku ich braku proszę podpisać się na dole strony). Strona ${currentPage + 1} z ${maxPages}`;
+
+    // Disable or enable navigation buttons
+    document.getElementById('nextPage').disabled = currentPage >= maxPages - 1;
+    document.getElementById('previousPage').disabled = currentPage <= 0;
 }
 
 canvas.addEventListener('mousedown', () => {

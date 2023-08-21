@@ -28,7 +28,7 @@ canvas {
     text-align: center;
     text-decoration: none;
     display: inline-block; /* This makes the buttons sit side by side */
-    font-size: 16px;
+    font-size: 0.9rem;
     margin: 4px 2px; /* Spacing between buttons */
     cursor: pointer;
     border-radius: 8px; /* Rounded corners */
