@@ -471,16 +471,16 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
 
     //Handle the possible removal of the remaining files
     //Extract the user email from the session
-    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    const modifiedUserEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
 
     //Delete the remaining files in the agreements directory
-    deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
+    deleteFilesInDirectory(path.join(__dirname, 'agreements'), modifiedUserEmail);
 
     //Delete the remaining files in the interviews directory
-    deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
+    deleteFilesInDirectory(path.join(__dirname, 'interviews'), modifiedUserEmail);
 
     //Send the client's portal page, iff the user is authenticated
-    res.render('ClientsPortalPage', { agreements: results, email: userEmail });
+    res.render('ClientsPortalPage', { agreements: results, email: modifiedUserEmail });
 
   } catch (error) {
     console.log('Error while querying the database', error);
