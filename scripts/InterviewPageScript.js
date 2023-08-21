@@ -68,13 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!isAllAnswered) 
         {
-            alert('Please answer all questions!');
+            alert('Proszę odpowiedzieć na wszystkie pytania!');
             return;
         }
 
         if (!isAllExplained)
         {
-            alert('Please explain all "Yes" answers!');
+            alert('Proszę wyjaśnić odpowiedzi na pytania oznaczone kolorem żółtym!');
             return;
         }
 
