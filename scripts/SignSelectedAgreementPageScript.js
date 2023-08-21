@@ -8,7 +8,7 @@ var currentPage = 0; //Give that we start from the first page
 
 document.getElementById('nextPage').addEventListener('click', () => {
     if (currentPage < maxPages - 1) {
-        signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+        signatures[currentPage] = canvas.toDataURL('image/png');
 
         console.log("Image Data URL:", signatures[currentPage]);
 
@@ -20,7 +20,7 @@ document.getElementById('nextPage').addEventListener('click', () => {
 
 document.getElementById('previousPage').addEventListener('click', () => {
     if (currentPage > 0) {
-        signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+        signatures[currentPage] = canvas.toDataURL('image/png');
 
         console.log("Image Data URL:", signatures[currentPage]);
 
@@ -120,7 +120,7 @@ function getCursorPosition(canvas, event) {
 }
 
 document.getElementById('submitAllSignatures').addEventListener('click', () => {
-    signatures[currentPage] = canvas.toDataURL('image/jpeg', 1.0);
+    signatures[currentPage] = canvas.toDataURL('image/png');
     console.log("Signatures array:", signatures);
 
     if (signatures.length < maxPages) {
