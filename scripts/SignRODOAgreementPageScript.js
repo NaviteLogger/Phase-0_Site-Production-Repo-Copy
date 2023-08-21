@@ -116,7 +116,22 @@ function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    return { x, y };
+
+    if(event.touches)
+    {
+        x = event.touches[0].clientX;
+        y = event.touches[0].clientY;
+    }
+        else
+    {
+        x = event.clientX;
+        y = event.clientY;
+    }
+
+    return {
+        x: x - rect.left,
+        y: y - rect.top
+    };
 }
 
 document.getElementById('submitAllSignatures').addEventListener('click', () => {
