@@ -280,7 +280,7 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDat
 
   //Load the docx file as a binary
   const docPath = path.join(__dirname, 'agreements', fileName);
-  const content = await fsPromises.readFileSync(docPath, 'binary');
+  const content = await fsPromises.readFile(docPath, 'binary');
   console.log(`The ${fileName} has been read from path ${docPath}`);
 
   const zip = new PizZip(content);
