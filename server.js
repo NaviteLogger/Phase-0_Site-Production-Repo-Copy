@@ -287,7 +287,7 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDat
   const docxTemplater = new Docxtemplater().loadZip(zip);
 
   //Set the data and rendering of the document
-  docxTemplater.setData(dataToFill); //This is where the data is passed into the document: {clientFullName} will be replaced by the value clientFullName passed in the dataToFill object
+  docxTemplater.setData(dataToFill); //This is where the data is passed into the document: {clientFullName} will be replaced by the value req.body.clientFullName passed in the dataToFill object
   docxTemplater.render();
 
   //Generate the filled .docx file
