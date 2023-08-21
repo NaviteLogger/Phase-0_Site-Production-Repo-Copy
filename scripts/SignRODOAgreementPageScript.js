@@ -116,23 +116,16 @@ function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
     //let x = event.clientX - rect.left;
     //let y = event.clientY - rect.top;
-    let x, y;
 
-    if(event.touches)
-    {
-        x = event.touches[0].clientX;
-        y = event.touches[0].clientY;
-    }
-        else
-    {
-        x = event.clientX;
-        y = event.clientY;
-    }
+    //Calculate the scale factors for X and Y
+    let scaleX = canvas.width / rect.width;
+    let scaleY = canvas.height / rect.height;
 
-    return {
-        x: x - rect.left,
-        y: y - rect.top
-    };
+    // Adjust the coordinates according to the scale factors
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;   
+
+    return { x, y };
 }
 
 document.getElementById('submitAllSignatures').addEventListener('click', () => {
