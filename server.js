@@ -72,7 +72,7 @@ app.use('/fonts', express.static(path.join(__dirname, 'fonts')));
 //Include the session middleware for user's session management
 app.use(
   session({
-    secret: 'secret', //This is to be changed in production: we need a more secure secret
+    secret: process.env.SESSION_SECRET, //This is to be changed in production: we need a more secure secret
     resave: false,
     saveUninitialized: false,
     cookie: { expires: false }
