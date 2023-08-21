@@ -114,8 +114,17 @@ function draw(event) {
 
 function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    //let x = event.clientX - rect.left;
+    //let y = event.clientY - rect.top;
+
+    //Calculate the scale factors for X and Y
+    let scaleX = canvas.width / rect.width;
+    let scaleY = canvas.height / rect.height;
+
+    // Adjust the coordinates according to the scale factors
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;   
+
     return { x, y };
 }
 
