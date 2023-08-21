@@ -277,16 +277,21 @@ function checkEmailConfirmation(req, res, next) {
 
 
 const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDate, prefix) => {
+
+  //Load the docx file as a binary
   const docPath = path.join(__dirname, 'agreements', fileName);
-  const content = fs.readFileSync(docPath, 'binary');
+  const content = await fsPromises.readFileSync(docPath, 'binary');
   console.log(`The ${fileName} has been read from path ${docPath}`);
 
   const zip = new PizZip(content);
   const docxTemplater = new Docxtemplater().loadZip(zip);
-  docxTemplater.setData(dataToFill);
-  docxTemplater.render();
-  const buffer = docxTemplater.getZip().generate({ type: 'nodebuffer' });
 
+  //Set the data and rendering of the document
+  docxTemplater.setData(dataToFill); //This is where the data is passed into the document: {clientFullName} will be replaced by the value clientFullName passed in the dataToFill object
+  docxTemplater.render();
+
+  //Generate the filled .docx file
+  const buffer = docxTemplater.getZip().generate({ type: 'nodebuffer' });
 
   const newFileName = `${prefix}_${formattedDate}_${userEmail}.docx`;
   const outputPath = path.join(__dirname, 'agreements', newFileName);
