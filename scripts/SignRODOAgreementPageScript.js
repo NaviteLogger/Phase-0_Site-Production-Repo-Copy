@@ -3,7 +3,7 @@ document.getElementById('clearDrawing').addEventListener('click', () => {
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 });
 
-const maxPages = parseInt(document.body.getAttribute('data-page-count'), 10);
+const maxPages = parseInt(document.body.getAttribute('data-number-of-pages'), 10);
 var currentPage = 0; //Give that we start from the first page
 
 document.getElementById('nextPage').addEventListener('click', () => {
