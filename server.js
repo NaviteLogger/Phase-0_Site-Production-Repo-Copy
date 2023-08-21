@@ -1021,7 +1021,7 @@ app.post('/postInterviewData', upload.none(), async (req, res) => {
               console.log('Error while querying the database', error);
               reject(error);
             } else {
-              console.log('Question content has been retrieved from the database');
+              //console.log('Question content has been retrieved from the database');
               resolve(results);
             }
           });

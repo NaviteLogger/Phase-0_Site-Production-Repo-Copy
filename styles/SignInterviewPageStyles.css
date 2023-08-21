@@ -15,9 +15,13 @@ canvas {
     touch-action: none;
 }
 
+#pageIndicator {
+    text-align: center;
+    margin: 3%;
+}
+
 .button-container {
     text-align: center;
-    margin-top: 20px;
 }
 
 .button-container button {
