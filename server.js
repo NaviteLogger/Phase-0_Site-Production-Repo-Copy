@@ -469,6 +469,16 @@ app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async
     //Console.log it for debugging purposes
     console.log("Received a request to the client's portal, agreements' lookup query run successfully: ", userEmail);
 
+    //Handle the possible removal of the remaining files
+    //Extract the user email from the session
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+
+    //Delete the remaining files in the agreements directory
+    deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
+
+    //Delete the remaining files in the interviews directory
+    deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
+
     //Send the client's portal page, iff the user is authenticated
     res.render('ClientsPortalPage', { agreements: results, email: userEmail });
 
@@ -548,6 +558,16 @@ app.post('/agreementSelectionPage', checkAuthentication, checkEmailConfirmation,
 
     //Console.log it for debugging purposes
     console.log('Received a request to the fill the selected agreement page: ', results[0].agreement_name);
+
+    //Handle the possible removal of the remaining files
+    //Extract the user email from the session
+    const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+
+    //Delete the remaining files in the agreements directory
+    deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
+
+    //Delete the remaining files in the interviews directory
+    deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
 
     res.render('AgreementOverviewPage', { agreementName: results[0].agreement_name });
 
