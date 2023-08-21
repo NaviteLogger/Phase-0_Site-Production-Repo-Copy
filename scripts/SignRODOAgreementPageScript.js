@@ -114,8 +114,9 @@ function draw(event) {
 
 function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    //let x = event.clientX - rect.left;
+    //let y = event.clientY - rect.top;
+    let x, y;
 
     if(event.touches)
     {
