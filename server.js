@@ -23,7 +23,7 @@ const PizZip = require('pizzip');
 //For converting files
 const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
-const { PDFDocument } = require('pdf-lib');
+const { PDFDocument, rgb } = require('pdf-lib');
 const pdf = require('pdf-parse');
 const PDFMerge = require('pdf-merge');
 //For managin the form data
