@@ -30,8 +30,7 @@ const PDFMerge = require('pdf-merge');
 const multer = require('multer');
 const upload = multer();
 //For managing the font
-const fontkit = require('fontkit');
-PDFDocument.registerFontkit(fontkit);
+const { fontkit } = require('@pdf-lib/fontkit');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -743,7 +742,7 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
     console.log("ImageData length:", imageData.length);
 
     //Create a new PDF document
-    const pdfDoc = await PDFDocument.create();
+    const pdfDoc = await PDFDocument.create({ fontkit });
 
     //Add a blank page to the document
     const page = pdfDoc.addPage([595.29, 841.89]);
@@ -910,7 +909,7 @@ app.post('/uploadSelectedAgreementSignature', checkAuthentication, async (req, r
       console.log("ImageData length:", imageData.length);
 
       //Create a new PDF document
-      const pdfDoc = await PDFDocument.create();
+      const pdfDoc = await PDFDocument.create({ fontkit });
 
       //Add a blank page to the document
       const page = pdfDoc.addPage([595.29, 841.89]);
@@ -1084,7 +1083,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
     
-    const pdfDoc = await PDFDocument.create();
+    const pdfDoc = await PDFDocument.create({ fontkit });
     const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'futuraFont.ttf'));
     const customFont = await pdfDoc.embedFont(fontBytes);
 
