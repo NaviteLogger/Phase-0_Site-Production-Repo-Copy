@@ -29,6 +29,9 @@ const PDFMerge = require('pdf-merge');
 //For managin the form data
 const multer = require('multer');
 const upload = multer();
+//For managing the font
+const fontkit = require('fontkit');
+PDFDocument.registerFontkit(fontkit);
 
 //Load environment variables from the .env file
 require('dotenv').config();
