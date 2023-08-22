@@ -1201,29 +1201,45 @@ app.post('/uploadInterviewSignature', checkAuthentication, async (req, res) => {
 
     var pdfName = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
-    var doc = new PDFDocument();
-    var stream = fs.createWriteStream(pdfName);
+    console.log("Number of images received:", imageData.length);
 
-    doc.pipe(stream);
-    //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
+    //Create a new PDF document
+    const pdfDoc = await PDFDocument.create();
 
-    var dataURL = imageData.split(',')[1];
-    var imgBuffer = Buffer.from(dataURL, 'base64');
+    //Add a blank page to the document
+    const page = pdfDoc.addPage([595.29, 841.89]);
 
-    doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
+    //Extract the image data from the data URL
+    const dataURL = imageData.split(',')[1];
+    const imgBuffer = Buffer.from(dataURL, 'base64');
 
-    //End the PDF document
-    doc.end();
+    //Embed the image into the PDF
+    const img = await pdfDoc.embedPng(imgBuffer);
 
-    stream.on('finish', () => {
-      console.log("PDF has been generated for page:", pageIndex);
-      res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
+    //Calculate the scale factors
+    const scaleX = 595.29 / img.width;
+    const scaleY = 841.89 / img.height;
+
+    //Use the smallest scale factor to ensure that the image fits inside the page
+    const scale = Math.min(scaleX, scaleY);
+
+    const imgDims = img.scale(scale);
+
+    //Draw the image on the center of the page
+    page.drawImage(img, {
+      x: (595.29 - imgDims.width) / 2,
+      y: (841.89 - imgDims.height) / 2,
+      width: imgDims.width,
+      height: imgDims.height
     });
 
-    stream.on('error', (err) => {
-      console.error("Stream Error:", err);
-      res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
-    });
+    //Serialize the PDF to bytes
+    const pdfBytes = await pdfDoc.save();
+
+    //Save the file
+    fs.writeFileSync(pdfName, pdfBytes);
+
+    res.json({ status: 'success', message: `Strona ${pageIndex} została zapisana` });
 
   } catch (error) {
     console.error('Error while receiving signed image and generating individual PDF:', error);
