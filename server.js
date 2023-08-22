@@ -29,8 +29,6 @@ const PDFMerge = require('pdf-merge');
 //For managin the form data
 const multer = require('multer');
 const upload = multer();
-//For managing the font
-const fontkit = require('@pdf-lib/fontkit');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -743,10 +741,6 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
 
     //Create a new PDF document
     const pdfDoc = await PDFDocument.create();
-    pdfDoc.registerFontkit(fontkit);
-
-    const fontBytes = fs.readFileSync(path.join(__dirname, 'fonts', 'arialFont.ttf'));
-    const customFont = await pdfDoc.embedFont(fontBytes);
 
     //Add a blank page to the document
     const page = pdfDoc.addPage([595.29, 841.89]);
@@ -914,10 +908,6 @@ app.post('/uploadSelectedAgreementSignature', checkAuthentication, async (req, r
 
       //Create a new PDF document
       const pdfDoc = await PDFDocument.create();
-      pdfDoc.registerFontkit(fontkit);
-
-      const fontBytes = fs.readFileSync(path.join(__dirname, 'fonts', 'arialFont.ttf'));
-      const customFont = await pdfDoc.embedFont(fontBytes);
 
       //Add a blank page to the document
       const page = pdfDoc.addPage([595.29, 841.89]);
@@ -1051,7 +1041,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const LINE_HEIGHT = 20;
 
     // Helper Functions
-    function splitTextToLines(font, text, maxWidth, size) {
+    function splitTextToLines(text, maxWidth, size) {
       const words = text.split(' ');
       const lines = [];
       let line = '';
@@ -1087,15 +1077,12 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     
     const pdfDoc = await PDFDocument.create();
     let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
-    const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'arialFont.ttf'));
-    const customFont = await pdfDoc.embedFont(fontBytes);
 
     // Title
     page.drawText('Wywiad kosmetyczny oraz odpowiedzi udzielone przez klienta', {
       x: LEFT_MARGIN,
       y: PAGE_HEIGHT - verticalOffset,
       size: 20,
-      font: customFont,
       color: rgb(0, 0, 0),
     });
     verticalOffset += 30;
@@ -1117,7 +1104,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
           textToDraw = `${questionContentFromDB}  :  ${userResponse}`;
         }
 
-        const textLines = splitTextToLines(customFont, textToDraw, PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN, 15);
+        const textLines = splitTextToLines(textToDraw, PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN, 15);
 
         // Check if the text will fit on the page
         if (PAGE_HEIGHT - verticalOffset - (textLines.length * LINE_HEIGHT) <= BOTTOM_MARGIN) {
@@ -1131,7 +1118,6 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
             x: LEFT_MARGIN,
             y: PAGE_HEIGHT - verticalOffset,
             size: 15,
-            font: customFont,
             color: rgb(0, 0, 0),
           });
           verticalOffset += LINE_HEIGHT;
@@ -1240,10 +1226,6 @@ app.post('/uploadInterviewSignature', checkAuthentication, async (req, res) => {
 
     //Create a new PDF document
     const pdfDoc = await PDFDocument.create();
-    pdfDoc.registerFontkit(fontkit);
-
-    const fontBytes = fs.readFileSync(path.join(__dirname, 'fonts', 'arialFont.ttf'));
-    const customFont = await pdfDoc.embedFont(fontBytes);
 
     //Add a blank page to the document
     const page = pdfDoc.addPage([595.29, 841.89]);
