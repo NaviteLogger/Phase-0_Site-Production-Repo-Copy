@@ -30,7 +30,7 @@ const PDFMerge = require('pdf-merge');
 const multer = require('multer');
 const upload = multer();
 //For managing the font
-const { fontkit } = require('@pdf-lib/fontkit');
+const fontkit = require('@pdf-lib/fontkit');
 
 //Load environment variables from the .env file
 require('dotenv').config();
