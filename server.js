@@ -1082,6 +1082,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
     
     const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
 
     // Title
@@ -1089,6 +1090,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
       x: LEFT_MARGIN,
       y: PAGE_HEIGHT - verticalOffset,
       size: 20,
+      font: font,
       color: rgb(0, 0, 0),
     });
     verticalOffset += 30;
