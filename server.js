@@ -735,7 +735,7 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
 
     var pdfName = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
-    console.log("Number of images received:", imageData.length);
+    console.log("ImageData length:", imageData.length);
 
     //Create a new PDF document
     const pdfDoc = await PDFDocument.create();
@@ -906,7 +906,7 @@ app.post('/uploadSelectedAgreementSignature', checkAuthentication, async (req, r
 
       var pdfName = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
-      console.log("Number of images received:", imageData.length);
+      console.log("ImageData length:", imageData.length);
 
       //Create a new PDF document
       const pdfDoc = await PDFDocument.create();
@@ -1210,7 +1210,7 @@ app.post('/uploadInterviewSignature', checkAuthentication, async (req, res) => {
 
     var pdfName = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
-    console.log("Number of images received:", imageData.length);
+    console.log("ImageData length:", imageData.length);
 
     //Create a new PDF document
     const pdfDoc = await PDFDocument.create();
