@@ -747,12 +747,20 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
 
     //Embed the image into the PDF
     const img = await pdfDoc.embedPng(imgBuffer);
-    const imgDims = img.scale(1);
+
+    //Calculate the scale factors
+    const scaleX = 595.29 / img.width;
+    const scaleY = 841.89 / img.height;
+
+    //Use the smallest scale factor to ensure that the image fits inside the page
+    const scale = Math.min(scaleX, scaleY);
+
+    const imgDims = img.scale(scale);
 
     //Draw the image on the center of the page
     page.drawImage(img, {
-      x: 0,
-      y: 0,
+      x: (595.29 - imgDims.width) / 2,
+      y: (841.89 - imgDims.height) / 2,
       width: imgDims.width,
       height: imgDims.height
     });
