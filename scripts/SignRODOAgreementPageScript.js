@@ -15,12 +15,6 @@ document.getElementById('nextPage').addEventListener('click', () => {
         currentPage++;
         loadImage();
         updatePageDisplay();
-
-
-        const debugImage = new Image();
-        debugImage.src = canvas.toDataURL('image/png');
-        document.body.appendChild(debugImage);
-
     }
 });
 
@@ -35,6 +29,13 @@ document.getElementById('previousPage').addEventListener('click', () => {
         updatePageDisplay();
     }
 });
+
+
+document.getElementById('captureCanvas').addEventListener('click', () => {
+    let capturedData = canvas.toDataURL('image/png');
+    document.getElementById('debugImage').src = capturedData;
+});
+
 
 const canvas = document.getElementById('signatureCanvas');
 var canvasWidth = 1190;
