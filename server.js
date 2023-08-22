@@ -1086,7 +1086,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     
     const pdfDoc = await PDFDocument.create();
     const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'futuraFont.ttf'));
-    const font = await pdfDoc.embedFont(fontBytes);
+    const customFont = await pdfDoc.embedFont(fontBytes);
 
     let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
 
@@ -1095,7 +1095,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
       x: LEFT_MARGIN,
       y: PAGE_HEIGHT - verticalOffset,
       size: 20,
-      font: font,
+      font: customFont,
       color: rgb(0, 0, 0),
     });
     verticalOffset += 30;
