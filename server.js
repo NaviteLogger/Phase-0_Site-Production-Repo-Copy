@@ -1082,7 +1082,9 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
     
     const pdfDoc = await PDFDocument.create();
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'futuraFont.ttf'));
+    const font = await pdfDoc.embedFont(fontBytes);
+    
     let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
 
     // Title
