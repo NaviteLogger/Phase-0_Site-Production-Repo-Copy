@@ -1023,35 +1023,30 @@ app.post('/postInterviewData', upload.none(), async (req, res) => {
     console.log(`The formatted date is ${formattedDate}`)
 
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
-    doc.pipe(fs.createWriteStream(pathToInterviewDocument));
+    
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([595.29, 841.89]); //A4 page size
+    const { height } = page.getSize();
+    const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'arialFont.ttf'));
+    const customFont = await pdfDoc.embedFont(fontBytes);
+    
+    let verticalOffset = 50; //Start the text at the top of the page
 
-    doc.fontSize(20).text('Wywiad oraz odpowiedzi', { align: 'center' });
+    //Add title
+    page.drawText('Wywiad kosmetyczny oraz odpowiedzi udzielone przez klienta', {
+      x: 50,
+      y: height - verticalOffset,
+      size: 20,
+      font: customFont,
+      color: rgb(0, 0, 0),
+    });
+    verticalOffset += 30;
 
-    for (let key in formData) {
-      if (key.startsWith('question_')) {
-        const questionId = key.split('_')[1];
-        const userResponse = formData[key]; // Renamed for clarity
-        const userResponseInPolish = userResponse === 'true' ? 'Tak' : 'Nie';
-
-        const results = await new Promise((resolve, reject) => {
-          connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
-            if (error) {
-              console.log('Error while querying the database', error);
-              reject(error);
-            } else {
-              //console.log('Question content has been retrieved from the database');
-              resolve(results);
-            }
-          });
-        });
-
-        const questionContentFromDB = results[0].content; // Renamed for clarity
-        console.log(questionContentFromDB);
-
-        doc.fontSize(15).text(`${questionContentFromDB} : ${userResponseInPolish}`, { align: 'left' });
-      }
-
-      if(key.startsWith('explanation_'))
+    for (let key in formData)
+    {
+      let textToDraw = '';  
+    
+      if (key.startsWith('question_') || key.startsWith('explanation_'))
       {
         const questionId = key.split('_')[1];
         const userResponse = formData[key]; // Renamed for clarity
@@ -1070,12 +1065,30 @@ app.post('/postInterviewData', upload.none(), async (req, res) => {
 
         const questionContentFromDB = results[0].content; // Renamed for clarity
 
-        doc.fontSize(15).text(`${questionContentFromDB} : ${userResponse}`, { align: 'left' });
+        if(key.startsWith('question_'))
+        {
+          const userResponseInPolish = userResponse === 'true' ? 'Tak' : 'Nie';
+          textToDraw = `${questionContentFromDB}  :  ${userResponseInPolish}`;
+        }
+          else
+        {
+          textToDraw = `${questionContentFromDB}  :  ${userResponse}`;
+        }
+
+        page.drawText(textToDraw, {
+          x: 50,
+          y: height - verticalOffset,
+          size: 15,
+          font: customFont,
+          color: rgb(0, 0, 0),
+        });
+        verticalOffset += 25;
       }
     }
-
-    doc.end();
-
+    
+    const pdfBytes = await pdfDoc.save();
+    await fsPromises.writeFile(pathToInterviewDocument, pdfBytes);
+    
     req.session.interviewDocumentPath = pathToInterviewDocument;
 
     console.log("Interview document path has been passed to the session, the Interview has been saved");
