@@ -1041,24 +1041,40 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const LINE_HEIGHT = 20;
 
     // Helper Functions
-    function splitTextToLines(text, maxWidth, size) {
-      const defaultFont = pdfDoc.Font.Helvetica;
+    function splitTextToLines(text, maxWidth, size, pdfDoc) {
+      const tempPage = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
       const words = text.split(' ');
       const lines = [];
       let line = '';
-
-      while (words.length) {
+  
+      while (words.length)
+      {
         const word = words.shift();
-        if (defaultFont.widthOfTextAtSize(line + word, size) < maxWidth) {
-            line += `${word} `;
-        } else {
+          
+        const drawnText = tempPage.drawText(line + word, {
+          x: -1000, // Off the visible page area
+          y: -1000, // Off the visible page area
+          size: size,
+        });
+          
+        const textWidth = drawnText.width;
+  
+        if (textWidth < maxWidth)
+        {
+          line += `${word} `;
+        } 
+          else
+        {
             lines.push(line);
             line = `${word} `;
         }
       }
-
+  
       if (line) lines.push(line);
-
+  
+      // Remove the temporary page after using it
+      pdfDoc.removePage(pdfDoc.getPages().length - 1);
+  
       return lines;
     }
 
@@ -1117,7 +1133,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
           textToDraw = `${questionContentFromDB}  :  ${userResponse}`;
         }
 
-        const textLines = splitTextToLines(textToDraw, PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN, 15);
+        const textLines = splitTextToLines(textToDraw, PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN, 15, pdfDoc);
 
         // Check if the text will fit on the page
         if (PAGE_HEIGHT - verticalOffset - (textLines.length * LINE_HEIGHT) <= BOTTOM_MARGIN) {
