@@ -29,6 +29,9 @@ const PDFMerge = require('pdf-merge');
 //For managin the form data
 const multer = require('multer');
 const upload = multer();
+//For managing the font
+const fontkit = require('fontkit');
+PDFDocument.registerFontkit(fontkit);
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -1084,7 +1087,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const pdfDoc = await PDFDocument.create();
     const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'futuraFont.ttf'));
     const font = await pdfDoc.embedFont(fontBytes);
-    
+
     let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
 
     // Title
