@@ -742,7 +742,7 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
     console.log("ImageData length:", imageData.length);
 
     //Create a new PDF document
-    const pdfDoc = await PDFDocument.create({ fontkit });
+    const pdfDoc = await PDFDocument.create();
 
     //Add a blank page to the document
     const page = pdfDoc.addPage([595.29, 841.89]);
@@ -909,7 +909,7 @@ app.post('/uploadSelectedAgreementSignature', checkAuthentication, async (req, r
       console.log("ImageData length:", imageData.length);
 
       //Create a new PDF document
-      const pdfDoc = await PDFDocument.create({ fontkit });
+      const pdfDoc = await PDFDocument.create();
 
       //Add a blank page to the document
       const page = pdfDoc.addPage([595.29, 841.89]);
@@ -1143,6 +1143,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
             x: LEFT_MARGIN,
             y: PAGE_HEIGHT - verticalOffset,
             size: 15,
+            font: customFont,
             color: rgb(0, 0, 0),
           });
           verticalOffset += LINE_HEIGHT;
