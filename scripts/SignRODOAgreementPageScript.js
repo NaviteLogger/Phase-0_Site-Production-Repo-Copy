@@ -30,16 +30,6 @@ document.getElementById('previousPage').addEventListener('click', () => {
     }
 });
 
-
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById('captureCanvas').addEventListener('click', () => {
-        let capturedData = canvas.toDataURL('image/png');
-        document.getElementById('debugImage').src = capturedData;
-    });
-});
-
-
-
 const canvas = document.getElementById('signatureCanvas');
 var canvasWidth = 1190;
 var canvasHeight = 1684;

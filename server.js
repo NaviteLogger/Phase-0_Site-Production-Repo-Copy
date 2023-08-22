@@ -23,12 +23,14 @@ const PizZip = require('pizzip');
 //For converting files
 const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
-const PDFDocument = require('pdfkit'); 
+const { PDFDocument, rgb } = require('pdf-lib');
 const pdf = require('pdf-parse');
 const PDFMerge = require('pdf-merge');
 //For managin the form data
 const multer = require('multer');
 const upload = multer();
+//For managing the font
+const fontkit = require('@pdf-lib/fontkit');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -118,6 +120,8 @@ connection.connect((err) => {
   console.log('Successfully connected to the MYSQL database!');
 });
 
+
+
 //Handle the incoming GET request to the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
@@ -149,6 +153,8 @@ app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in
     });
   });
 });
+
+
 
 //Sets up the local passport strategy for authenticating users
 passport.use(
@@ -733,31 +739,45 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
 
     var pdfName = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
-    console.log("Number of images received:", imageData.length);
-      
-    var doc = new PDFDocument();
-    var stream = fs.createWriteStream(pdfName);
+    console.log("ImageData length:", imageData.length);
 
-    doc.pipe(stream);
-    doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
+    //Create a new PDF document
+    const pdfDoc = await PDFDocument.create();
 
-    var dataURL = imageData.split(',')[1];
-    var imgBuffer = Buffer.from(dataURL, 'base64');
+    //Add a blank page to the document
+    const page = pdfDoc.addPage([595.29, 841.89]);
 
-    doc.image(imgBuffer, 0, 0, { fit: [595.29, 841.89] });
-      
-    //End the PDF document
-    doc.end();
+    //Extract the image data from the data URL
+    const dataURL = imageData.split(',')[1];
+    const imgBuffer = Buffer.from(dataURL, 'base64');
 
-    stream.on('finish', () => {
-      console.log("PDF has been generated for page:" + pageIndex);
-      res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
+    //Embed the image into the PDF
+    const img = await pdfDoc.embedPng(imgBuffer);
+
+    //Calculate the scale factors
+    const scaleX = 595.29 / img.width;
+    const scaleY = 841.89 / img.height;
+
+    //Use the smallest scale factor to ensure that the image fits inside the page
+    const scale = Math.min(scaleX, scaleY);
+
+    const imgDims = img.scale(scale);
+
+    //Draw the image on the center of the page
+    page.drawImage(img, {
+      x: (595.29 - imgDims.width) / 2,
+      y: (841.89 - imgDims.height) / 2,
+      width: imgDims.width,
+      height: imgDims.height
     });
 
-    stream.on('error', (err) => {
-      console.error("Stream Error:", err);
-      res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
-    });
+    //Serialize the PDF to bytes
+    const pdfBytes = await pdfDoc.save();
+
+    //Save the file
+    fs.writeFileSync(pdfName, pdfBytes);
+
+    res.json({ status: 'success', message: `Strona ${pageIndex} została zapisana` });
 
   } catch (error) {
       console.error('Error while receiving signed images and generating PDF:', error);
@@ -886,29 +906,45 @@ app.post('/uploadSelectedAgreementSignature', checkAuthentication, async (req, r
 
       var pdfName = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
-      var doc = new PDFDocument();
-      var stream = fs.createWriteStream(pdfName);
+      console.log("ImageData length:", imageData.length);
 
-      doc.pipe(stream);
-      //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
+      //Create a new PDF document
+      const pdfDoc = await PDFDocument.create();
 
-      var dataURL = imageData.split(',')[1];
-      var imgBuffer = Buffer.from(dataURL, 'base64');
+      //Add a blank page to the document
+      const page = pdfDoc.addPage([595.29, 841.89]);
 
-      doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
+      //Extract the image data from the data URL
+      const dataURL = imageData.split(',')[1];
+      const imgBuffer = Buffer.from(dataURL, 'base64');
 
-      //End the PDF document
-      doc.end();
+      //Embed the image into the PDF
+      const img = await pdfDoc.embedPng(imgBuffer);
 
-      stream.on('finish', () => {
-        console.log("PDF has been generated for page:", pageIndex);
-        res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
+      //Calculate the scale factors
+      const scaleX = 595.29 / img.width;
+      const scaleY = 841.89 / img.height;
+
+      //Use the smallest scale factor to ensure that the image fits inside the page
+      const scale = Math.min(scaleX, scaleY);
+
+      const imgDims = img.scale(scale);
+
+      //Draw the image on the center of the page
+      page.drawImage(img, {
+        x: (595.29 - imgDims.width) / 2,
+        y: (841.89 - imgDims.height) / 2,
+        width: imgDims.width,
+        height: imgDims.height
       });
 
-      stream.on('error', (err) => {
-          console.error("Stream Error:", err);
-          res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
-      });
+      //Serialize the PDF to bytes
+      const pdfBytes = await pdfDoc.save();
+
+      //Save the file
+      fs.writeFileSync(pdfName, pdfBytes);
+
+      res.json({ status: 'success', message: `Strona ${pageIndex} została zapisana` });
 
   } catch (error) {
       console.error('Error while receiving signed image and generating individual PDF:', error);
@@ -995,76 +1031,130 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
   }
 });
 
-app.post('/postInterviewData', upload.none(), async (req, res) => {
+app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, res) => {
   try {
+    // Constants
+    const PAGE_WIDTH = 595.29;
+    const PAGE_HEIGHT = 841.89;
+    const LEFT_MARGIN = 50;
+    const RIGHT_MARGIN = 50;
+    const TOP_MARGIN = 50;
+    const BOTTOM_MARGIN = 50;
+    const LINE_HEIGHT = 20;
+
+    // Helper Functions
+    function splitTextToLines(text, maxWidth, size) {
+      // Approximate average character width based on the chosen font size
+      // This is just a rough estimate and might need adjustments.
+      const avgCharWidth = size * 0.5; 
+      const maxCharsPerLine = Math.floor(maxWidth / avgCharWidth);
+    
+      const words = text.split(' ');
+      const lines = [];
+      let line = '';
+    
+      while (words.length) {
+        const word = words.shift();
+    
+        if ((line + word).length <= maxCharsPerLine) {
+          line += `${word} `;
+        } else {
+          lines.push(line.trim());
+          line = `${word} `;
+        }
+      }
+    
+      if (line.trim()) lines.push(line.trim());
+    
+      return lines;
+    }    
+
+    function addNewPage(pdfDoc, verticalOffset) {
+      const newPage = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+      return { newPage, verticalOffset: TOP_MARGIN };
+    }
+
+    let verticalOffset = TOP_MARGIN;
     const formData = req.body;
     console.log(formData);
-
-    const doc = new PDFDocument();
-    doc.font(path.join(__dirname, 'fonts', 'arialFont.ttf'));
     
     const currentDate = new Date();
     const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-
-    console.log(`The formatted date is ${formattedDate}`)
-
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
-    doc.pipe(fs.createWriteStream(pathToInterviewDocument));
+    
+    const pdfDoc = await PDFDocument.create();
+    pdfDoc.registerFontkit(fontkit);
+    const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'futuraFont.ttf'));
+    const customFont = await pdfDoc.embedFont(fontBytes);
 
-    doc.fontSize(20).text('Wywiad oraz odpowiedzi', { align: 'center' });
+    let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
+
+    // Title
+    page.drawText('Wywiad kosmetyczny oraz odpowiedzi klienta', {
+      x: LEFT_MARGIN,
+      y: PAGE_HEIGHT - verticalOffset,
+      size: 20,
+      font: customFont,
+      color: rgb(0, 0, 0),
+    });
+    verticalOffset += 30;
 
     for (let key in formData) {
-      if (key.startsWith('question_')) {
+      let textToDraw = '';
+
+      if (key.startsWith('question_') || key.startsWith('explanation_')) {
         const questionId = key.split('_')[1];
-        const userResponse = formData[key]; // Renamed for clarity
-        const userResponseInPolish = userResponse === 'true' ? 'Tak' : 'Nie';
+        const userResponse = formData[key];
 
         const results = await new Promise((resolve, reject) => {
           connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
-            if (error) {
+            if (error)
+            {
               console.log('Error while querying the database', error);
-              reject(error);
-            } else {
-              //console.log('Question content has been retrieved from the database');
-              resolve(results);
+              reject(error); //if there's an error, reject the Promise
+            }
+              else
+            {
+              resolve(results); //if everything's okay, resolve the Promise with the results
             }
           });
         });
 
-        const questionContentFromDB = results[0].content; // Renamed for clarity
-        console.log(questionContentFromDB);
+        const questionContentFromDB = results[0].content;
+        if(key.startsWith('question_')) {
+          const userResponseInPolish = userResponse === 'true' ? 'Tak' : 'Nie';
+          textToDraw = `${questionContentFromDB}  :  ${userResponseInPolish}`;
+        } else {
+          textToDraw = `${questionContentFromDB}  :  ${userResponse}`;
+        }
 
-        doc.fontSize(15).text(`${questionContentFromDB} : ${userResponseInPolish}`, { align: 'left' });
-      }
+        const textLines = splitTextToLines(textToDraw, PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN, 15, pdfDoc);
 
-      if(key.startsWith('explanation_'))
-      {
-        const questionId = key.split('_')[1];
-        const userResponse = formData[key]; // Renamed for clarity
+        // Check if the text will fit on the page
+        if (PAGE_HEIGHT - verticalOffset - (textLines.length * LINE_HEIGHT) <= BOTTOM_MARGIN) {
+          const { newPage, verticalOffset: newOffset } = addNewPage(pdfDoc, verticalOffset);
+          page = newPage;
+          verticalOffset = newOffset;
+        }
 
-        const results = await new Promise((resolve, reject) => {
-          connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
-            if (error) {
-              console.log('Error while querying the database', error);
-              reject(error);
-            } else {
-              console.log('Question content has been retrieved from the database');
-              resolve(results);
-            }
+        for (const line of textLines) {
+          page.drawText(line, {
+            x: LEFT_MARGIN,
+            y: PAGE_HEIGHT - verticalOffset,
+            size: 15,
+            font: customFont,
+            color: rgb(0, 0, 0),
           });
-        });
-
-        const questionContentFromDB = results[0].content; // Renamed for clarity
-
-        doc.fontSize(15).text(`${questionContentFromDB} : ${userResponse}`, { align: 'left' });
+          verticalOffset += LINE_HEIGHT;
+        }
       }
     }
 
-    doc.end();
+    const pdfBytes = await pdfDoc.save();
+    await fsPromises.writeFile(pathToInterviewDocument, pdfBytes);
 
     req.session.interviewDocumentPath = pathToInterviewDocument;
-
     console.log("Interview document path has been passed to the session, the Interview has been saved");
     res.json({ status: 'success', message: 'Wywiad został zapisany' });
 
@@ -1158,29 +1248,45 @@ app.post('/uploadInterviewSignature', checkAuthentication, async (req, res) => {
 
     var pdfName = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
-    var doc = new PDFDocument();
-    var stream = fs.createWriteStream(pdfName);
+    console.log("ImageData length:", imageData.length);
 
-    doc.pipe(stream);
-    //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
+    //Create a new PDF document
+    const pdfDoc = await PDFDocument.create();
 
-    var dataURL = imageData.split(',')[1];
-    var imgBuffer = Buffer.from(dataURL, 'base64');
+    //Add a blank page to the document
+    const page = pdfDoc.addPage([595.29, 841.89]);
 
-    doc.image(imgBuffer, 0, 0, { fit: [595.28, 841.89] });
+    //Extract the image data from the data URL
+    const dataURL = imageData.split(',')[1];
+    const imgBuffer = Buffer.from(dataURL, 'base64');
 
-    //End the PDF document
-    doc.end();
+    //Embed the image into the PDF
+    const img = await pdfDoc.embedPng(imgBuffer);
 
-    stream.on('finish', () => {
-      console.log("PDF has been generated for page:", pageIndex);
-      res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
+    //Calculate the scale factors
+    const scaleX = 595.29 / img.width;
+    const scaleY = 841.89 / img.height;
+
+    //Use the smallest scale factor to ensure that the image fits inside the page
+    const scale = Math.min(scaleX, scaleY);
+
+    const imgDims = img.scale(scale);
+
+    //Draw the image on the center of the page
+    page.drawImage(img, {
+      x: (595.29 - imgDims.width) / 2,
+      y: (841.89 - imgDims.height) / 2,
+      width: imgDims.width,
+      height: imgDims.height
     });
 
-    stream.on('error', (err) => {
-      console.error("Stream Error:", err);
-      res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
-    });
+    //Serialize the PDF to bytes
+    const pdfBytes = await pdfDoc.save();
+
+    //Save the file
+    fs.writeFileSync(pdfName, pdfBytes);
+
+    res.json({ status: 'success', message: `Strona ${pageIndex} została zapisana` });
 
   } catch (error) {
     console.error('Error while receiving signed image and generating individual PDF:', error);

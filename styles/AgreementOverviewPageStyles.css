@@ -61,6 +61,22 @@ label {
     padding: 20px;
 }
 
+.flex-align-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-checkbox {
+    position: relative;
+    margin-left: 10px;
+}
+
+#photo-consent-checkbox {
+    width: 20px;
+    height: 20px;
+}
+
 .submit-button {
     background-color: #4CAF50;
     color: white;
