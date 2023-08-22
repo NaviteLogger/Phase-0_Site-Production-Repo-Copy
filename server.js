@@ -1041,42 +1041,31 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const LINE_HEIGHT = 20;
 
     // Helper Functions
-    function splitTextToLines(text, maxWidth, size, pdfDoc) {
-      const tempPage = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+    function splitTextToLines(text, maxWidth, size) {
+      // Approximate average character width based on the chosen font size
+      // This is just a rough estimate and might need adjustments.
+      const avgCharWidth = size * 0.5; 
+      const maxCharsPerLine = Math.floor(maxWidth / avgCharWidth);
+    
       const words = text.split(' ');
       const lines = [];
       let line = '';
-  
-      while (words.length)
-      {
+    
+      while (words.length) {
         const word = words.shift();
-          
-        const drawnText = tempPage.drawText(line + word, {
-          x: -1000, // Off the visible page area
-          y: -1000, // Off the visible page area
-          size: size,
-        });
-          
-        const textWidth = drawnText.width;
-  
-        if (textWidth < maxWidth)
-        {
+    
+        if ((line + word).length <= maxCharsPerLine) {
           line += `${word} `;
-        } 
-          else
-        {
-            lines.push(line);
-            line = `${word} `;
+        } else {
+          lines.push(line.trim());
+          line = `${word} `;
         }
       }
-  
-      if (line) lines.push(line);
-  
-      // Remove the temporary page after using it
-      pdfDoc.removePage(pdfDoc.getPages().length - 1);
-  
+    
+      if (line.trim()) lines.push(line.trim());
+    
       return lines;
-    }
+    }    
 
     function addNewPage(pdfDoc, verticalOffset) {
       const newPage = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
