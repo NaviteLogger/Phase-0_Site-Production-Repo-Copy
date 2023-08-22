@@ -1042,13 +1042,14 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
 
     // Helper Functions
     function splitTextToLines(text, maxWidth, size) {
+      const defaultFont = pdfDoc.Font.Helvetica;
       const words = text.split(' ');
       const lines = [];
       let line = '';
 
       while (words.length) {
         const word = words.shift();
-        if (font.widthOfTextAtSize(line + word, size) < maxWidth) {
+        if (defaultFont.widthOfTextAtSize(line + word, size) < maxWidth) {
             line += `${word} `;
         } else {
             lines.push(line);
