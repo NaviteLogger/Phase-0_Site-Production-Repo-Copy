@@ -1025,13 +1025,10 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
   }
 });
 
-app.post('/postInterviewData', upload.none(), async (req, res) => {
+app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, res) => {
   try {
     const formData = req.body;
     console.log(formData);
-
-    const doc = new PDFDocument();
-    doc.font(path.join(__dirname, 'fonts', 'arialFont.ttf'));
     
     const currentDate = new Date();
     const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;

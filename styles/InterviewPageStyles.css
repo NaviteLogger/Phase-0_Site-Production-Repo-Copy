@@ -50,6 +50,12 @@ textarea {
     height: 100px;
 }
 
+.info-for-client-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .submit-container {
     display: flex;
     justify-content: center; /* Horizontally center the button */
