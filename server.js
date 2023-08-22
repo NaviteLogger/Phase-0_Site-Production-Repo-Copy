@@ -1091,7 +1091,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
 
     // Title
-    page.drawText('Wywiad kosmetyczny oraz odpowiedzi udzielone przez klienta', {
+    page.drawText('Wywiad kosmetyczny oraz odpowiedzi klienta', {
       x: LEFT_MARGIN,
       y: PAGE_HEIGHT - verticalOffset,
       size: 20,
