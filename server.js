@@ -1094,7 +1094,19 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
         const questionId = key.split('_')[1];
         const userResponse = formData[key];
 
-        const results = await connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId]);
+        const results = await new Promise((resolve, reject) => {
+          connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
+            if (error)
+            {
+              console.log('Error while querying the database', error);
+              reject(error); //if there's an error, reject the Promise
+            }
+              else
+            {
+              resolve(results); //if everything's okay, resolve the Promise with the results
+            }
+          });
+        });
 
         const questionContentFromDB = results[0].content;
         if(key.startsWith('question_')) {
