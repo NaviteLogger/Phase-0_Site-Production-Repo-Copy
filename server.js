@@ -23,7 +23,7 @@ const PizZip = require('pizzip');
 //For converting files
 const { exec } = require('child_process');
 const { pdftobuffer } = require('pdftopic');
-const PDFDocument = require('pdfkit'); 
+const { PDFDocument } = require('pdf-lib');
 const pdf = require('pdf-parse');
 const PDFMerge = require('pdf-merge');
 //For managin the form data
@@ -734,31 +734,36 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
     var pdfName = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
     console.log("Number of images received:", imageData.length);
-      
-    var doc = new PDFDocument();
-    var stream = fs.createWriteStream(pdfName);
 
-    doc.pipe(stream);
-    doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
+    //Create a new PDF document
+    const pdfDoc = await PDFDocument.create();
 
-    var dataURL = imageData.split(',')[1];
-    var imgBuffer = Buffer.from(dataURL, 'base64');
+    //Add a blank page to the document
+    const page = pdfDoc.addPage([595.29, 841.89]);
 
-    doc.image(imgBuffer, 0, 0, { fit: [595.29, 841.89] });
-      
-    //End the PDF document
-    doc.end();
+    //Extract the image data from the data URL
+    const dataURL = imageData.split(',')[1];
+    const imgBuffer = Buffer.from(dataURL, 'base64');
 
-    stream.on('finish', () => {
-      console.log("PDF has been generated for page:" + pageIndex);
-      res.json({ status: 'success', message: `Page ${pageIndex} has been saved.` });
+    //Embed the image into the PDF
+    const img = await pdfDoc.embedPng(imgBuffer);
+    const imgDims = img.scale(1);
+
+    //Draw the image on the center of the page
+    page.drawImage(img, {
+      x: 0,
+      y: 0,
+      width: imgDims.width,
+      height: imgDims.height
     });
 
-    stream.on('error', (err) => {
-      console.error("Stream Error:", err);
-      res.status(500).json({ status: 'error', message: 'Stream error while generating PDF' });
-    });
+    //Serialize the PDF to bytes
+    const pdfBytes = await pdfDoc.save();
 
+    //Save the file
+    fs.writeFileSync(pdfName, pdfBytes);
+
+    res.json({ status: 'success', message: `Strona ${pageIndex} została zapisana` });
   } catch (error) {
       console.error('Error while receiving signed images and generating PDF:', error);
       res.status(500).json({ status: 'error', message: 'Internal server error' });
