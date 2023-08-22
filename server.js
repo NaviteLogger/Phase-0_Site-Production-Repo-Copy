@@ -1083,7 +1083,7 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
     
-    const pdfDoc = await PDFDocument.create({ fontkit });
+    const pdfDoc = await PDFDocument.create();
     pdfDoc.registerFontkit(fontkit);
     const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'futuraFont.ttf'));
     const customFont = await pdfDoc.embedFont(fontBytes);
