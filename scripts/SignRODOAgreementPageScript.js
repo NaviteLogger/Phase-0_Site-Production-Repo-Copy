@@ -31,10 +31,13 @@ document.getElementById('previousPage').addEventListener('click', () => {
 });
 
 
-document.getElementById('captureCanvas').addEventListener('click', () => {
-    let capturedData = canvas.toDataURL('image/png');
-    document.getElementById('debugImage').src = capturedData;
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById('captureCanvas').addEventListener('click', () => {
+        let capturedData = canvas.toDataURL('image/png');
+        document.getElementById('debugImage').src = capturedData;
+    });
 });
+
 
 
 const canvas = document.getElementById('signatureCanvas');
