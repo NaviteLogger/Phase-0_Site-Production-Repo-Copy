@@ -120,6 +120,8 @@ connection.connect((err) => {
   console.log('Successfully connected to the MYSQL database!');
 });
 
+
+
 //Handle the incoming GET request to the home page
 app.get('/', (req, res) => {
   console.log('Home page rendered');
@@ -151,6 +153,8 @@ app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in
     });
   });
 });
+
+
 
 //Sets up the local passport strategy for authenticating users
 passport.use(
@@ -1037,86 +1041,108 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
 
 app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, res) => {
   try {
+    // Constants
+    const PAGE_WIDTH = 595.29;
+    const PAGE_HEIGHT = 841.89;
+    const LEFT_MARGIN = 50;
+    const RIGHT_MARGIN = 50;
+    const TOP_MARGIN = 50;
+    const BOTTOM_MARGIN = 50;
+    const LINE_HEIGHT = 20;
+
+    // Helper Functions
+    function splitTextToLines(font, text, maxWidth, size) {
+      const words = text.split(' ');
+      const lines = [];
+      let line = '';
+
+      while (words.length) {
+        const word = words.shift();
+        if (font.widthOfTextAtSize(line + word, size) < maxWidth) {
+            line += `${word} `;
+        } else {
+            lines.push(line);
+            line = `${word} `;
+        }
+      }
+
+      if (line) lines.push(line);
+
+      return lines;
+    }
+
+    function addNewPage(pdfDoc, verticalOffset) {
+      const newPage = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+      return { newPage, verticalOffset: TOP_MARGIN };
+    }
+
+    let verticalOffset = TOP_MARGIN;
     const formData = req.body;
     console.log(formData);
     
     const currentDate = new Date();
     const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-
-    console.log(`The formatted date is ${formattedDate}`)
-
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
     
     const pdfDoc = await PDFDocument.create();
-    pdfDoc.registerFontkit(fontkit);
-
-    const page = pdfDoc.addPage([595.29, 841.89]); //A4 page size
-    const { height } = page.getSize();
+    let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
     const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'arialFont.ttf'));
     const customFont = await pdfDoc.embedFont(fontBytes);
-    
-    let verticalOffset = 50; //Start the text at the top of the page
 
-    //Add title
+    // Title
     page.drawText('Wywiad kosmetyczny oraz odpowiedzi udzielone przez klienta', {
-      x: 50,
-      y: height - verticalOffset,
+      x: LEFT_MARGIN,
+      y: PAGE_HEIGHT - verticalOffset,
       size: 20,
       font: customFont,
       color: rgb(0, 0, 0),
     });
     verticalOffset += 30;
 
-    for (let key in formData)
-    {
-      let textToDraw = '';  
-    
-      if (key.startsWith('question_') || key.startsWith('explanation_'))
-      {
+    for (let key in formData) {
+      let textToDraw = '';
+
+      if (key.startsWith('question_') || key.startsWith('explanation_')) {
         const questionId = key.split('_')[1];
-        const userResponse = formData[key]; // Renamed for clarity
+        const userResponse = formData[key];
 
-        const results = await new Promise((resolve, reject) => {
-          connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId], (error, results) => {
-            if (error) {
-              console.log('Error while querying the database', error);
-              reject(error);
-            } else {
-              console.log('Question content has been retrieved from the database');
-              resolve(results);
-            }
-          });
-        });
+        const results = await connection.query('SELECT content FROM Questions WHERE question_id = ?', [questionId]);
 
-        const questionContentFromDB = results[0].content; // Renamed for clarity
-
-        if(key.startsWith('question_'))
-        {
+        const questionContentFromDB = results[0].content;
+        if(key.startsWith('question_')) {
           const userResponseInPolish = userResponse === 'true' ? 'Tak' : 'Nie';
           textToDraw = `${questionContentFromDB}  :  ${userResponseInPolish}`;
-        }
-          else
-        {
+        } else {
           textToDraw = `${questionContentFromDB}  :  ${userResponse}`;
         }
 
-        page.drawText(textToDraw, {
-          x: 50,
-          y: height - verticalOffset,
-          size: 15,
-          font: customFont,
-          color: rgb(0, 0, 0),
-        });
-        verticalOffset += 25;
+        const textLines = splitTextToLines(customFont, textToDraw, PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN, 15);
+
+        // Check if the text will fit on the page
+        if (PAGE_HEIGHT - verticalOffset - (textLines.length * LINE_HEIGHT) <= BOTTOM_MARGIN) {
+          const { newPage, verticalOffset: newOffset } = addNewPage(pdfDoc, verticalOffset);
+          page = newPage;
+          verticalOffset = newOffset;
+        }
+
+        for (const line of textLines) {
+          page.drawText(line, {
+            x: LEFT_MARGIN,
+            y: PAGE_HEIGHT - verticalOffset,
+            size: 15,
+            font: customFont,
+            color: rgb(0, 0, 0),
+          });
+          verticalOffset += LINE_HEIGHT;
+        }
       }
     }
-    
+
     const pdfBytes = await pdfDoc.save();
     await fsPromises.writeFile(pathToInterviewDocument, pdfBytes);
-    
-    req.session.interviewDocumentPath = pathToInterviewDocument;
 
+    req.session.interviewDocumentPath = pathToInterviewDocument;
     console.log("Interview document path has been passed to the session, the Interview has been saved");
     res.json({ status: 'success', message: 'Wywiad został zapisany' });
 
