@@ -739,7 +739,7 @@ app.post('/uploadRODOAgreementSignature', checkAuthentication, async (req, res) 
     var stream = fs.createWriteStream(pdfName);
 
     doc.pipe(stream);
-    //doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
+    doc.pipe(fs.createWriteStream('output.pdf')); //For debugging purposes
 
     var dataURL = imageData.split(',')[1];
     var imgBuffer = Buffer.from(dataURL, 'base64');
