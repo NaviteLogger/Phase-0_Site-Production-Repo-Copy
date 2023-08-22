@@ -15,6 +15,12 @@ document.getElementById('nextPage').addEventListener('click', () => {
         currentPage++;
         loadImage();
         updatePageDisplay();
+
+
+        const debugImage = new Image();
+        debugImage.src = canvas.toDataURL('image/png');
+        document.body.appendChild(debugImage);
+
     }
 });
 
