@@ -15,10 +15,12 @@ window.onload = function() {
 
         const clientFullName = document.getElementById('client-full-name').value;
         const employeeFullName = document.getElementById('employee-full-name').value;
+        const photoConsent = document.getElementById('photo-consent-checkbox').checked;
 
         const requestBody = {
             clientFullName: clientFullName,
             employeeFullName: employeeFullName,
+            photoConsent: photoConsent
         };
 
         fetch('/postAgreementData', {

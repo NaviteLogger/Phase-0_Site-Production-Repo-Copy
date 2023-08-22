@@ -611,6 +611,9 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
     };
     console.log('Data to fill has been received');
 
+    //Check if the user has given a photo consent
+    const photoConsent = req.body.photoConsent;
+
     //Get the user's email
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     console.log("User's email has been extracted and modified: ", userEmail);
