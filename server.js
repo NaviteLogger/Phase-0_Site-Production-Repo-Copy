@@ -31,6 +31,8 @@ const multer = require('multer');
 const upload = multer();
 //For managing the font
 const fontkit = require('@pdf-lib/fontkit');
+//For managing the timezone
+const moment = require('moment-timezone');
 
 //Load environment variables from the .env file
 require('dotenv').config();
@@ -94,11 +96,11 @@ morgan.token('client-ip', (req) => {
 
 //Define a new morgan token 'date' for the timestamps
 morgan.token('date', (req, res, tz) => {
-  return new Date().toISOString();
+  return moment().tz(tz).format();
 });
 
 //Use the custom morgan format to log requests, including the IP address
-app.use(morgan(':date :client-ip - :method :url :status :response-time ms'));
+app.use(morgan(':date[Europe/Warsaw] :client-ip - :method :url :status :res[content-length] - :response-time ms'));
 
 //Set up the nodemailer (SMTP transport)
 const transporter = nodemailer.createTransport({
