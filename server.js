@@ -728,13 +728,13 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, async (req, res) => {
     }
 
     var imagePath = RODOAgreementImagePaths[imageIndex];
-     console.log("Sending the RODO agreement image to the user: ", imagePath);
+    console.log("Sending the RODO agreement image to the user: ", imagePath);
 
     fs.access(imagePath, fs.F_OK, (error) => {
       if (error) 
       {
         console.error(error);
-      return res.status(404).send("Image: 'RODO agreement' not found");
+        return res.status(404).send("Image: 'RODO agreement' not found");
       } 
         else
       {
@@ -742,6 +742,7 @@ app.get('/RODOAgreementImage/:index', checkAuthentication, async (req, res) => {
         res.sendFile(imagePath);
       }
     });
+
   } catch (error) {
       console.log('Error while loading the RODO agreement image overview page', error);
       res.status(500).send("Internal server error");
@@ -1414,7 +1415,122 @@ app.get('/photoAgreementChoice', checkAuthentication, async (req, res) => {
   }
 });
 
+app.get('/PhotoAgreementImage/:index', checkAuthentication, async (req, res) => {
+  try {
+    var imageIndex = req.params.index;
+    var photoAgreementImagePaths = req.session.photoAgreementImagePaths;
 
+    if(!photoAgreementImagePaths ||  !photoAgreementImagePaths[imageIndex])
+    {
+      return res.status(404).send("Image of photo agreement not found");
+    }
+
+    var imagePath = photoAgreementImagePaths[imageIndex];
+    console.log("Sending the photo agreement image to the user: ", imagePath);
+
+    fs.access(imagePath, fs.F_OK, (error) => {
+      if (error)
+      {
+        console.error(error);
+        return res.status(404).send("Image: 'Photo agreement' not found");
+      }
+        else
+      {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.sendFile(imagePath);
+      }
+    });
+
+  } catch (error) {
+    console.log('Error while loading the photo agreement image overview page', error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.post('/uploadPhotoAgreementSignature', checkAuthentication, async (req, res) => {
+  try {
+    var imageData = req.body.image; //Assuming images is an array of dataURLs sent from the client.
+    var pageIndex = req.body.pageIndex;
+
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
+
+    var pdfName = path.join(__dirname, 'agreements', `Photo_agreement_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
+
+    console.log("ImageData length:", imageData.length);
+
+    //Create a new PDF document
+    const pdfDoc = await PDFDocument.create();
+
+    //Add a blank page to the document
+    const page = pdfDoc.addPage([595.29, 841.89]);
+
+    //Extract the image data from the data URL
+    const dataURL = imageData.split(',')[1];
+    const imgBuffer = Buffer.from(dataURL, 'base64');
+
+    //Embed the image into the PDF
+    const img = await pdfDoc.embedPng(imgBuffer);
+
+    //Calculate the scale factors
+    const scaleX = 595.29 / img.width;
+    const scaleY = 841.89 / img.height;
+    
+    //Use the smallest scale factor to ensure that the image fits inside the page
+    const scale = Math.min(scaleX, scaleY);
+
+    const imgDims = img.scale(scale);
+
+    //Draw the image on the center of the page
+    page.drawImage(img, {
+      x: (595.29 - imgDims.width) / 2,
+      y: (841.89 - imgDims.height) / 2,
+      width: imgDims.width,
+      height: imgDims.height
+    });
+
+    //Serialize the PDF to bytes
+    const pdfBytes = await pdfDoc.save();
+
+    //Save the file
+    fs.writeFileSync(pdfName, pdfBytes);
+
+    res.json({ status: 'success', message: `Strona ${pageIndex} została zapisana` });
+
+  } catch (error) {
+    console.error('Error while receiving signed images and generating PDF:', error);
+    res.status(500).json({ status: 'error', message: 'Internal server error' });
+  }    
+});
+
+app.post('/mergePhotoAgreement', checkAuthentication, async (req, res) => {
+  try {
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
+
+    var pdfFiles = [];
+
+    //Dynamically generate the list of PDFs based on the number of uploaded images.
+    //I'm assuming that the frontend sends the total number of uploaded images in the request body.
+    let totalPages = req.body.totalUploadedImages;  // Adjust if needed.
+
+    for (let i = 0; i < totalPages; i++)
+    {
+      let pdfName = `Photo_agreement_${formattedDate}_${userEmail}_page${i}.pdf`;
+      pdfFiles.push(path.join(__dirname, 'agreements', pdfName));
+    }
+
+    var finalPDFPath = path.join(__dirname, 'agreements', `Photo_agreement_${formattedDate}_${userEmail}.pdf`);
+
+    PDFMerge(pdfFiles, { output: finalPDFPath })
+      .then(() => {
+        console.log("All PDFs merged successfully");
+        res.json({ status: 'success', message: 'All signed photo agreements have been merged.' });
+      })
+      .catch(error => {
+        console.error('Error while merging PDFs:', error);
+        res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
+      });
 
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
