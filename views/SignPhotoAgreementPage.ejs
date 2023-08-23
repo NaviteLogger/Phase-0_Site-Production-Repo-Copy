@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Photo Agreement Page</title>
-</head>
-<body>
-    
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../styles/normalize.css" rel="stylesheet" type="text/css">
+        <link href="../styles/GlobalStyles.css" rel="stylesheet" type="text/css">
+        <link href="../styles/SignPhotoAgreementPageStyles.css" rel="stylesheet" type="text/css">
+        <script src="../scripts/SignPhotoAgreementPageScript.js" defer></script>
+        <title>Sign Photo Agreement Page</title>
+    </head>
+    <body data-number-of-pages="<%= numberOfPages %>">
+        <div class="canvas-container">
+            <canvas id="signatureCanvas" width="1190" height="1684"></canvas>
+            <div id="pageIndicator">Proszę podpisać wszystkie strony w wyznaczonych miejscach (W przypadku ich braku proszę podpisać się na dole strony). Strona 1 / <%= numberOfPages %></div>
+            <div class="button-container">
+                <button id="clearDrawing">Wyczyść</button>
+                <button id="previousPage">Poprzednia strona</button>
+                <button id="nextPage">Następna strona</button>
+                <button id="submitAllSignatures">Zatwierdź podpisy</button>
+            </div>
+        </div>
+    </body>
 </html>
