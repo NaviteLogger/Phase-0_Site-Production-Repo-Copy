@@ -617,6 +617,9 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
     //Store the client's name in the session for further use
     req.session.clientFullName = req.body.clientFullName;
 
+    //Store the info whether the user has given a photo consent in the session for further use
+    req.session.photoConsent = photoConsent;
+
     //Get the user's email
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     console.log("User's email has been extracted and modified: ", userEmail);
@@ -633,24 +636,34 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
     req.session.formattedDate = formattedDate;
     console.log(`The formatted date is ${formattedDate}`);
 
-
+    //Fill and save RODO agreement
     const filledRODOFileName = await fillAndSaveDocument(rodoFileName, dataToFill, userEmail, formattedDate, 'RODO_agreement');
     console.log('RODO agreement has been filled and saved');
 
     //Fill and save selected agreement
     var agreementFileName = await getAgreementFileNameById(agreementId);
     console.log('Agreement file name has been retrieved: ', agreementFileName);
+
     const agreementPrefix = agreementFileName.split('.docx')[0];
     console.log('Agreement prefix has been extracted: ', agreementPrefix);
+
     agreementFileName = agreementFileName + '.docx';
     console.log('Agreement file name has been modified: ', agreementFileName);
+
     const filledAgreementFileName = await fillAndSaveDocument(agreementFileName, dataToFill, userEmail, formattedDate, agreementPrefix);
     console.log('Selected agreement has been filled and saved');
 
-    //Pass the filled RODO and agreement names to the session
+    //FIll and save the photo consent agreement
+    const filledPhotoConsentFileName = await fillAndSaveDocument('Photo_agreement.docx', dataToFill, userEmail, formattedDate, 'Photo_agreement');
+    console.log('Photo consent agreement has been filled and saved');
+
+    //Pass the filled RODO, selected agreement and photo agreement names to the session
     req.session.filledRODOFileName = filledRODOFileName;
+
     req.session.filledAgreementFileName = filledAgreementFileName;
     req.session.agreementPrefix = agreementPrefix;
+
+    req.session.filledPhotoConsentFileName = filledPhotoConsentFileName;
 
     console.log('Filled RODO and agreement file names have been passed to the session, along with the prefix');
 
@@ -669,34 +682,34 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
 //After filling the client's and employee's data, this will handle the conversion of RODO agreement to images
 app.get('/signRODOAgreement', checkAuthentication, async (req, res) => {
   try {
-      var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
-      var formattedDate = req.session.formattedDate;
-      console.log("The date saved to the session: ", formattedDate);
+    var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+    var formattedDate = req.session.formattedDate;
+    console.log("The date saved to the session: ", formattedDate);
 
-      var RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
-      console.log("Final RODO agreement path: ", RODOAgreementPath);
+    var RODOAgreementPath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}.docx`);
+    console.log("Final RODO agreement path: ", RODOAgreementPath);
 
-      //Convert DOCX to PDF
-      var pdfPath = await convertDocxToPDF(RODOAgreementPath);
-      var pdfBytes = await fsPromises.readFile(pdfPath);
-      var numberOfPages = await countPDFPages(pdfBytes);  //Use pdf-parse to get the page count
+    //Convert DOCX to PDF
+    var pdfPath = await convertDocxToPDF(RODOAgreementPath);
+    var pdfBytes = await fsPromises.readFile(pdfPath);
+    var numberOfPages = await countPDFPages(pdfBytes);  //Use pdf-parse to get the page count
 
-      //Convert each page of the PDF to an image
-      let imagePaths = [];
-      for (let i = 0; i < numberOfPages; i++) {
-        const imagePath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}_page_${i}.png`);
-        await pdftobuffer(pdfBytes, i).then((buffer) => {
-          fs.writeFileSync(imagePath, buffer, null);
-        });
-        imagePaths.push(imagePath);
-      }
-      
-      req.session.RODOAgreementImagePaths = imagePaths; //Now it's an array of image paths
-
-      res.render('SignRODOAgreementPage', {
-          imagePaths: imagePaths,
-          numberOfPages: numberOfPages,
+    //Convert each page of the PDF to an image
+    let imagePaths = [];
+    for (let i = 0; i < numberOfPages; i++) {
+      const imagePath = path.join(__dirname, 'agreements', `RODO_agreement_${formattedDate}_${userEmail}_page_${i}.png`);
+      await pdftobuffer(pdfBytes, i).then((buffer) => {
+        fs.writeFileSync(imagePath, buffer, null);
       });
+      imagePaths.push(imagePath);
+    }
+      
+    req.session.RODOAgreementImagePaths = imagePaths; //Now it's an array of image paths
+
+    res.render('SignRODOAgreementPage', {
+        imagePaths: imagePaths,
+        numberOfPages: numberOfPages,
+    });
 
   } catch (error) {
       console.log('Error while loading the RODO agreement overview page', error);
@@ -837,7 +850,7 @@ app.get('/signSelectedAgreement', checkAuthentication, async (req, res) => {
     console.log("The date saved to the session: ", formattedDate);
 
     var selectedAgreementPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.docx`);
-    console.log("Final Selected agreement path: ", selectedAgreementPath);
+    console.log("Final selected agreement path: ", selectedAgreementPath);
 
     //Convert DOCX to PDF
     var pdfPath = await convertDocxToPDF(selectedAgreementPath);
@@ -1351,6 +1364,53 @@ app.post('/mergeInterview', checkAuthentication, async (req, res) => {
   } catch (error) {
     console.error('Error during the merging process:', error);
     res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
+  }
+});
+
+
+
+app.get('/photoAgreementChoice', checkAuthentication, async (req, res) => {
+  try {
+    //Determine whether the client has agreed to have their photo taken
+    if (req.session.photoConsent === 'true')
+    {
+      var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
+      var formattedDate = req.session.formattedDate;
+      console.log("The date saved to the session: ", formattedDate);
+
+      var photoAgreementPath = path.join(__dirname, 'agreements', `Photo_agreement_${formattedDate}_${userEmail}.docx`);
+      console.log("Final photo agreement path: ", photoAgreementPath);
+
+      //Convert DOCX to PDF
+      var pdfPath = await convertDocxToPDF(photoAgreementPath);
+      var pdfBytes = await fsPromises.readFile(pdfPath);
+      var numberOfPages = await countPDFPages(pdfBytes);  //Use pdf-parse to get the page count
+
+      //Convert each page of the PDF to an image
+      let imagePaths = [];
+      for (let i = 0; i < numberOfPages; i++) {
+        var imagePath = path.join(__dirname, 'agreements', `Photo_agreement_${formattedDate}_${userEmail}_page_${i}.png`);
+        await pdftobuffer(pdfBytes, i).then((buffer) => {
+          fs.writeFileSync(imagePath, buffer, null);
+        });
+        imagePaths.push(imagePath);
+      }
+
+      req.session.photoAgreementImagePaths = imagePaths; //Now it's an array of image paths
+
+      res.render('PhotoAgreementPage', {
+        imagePaths: imagePaths,
+        numberOfPages: numberOfPages,
+      });
+    }
+      else
+    {
+      res.redirect('/summaryPage');
+    }
+
+  } catch (error) {
+    console.log('Error while loading the photo agreement choice page', error);
+    res.status(500).send("Internal server error");
   }
 });
 
