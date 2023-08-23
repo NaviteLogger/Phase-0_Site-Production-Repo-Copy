@@ -614,6 +614,9 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
     //Check if the user has given a photo consent
     const photoConsent = req.body.photoConsent;
 
+    //Store the client's name in the session for further use
+    req.session.clientFullName = req.body.clientFullName;
+
     //Get the user's email
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     console.log("User's email has been extracted and modified: ", userEmail);
@@ -1097,11 +1100,31 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     page.drawText('Wywiad kosmetyczny oraz odpowiedzi klienta', {
       x: LEFT_MARGIN,
       y: PAGE_HEIGHT - verticalOffset,
-      size: 20,
+      size: 18,
       font: customFont,
       color: rgb(0, 0, 0),
     });
-    verticalOffset += 30;
+    verticalOffset += 28;
+
+    //Name and surname
+    page.drawText(`Imię i nazwisko klienta: ${req.session.clientFullName}`, {
+      x: LEFT_MARGIN,
+      y: PAGE_HEIGHT - verticalOffset,
+      size: 15,
+      font: customFont,
+      color: rgb(0, 0, 0),
+    });
+    verticalOffset += 25;
+
+    //Date
+    page.drawText(`Data: ${formattedDate}`, {
+      x: LEFT_MARGIN,
+      y: PAGE_HEIGHT - verticalOffset,
+      size: 15,
+      font: customFont,
+      color: rgb(0, 0, 0),
+    });
+    verticalOffset += 25;
 
     for (let key in formData) {
       let textToDraw = '';

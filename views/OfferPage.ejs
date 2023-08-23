@@ -91,6 +91,7 @@
           <th>Wybór</th>
           <th>NAZWA ZGODY</th> <!-- th stands for table header -->
           <!--<th>CENA (w PLN)</th>-->
+          <!--<th>KATEGORIA</th>-->
         </tr>
       </thead>
       <tbody>
@@ -99,6 +100,7 @@
             <td><input type="checkbox" name="agreement" value="<%= file.agreement_id %>"></td>
             <td><%= file.agreement_name.replace(/_/g, ' ') %></td> <!-- td stands for table data -->
             <!--<td><%= file.agreement_price %></td>-->
+            <!--<td><%= file.agreement_category %></td>-->
           </tr>
         <% }) %>
       </tbody>
