@@ -619,6 +619,7 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
 
     //Store the info whether the user has given a photo consent in the session for further use
     req.session.photoConsent = photoConsent;
+    console.log('Photo consent: ', photoConsent);
 
     //Get the user's email
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
