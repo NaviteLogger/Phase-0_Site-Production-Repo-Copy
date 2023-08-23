@@ -1532,6 +1532,11 @@ app.post('/mergePhotoAgreement', checkAuthentication, async (req, res) => {
         res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
       });
 
+  } catch (error) {
+    console.error('Error during the merging process:', error);
+    res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
+  }
+
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
