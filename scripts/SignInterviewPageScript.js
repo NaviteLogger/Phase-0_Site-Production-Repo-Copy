@@ -161,7 +161,7 @@ function sendNextSignature() {
             if (data.status === 'success') {
                 alert('Wszystkie podpisy zostały pomyślnie zapisane!');
                 setTimeout(() => {
-                    window.location.href = '/photoAgreementChoice';  // Redirect to the choice page
+                    window.location.href = '/photoAgreementChoice';  // Redirect to the choice
                 }, 1000);
             } else {
                 console.error('Failed to process signatures.');
