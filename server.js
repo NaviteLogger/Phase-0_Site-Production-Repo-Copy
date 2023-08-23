@@ -1536,6 +1536,7 @@ app.post('/mergePhotoAgreement', checkAuthentication, async (req, res) => {
     console.error('Error during the merging process:', error);
     res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
   }
+});
 
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
