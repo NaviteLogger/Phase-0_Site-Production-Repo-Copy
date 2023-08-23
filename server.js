@@ -1374,7 +1374,9 @@ app.post('/mergeInterview', checkAuthentication, async (req, res) => {
 app.get('/photoAgreementChoice', checkAuthentication, async (req, res) => {
   try {
     //Determine whether the client has agreed to have their photo taken
-    if (req.session.photoConsent === 'true')
+    console.log("The user's choice regarding the photo agreement: ", req.session.photoConsent);
+
+    if (req.session.photoConsent == 'true')
     {
       var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
       var formattedDate = req.session.formattedDate;
