@@ -1398,7 +1398,7 @@ app.get('/photoAgreementChoice', checkAuthentication, async (req, res) => {
 
       req.session.photoAgreementImagePaths = imagePaths; //Now it's an array of image paths
 
-      res.render('PhotoAgreementPage', {
+      res.render('SignPhotoAgreementPage', {
         imagePaths: imagePaths,
         numberOfPages: numberOfPages,
       });
