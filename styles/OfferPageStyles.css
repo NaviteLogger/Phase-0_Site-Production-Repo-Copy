@@ -47,6 +47,7 @@ html {
   text-align: center;
   margin: 5px;
   padding: 10px;
+  border-radius: 5px;
 }
 
 .box h3 {
@@ -59,6 +60,7 @@ html {
 
 .platinum {
   border-color: red;
+  border: 2px solid red;
 }
 
 .tag {
