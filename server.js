@@ -1,3 +1,12 @@
+/*
+  This is the main file of the application. It will be used to set up the server and handle the incoming requests.
+*/
+
+/*
+  Below there is a list of all the dependencies and their imports used in this project:
+*/
+
+/*********************************************************************************/
 //Import required modules
 const express = require('express');
 const path = require('path');
@@ -33,8 +42,9 @@ const upload = multer();
 const fontkit = require('@pdf-lib/fontkit');
 //For managing the timezone
 const moment = require('moment-timezone');
+/*********************************************************************************/
 
-//Load environment variables from the .env file
+//Load environment variables from the .env file - the file allows the access to the database and API keys
 require('dotenv').config();
 
 //Create the Express application
@@ -132,14 +142,15 @@ app.get('/', (req, res) => {
 
 //Handle the incoming GET request to the home page
 app.get('/pages/indexPage.html', (req, res) => {
-  console.log('Home page rendered');
+  console.log('Home page rendered'); //Console.log it for debugging purposes
   res.redirect('/pages/indexPage.html'); //Redirect to main page
 });
 
 //Handle the incoming GET request to the OfferPage
 app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in the html file, then this function will be executed
-  console.log('GET request to the OfferPage');
+  console.log('Received request to the OfferPage');
 
+  //Query the database to retrieve all the available agreement from the Offers table
   await new Promise((resolve, reject) => {
     connection.query('SELECT * FROM Agreements', function (error, results, fields) {
       if (error)
@@ -149,7 +160,7 @@ app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in
         else
       {
         console.log('The query was successful: all the offers were retrieved from the Offers table');
-        res.render('OfferPage', { files: results });
+        res.render('OfferPage', { files: results }); //Render the OfferPage with the retrieved agreements
         resolve();
       }
     });
