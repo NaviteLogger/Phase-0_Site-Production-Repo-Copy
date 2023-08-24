@@ -17,7 +17,7 @@ html {
     }
   }
 
-.offer-container {
+.offer-container { /*This is the container for the header and subscription boxes*/
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -26,7 +26,7 @@ html {
   text-align: center;
 }
   
-.offer {
+.offer { /*This is the container for the subscvription boxes*/
   flex: 1;
   display: flex;
   justify-content: center;
@@ -34,7 +34,7 @@ html {
   margin-top: 10px;
 }
 
-.box {
+.box { /*The boxes itself*/
   flex: 1;
   max-width: 200px;
   max-height: 300px;
@@ -50,15 +50,15 @@ html {
   border-radius: 5px;
 }
 
-.box h3 {
+.box h3 { /*The title of the box*/
   margin-bottom: 10px;
 }
 
-.box p {
+.box p {  /*The text of the box*/
   margin: 5px 0;
 }
 
-.platinum {
+.platinum { /*The special platinum box*/
   border-color: red;
   border: 2px solid red;
 }
@@ -67,11 +67,11 @@ html {
   color: red;
 }
 
-.center-alignment {
+.center-alignment { /*The header for the individual agreements' table*/
   text-align: center;
 }
 
-.agreements-table {
+.agreements-table { /*The table for the individual agreements*/
   width: 100%;
   margin-top: 10px;
   border-collapse: collapse;
@@ -84,7 +84,7 @@ html {
   border: 1px solid black;
 }
 
-.buy-button {
+.buy-button { /*The button to buy the subscriptions as well as individual agreements*/
   display: block;
   margin: 30px auto;
   padding: 10px 20px;

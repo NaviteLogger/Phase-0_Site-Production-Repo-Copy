@@ -15,7 +15,7 @@ body {
   padding: 0;
 }
 
-header {
+header { /*This is the header of the page, containing the redirection buttons, logo and the client's portal button*/
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +24,7 @@ header {
 
 .left,
 .middle,
-.right {
+.right { /*Those are the 3 divs that form the part of the header with the redirection buttons*/
   display: flex;
   align-items: center;
 }
