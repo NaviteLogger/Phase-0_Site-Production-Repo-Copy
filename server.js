@@ -436,7 +436,7 @@ app.post('/verifyEmailAddress', (req, res) => {
   });
 });
 
-
+/*********************************************************************************/
 
 //Handle the incoming POST request to the 'buy selected agreements' option
 app.post('/buySelectedAgreements', (req, res) => {
@@ -453,7 +453,7 @@ app.post('/buySelectedAgreements', (req, res) => {
   }
 });
 
-
+/*********************************************************************************/
 
 //Handle the request to the client's portal page,
 app.get('/clientsPortalPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
@@ -526,28 +526,28 @@ app.get('/agreementsGeneratorPage', checkAuthentication, checkEmailConfirmation,
   try {
     console.log('Received a request to the agreements generator page');
 
-  //Extract the user email from the session
-  const userEmail = req.session.passport.user.email;
+    //Extract the user email from the session
+    const userEmail = req.session.passport.user.email;
 
-  //Extract the current date
-  const currentDate = new Date();
-  //Extract the date after 30 days
-  const dateAfter30Days = new Date();
-  dateAfter30Days.setDate(currentDate.getDate() + 30);
+    //Extract the current date
+    const currentDate = new Date();
+    //Extract the date after 30 days - this is how long the subscription will last
+    const dateAfter30Days = new Date();
+    dateAfter30Days.setDate(currentDate.getDate() + 30);
 
-  //Check what agreements the user has access to in the form of subscriptions
-  await new Promise((resolve, reject) => {
-    connection.query(`
-      SELECT Agreements.agreement_name, Agreements.agreement_id
-      FROM Agreements 
-      INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
-      WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
-    `, [userEmail, currentDate, dateAfter30Days], (error, results) => {
+    //Check what agreements the user has access to in the form of subscriptions
+    await new Promise((resolve, reject) => {
+      connection.query(`
+        SELECT Agreements.agreement_name, Agreements.agreement_id
+        FROM Agreements 
+        INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
+        WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
+      `, [userEmail, currentDate, dateAfter30Days], (error, results) => {
       if (error) 
-      {
-        console.log('Error while querying the database', error);
-        reject(error); //if there's an error, reject the Promise
-      }
+        {
+          console.log('Error while querying the database', error);
+          reject(error); //if there's an error, reject the Promise
+        }
 
       res.render('AgreementSelectionPage', { agreements: results, email: userEmail });
     });
@@ -561,7 +561,7 @@ app.get('/agreementsGeneratorPage', checkAuthentication, checkEmailConfirmation,
 //Handle the request to the agreement selection page
 app.post('/agreementSelectionPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
-
+    //Console.log the selected agreement_id for debugging purposes
     console.log(req.body);
 
     //Extract the selected agreement name from the request
@@ -740,6 +740,7 @@ app.get('/signRODOAgreement', checkAuthentication, async (req, res) => {
   }
 });
 
+//
 app.get('/RODOAgreementImage/:index', checkAuthentication, async (req, res) => {
   try {
     var imageIndex = req.params.index;
@@ -1567,56 +1568,117 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
   try {
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
 
-    let emailOptions = {
-      from: 'pomoc@prawokosmetyczne.pl',
-      to: req.session.passport.user.email,
-      subject: 'Zgody dnia ' + req.session.formattedDate,
-      text: 'W załączniku znajdują się podpisane zgody z dnia ' + req.session.formattedDate,
-      attachments: [
-        {
-          filename: 'RODO_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf',
-          path: path.join(__dirname, 'agreements', 'RODO_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
-          contentType: 'application/pdf'
-        },
-        {
-          filename: req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + userEmail + '.pdf',
-          path: path.join(__dirname, 'agreements', req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
-          contentType: 'application/pdf'
-        },
-        {
-          filename: 'interview_' + req.session.formattedDate + '_' + userEmail + '.pdf',
-          path: path.join(__dirname, 'interviews', 'interview_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
-          contentType: 'application/pdf'
-        }
-      ]
-    };
+    if(req.session.photoConsent === true)
+    {
+      let emailOptions = {
+        from: 'pomoc@prawokosmetyczne.pl',
+        to: req.session.passport.user.email,
+        subject: 'Zgody dnia ' + req.session.formattedDate,
+        text: 'W załączniku znajdują się podpisane zgody z dnia ' + req.session.formattedDate,
+        attachments: [
+          {
+            filename: 'RODO_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+            path: path.join(__dirname, 'agreements', 'RODO_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
+            contentType: 'application/pdf'
+          },
+          {
+            filename: req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+            path: path.join(__dirname, 'agreements', req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
+            contentType: 'application/pdf'
+          },
+          {
+            filename: 'Interview_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+            path: path.join(__dirname, 'interviews', 'interview_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
+            contentType: 'application/pdf'
+          },
+          {
+            filename: 'Photo_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+            path: path.join(__dirname, 'agreements', 'Photo_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
+            contentType: 'application/pdf'
+          }
+        ]
+      };
 
-    //Send the email with the signed agreements
-    await new Promise((resolve, reject) => {
-      transporter.sendMail(emailOptions, function (error, info) {
-        if (error)
-        {
-          console.log('Error while sending the email', error);
-          reject(error);
-        }
-          else
-        {
-          console.log('Email sent: ' + info.response);
-          resolve(info.response);
-        }
+      //Send the email with the signed agreements
+      await new Promise((resolve, reject) => {
+        transporter.sendMail(emailOptions, function (error, info) {
+          if (error)
+          {
+            console.log('Error while sending the email', error);
+            reject(error);
+          }
+            else
+          {
+            console.log('Email sent: ' + info.response);
+            resolve(info.response);
+          }
+        });
       });
-    });
 
-    console.log("Email with the signed agreements has been sent to the user");
+      console.log("Email with the signed agreements has been sent to the user");
 
-    //Delete the files from the server
-    console.log("Deleting all the agreement files from the server");
-    deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
+      //Delete the files from the server
+      console.log("Deleting all the agreement files from the server");
+      deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
 
-    console.log("Deleting all the interview files from the server");
-    deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
+      console.log("Deleting all the interview files from the server");
+      deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
     
-    res.render('SummaryPage', { userEmail: req.session.passport.user.email, selectedAgreementName: req.session.selectedAgreementName });
+      res.render('SummaryPage', { userEmail: req.session.passport.user.email, selectedAgreementName: req.session.selectedAgreementName });
+    }
+      else
+    {
+      let emailOptions = {
+        from: 'pomoc@prawokosmetyczne.pl',
+        to: req.session.passport.user.email,
+        subject: 'Zgody dnia ' + req.session.formattedDate,
+        text: 'W załączniku znajdują się podpisane zgody z dnia ' + req.session.formattedDate,
+        attachments: [
+          {
+            filename: 'RODO_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+            path: path.join(__dirname, 'agreements', 'RODO_agreement_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
+            contentType: 'application/pdf'
+          },
+          {
+            filename: req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+            path: path.join(__dirname, 'agreements', req.session.agreementPrefix + '_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
+            contentType: 'application/pdf'
+          },
+          {
+            filename: 'Interview_' + req.session.formattedDate + '_' + userEmail + '.pdf',
+            path: path.join(__dirname, 'interviews', 'interview_' + req.session.formattedDate + '_' + userEmail + '.pdf'),
+            contentType: 'application/pdf'
+          }
+        ]
+      };
+
+      //Send the email with the signed agreements
+      await new Promise((resolve, reject) => {
+        transporter.sendMail(emailOptions, function (error, info) {
+          if (error)
+          {
+            console.log('Error while sending the email', error);
+            reject(error);
+          }
+            else
+          {
+            console.log('Email sent: ' + info.response);
+            resolve(info.response);
+          }
+        });
+      });
+
+      console.log("Email with the signed agreements has been sent to the user");
+
+      //Delete the files from the server
+      console.log("Deleting all the agreement files from the server");
+      deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
+
+      console.log("Deleting all the interview files from the server");
+      deleteFilesInDirectory(path.join(__dirname, 'interviews'), userEmail);
+    
+      res.render('SummaryPage', { userEmail: req.session.passport.user.email, selectedAgreementName: req.session.selectedAgreementName });
+    }
 
   } catch (error) {
     console.log('Error while loading the summary page', error);
