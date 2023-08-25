@@ -132,7 +132,7 @@ connection.connect((err) => {
   console.log('Successfully connected to the MYSQL database!');
 });
 
-
+/*********************************************************************************/
 
 //Handle the incoming GET request to the home page
 app.get('/', (req, res) => {
@@ -167,7 +167,7 @@ app.get('/offerPage', async (req, res) => { //if there is a href='/offerPage' in
   });
 });
 
-
+/*********************************************************************************/
 
 //Sets up the local passport strategy for authenticating users
 passport.use(
@@ -278,7 +278,7 @@ function checkEmailConfirmation(req, res, next) {
       console.log('Error while querying the database', error);
     }
 
-    if (results[0].is_verified === 1) {
+    if (results[0].is_verified === 1) { //The is_verified is of type TINYINT, so 1 means true
       console.log('Email: ' + email + ' is verified');
       console.log('');
       return next();
@@ -295,6 +295,7 @@ function checkEmailConfirmation(req, res, next) {
 
 
 
+//This is the function that will retrieve the .docx file, fill it, and save it under a new name in the .pdf file format
 const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDate, prefix) => {
 
   //Load the docx file as a binary
@@ -302,6 +303,7 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDat
   const content = await fsPromises.readFile(docPath, 'binary');
   console.log(`The ${fileName} has been read from path ${docPath}`);
 
+  //Set up the pizip and docxtemplater
   const zip = new PizZip(content);
   const docxTemplater = new Docxtemplater().loadZip(zip);
 
@@ -312,15 +314,18 @@ const fillAndSaveDocument = async (fileName, dataToFill, userEmail, formattedDat
   //Generate the filled .docx file
   const buffer = docxTemplater.getZip().generate({ type: 'nodebuffer' });
 
+  //Save the filled .docx file under the new name
   const newFileName = `${prefix}_${formattedDate}_${userEmail}.docx`;
   const outputPath = path.join(__dirname, 'agreements', newFileName);
   
   fs.writeFileSync(outputPath, buffer);
+  //Console.log it for debugging purposes
   console.log(`The filled ${fileName} has been written as ${newFileName}`);
 
-  return newFileName;  //return the generated file name for further use
+  return newFileName;  //Return the generated file name for further use
 };
 
+//This is the function that will be used to retrieve the agreement file name by its agreement_id from the database
 async function getAgreementFileNameById(agreementId) {
   console.log("Received the request to get agreement file name by id: " + agreementId + ", calling getAgreementFileNameById()");
 
@@ -343,7 +348,7 @@ async function getAgreementFileNameById(agreementId) {
   return fileName;
 }
 
-//This function will convert the docx file to pdf
+//This the function that will convert the docx file to pdf
 async function convertDocxToPDF(docxPath) {
   return new Promise((resolve, reject) => {
     console.log('Converting the docx file to pdf, calling convertDocxToPDF(): ' + docxPath);
@@ -360,11 +365,13 @@ async function convertDocxToPDF(docxPath) {
   });
 }
 
+//This is the function that will count the pages of the pdf file
 async function countPDFPages(pdfBuffer) {
   var data = await pdf(pdfBuffer);
   return data.numpages;
 }
 
+//This is the function that will delete all files associated with the given user email
 function deleteFilesInDirectory(directory, keyword) {
   fs.readdir(directory, (error, files) => {
     if (error)
@@ -391,6 +398,7 @@ function deleteFilesInDirectory(directory, keyword) {
 
 
 
+//Handle the incoming POST request to the verify email page
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
   const emailVerificationCode = req.body.emailVerificationCode;
@@ -430,6 +438,7 @@ app.post('/verifyEmailAddress', (req, res) => {
 
 
 
+//Handle the incoming POST request to the 'buy selected agreements' option
 app.post('/buySelectedAgreements', (req, res) => {
   try {
 
