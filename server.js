@@ -248,7 +248,6 @@ passport.deserializeUser((user, done) => {
 
 //This is the function which checks if the user is authenticated
 function checkAuthentication(req, res, next) {
-  console.log('');
   console.log('Checking authentication, calling checkAuthentication()');
   console.log('User is authenticated: ' + req.isAuthenticated());
   console.log('');
@@ -269,7 +268,6 @@ function checkAuthentication(req, res, next) {
 function checkEmailConfirmation(req, res, next) {
   const email = req.session.passport.user.email; 
 
-  console.log('');
   console.log('Checking email confirmation for: ' + email + ', calling checkEmailConfirmation()');
 
   //Query the database to find the user with the given email
@@ -654,6 +652,7 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
     //Fill and save RODO agreement
     const rodoFileName = 'RODO_agreement.docx';
 
+    //Construct the formatted date
     const currentDate = new Date();
     const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
     req.session.formattedDate = formattedDate;
@@ -663,20 +662,22 @@ app.post('/postAgreementData', checkAuthentication, async (req, res) => {
     const filledRODOFileName = await fillAndSaveDocument(rodoFileName, dataToFill, userEmail, formattedDate, 'RODO_agreement');
     console.log('RODO agreement has been filled and saved');
 
-    //Fill and save selected agreement
+    //Fill and save selected agreement with the given data
     var agreementFileName = await getAgreementFileNameById(agreementId);
     console.log('Agreement file name has been retrieved: ', agreementFileName);
 
+    //Extract the name of the agreement
     const agreementPrefix = agreementFileName.split('.docx')[0];
     console.log('Agreement prefix has been extracted: ', agreementPrefix);
 
     agreementFileName = agreementFileName + '.docx';
     console.log('Agreement file name has been modified: ', agreementFileName);
 
+    //Fill and save the selected agreement with the given data
     const filledAgreementFileName = await fillAndSaveDocument(agreementFileName, dataToFill, userEmail, formattedDate, agreementPrefix);
     console.log('Selected agreement has been filled and saved');
 
-    //FIll and save the photo consent agreement
+    //Fill and save the photo consent agreement with the given data
     const filledPhotoConsentFileName = await fillAndSaveDocument('Photo_agreement.docx', dataToFill, userEmail, formattedDate, 'Photo_agreement');
     console.log('Photo consent agreement has been filled and saved');
 
