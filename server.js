@@ -1690,7 +1690,7 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
 
       console.log("Email with the signed agreements has been sent to the user");
 
-      //Delete the files from the server
+      //Delete the files associated with the user's email from the server
       console.log("Deleting all the agreement files from the server");
       deleteFilesInDirectory(path.join(__dirname, 'agreements'), userEmail);
 
@@ -1701,6 +1701,7 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
     }
       else
     {
+      //This email will not contain the photo consent
       let emailOptions = {
         from: 'pomoc@prawokosmetyczne.pl',
         to: req.session.passport.user.email,
