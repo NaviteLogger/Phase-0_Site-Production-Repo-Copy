@@ -877,7 +877,7 @@ app.post('/mergeRODOAgreement', checkAuthentication, async (req, res) => {
 
   } catch (error) {
     console.error('Error while merging the RODO agreement:', error);
-    res.status(500).json({ status: 'error', message: 'Internal server error' });
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
@@ -1049,6 +1049,7 @@ app.post('/mergeSelectedAgreement', checkAuthentication, async (req, res) => {
     //This is the path to the final PDF file containing all the signed pages
     var finalPDFPath = path.join(__dirname, 'agreements', `${agreementPrefix}_${formattedDate}_${userEmail}.pdf`);
 
+    //Merge the PDF files into a single PDF (using the pdf-merge library)
     PDFMerge(pdfFiles, {output: finalPDFPath})
       .then(() => {
         console.log("All PDFs merged successfully");
@@ -1061,12 +1062,12 @@ app.post('/mergeSelectedAgreement', checkAuthentication, async (req, res) => {
 
   } catch (error) {
       console.error('Error during the merging process:', error);
-      res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
+      res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
 
-
+//Handle the request to the interview page
 app.get('/displayInterview', checkAuthentication, async (req, res) => {
   try {
     console.log("Sending the interview page to the user: ", req.session.passport.user.email);
@@ -1096,11 +1097,9 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
       });
     });
 
-    //console.log(results);
     const questions = results;
 
     console.log("Rendering the interview page");
-    //console.log(typeof questions);
     res.render('InterviewPage', { questions: questions });
 
   } catch (error) {
