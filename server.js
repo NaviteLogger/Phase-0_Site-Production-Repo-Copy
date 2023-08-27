@@ -909,7 +909,7 @@ app.get('/signSelectedAgreement', checkAuthentication, async (req, res) => {
       await pdftobuffer(pdfBytes, i).then((buffer) => {
         fs.writeFileSync(imagePath, buffer, null);
       });
-      //Add the image path to the array-
+      //Add the image path to the array
       imagePaths.push(imagePath);
     }
 
@@ -1087,24 +1087,22 @@ app.get('/displayInterview', checkAuthentication, async (req, res) => {
         `, (error, results) => {
         if (error) {
           console.log('Error while querying the database', error);
-          reject(error); //if there's an error, reject the Promise
+          reject(error); //If there's an error, reject the Promise
         }
           else
         {
           console.log('Interview questions have been retrieved from the database');
-          resolve(results); //if everything's okay, resolve the Promise with the results
+          resolve(results); //If everything's okay, resolve the Promise with the results
         }
       });
     });
 
-    const questions = results;
-
     console.log("Rendering the interview page");
-    res.render('InterviewPage', { questions: questions });
+    res.render('InterviewPage', { questions: results });
 
   } catch (error) {
     console.log('Error while loading the display interview page', error);
-    res.status(500).send("Internal server error");
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
@@ -1155,14 +1153,17 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
     const formData = req.body;
     console.log(formData);
     
-    const currentDate = new Date();
-    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
+    //Retrieve the formatted date from the session
+    const formattedDate = req.session.formattedDate;
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     const pathToInterviewDocument = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
     
+    //Create a new PDFDocument
     const pdfDoc = await PDFDocument.create();
+    //Register the custom font
     pdfDoc.registerFontkit(fontkit);
     const fontBytes = await fsPromises.readFile(path.join(__dirname, 'fonts', 'futuraFont.ttf'));
+    //Embed the font in the PDF
     const customFont = await pdfDoc.embedFont(fontBytes);
 
     let page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]); // Initially start with one page
@@ -1262,15 +1263,13 @@ app.post('/postInterviewData', checkAuthentication, upload.none(), async (req, r
 });
 
 
-
+//After filling the client's and employee's data, this will handle the conversion of the interview to images
 app.get('/signInterview', checkAuthentication, async (req, res) => {
   try {
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     var formattedDate = req.session.formattedDate;
-
     console.log("The date saved to the session: ", formattedDate);
 
-    //var interviewDocumentPath = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
     var interviewDocumentPath = req.session.interviewDocumentPath;
     console.log("Final interview document path: ", interviewDocumentPath);
 
@@ -1279,43 +1278,53 @@ app.get('/signInterview', checkAuthentication, async (req, res) => {
     var numberOfPages = await countPDFPages(pdfBytes);  //Use pdf-parse to get the page count
 
     //Convert each page of the PDF to an image
-    let imagePaths = [];
-    for (let i = 0; i < numberOfPages; i++) {
+    let imagePaths = []; //Array of image paths
+    for (let i = 0; i < numberOfPages; i++)
+    {
+      //Assemble the image path for the individual page
       var imagePath = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}_page_${i}.png`);
+      //Convert the page to an image
       await pdftobuffer(pdfBytes, i).then((buffer) => {
         fs.writeFileSync(imagePath, buffer, null);
       });
+      //Add the image path to the array
       imagePaths.push(imagePath);
     }
 
+    //Pass the array of image paths to the session for further use
     console.log("Image paths:", imagePaths);
     req.session.interviewImagePaths = imagePaths; //Now it's an array of image paths
 
     res.render('SignInterviewPage', {
       imagePaths: imagePaths,
-      numberOfPages: numberOfPages,
+      numberOfPages: numberOfPages, //Pass the total number of pages of the document to the frontend
     });
 
   } catch (error) {
     console.log('Error while loading the interview overview page', error);
-    res.status(500).send("Internal server error");
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
+//Handle the sending of the interview image to the user
 app.get('/InterviewImage/:index', checkAuthentication, async (req, res) => {
   try {
+    //Get the image's index and the array of image paths from the frontend request and the session
     console.log("Sending the interview image to the user", req.params.index);
     var imageIndex = req.params.index;
     var interviewImagePaths = req.session.interviewImagePaths;
 
+    //Check if the image exists and if the image index is valid
     if(!interviewImagePaths ||  !interviewImagePaths[imageIndex])
     {
       return res.status(404).send("Image of interview not found");
     }
 
+    //Send the image to the user
     var imagePath = interviewImagePaths[imageIndex];
     console.log("Sending the interview image to the user: ", imagePath);
 
+    //As the image contains confidential information, we must check is the user can access it
     fs.access(imagePath, fs.F_OK, (error) => {
       if (error)
       {
@@ -1324,6 +1333,7 @@ app.get('/InterviewImage/:index', checkAuthentication, async (req, res) => {
       }
         else
       {
+        //Set the headers to prevent the browser from caching the image due to the confidentiality of the data
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         res.sendFile(imagePath);
       }
@@ -1331,13 +1341,14 @@ app.get('/InterviewImage/:index', checkAuthentication, async (req, res) => {
 
   } catch (error) {
     console.log('Error while loading the interview image overview page', error);
-    res.status(500).send("Internal server error");
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
+//Handle the uploading of the signed interview image to the server
 app.post('/uploadInterviewSignature', checkAuthentication, async (req, res) => {
   try {
-    var imageData = req.body.image;
+    var imageData = req.body.image; //Assuming images is an array of dataURLs sent from the client.
     var pageIndex = req.body.pageIndex;
 
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
@@ -1345,6 +1356,7 @@ app.post('/uploadInterviewSignature', checkAuthentication, async (req, res) => {
 
     var pdfName = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
+    //Console.log the length of the image data for debugging purposes (if null/empty/0 than the image was not sent)
     console.log("ImageData length:", imageData.length);
 
     //Create a new PDF document
@@ -1387,15 +1399,17 @@ app.post('/uploadInterviewSignature', checkAuthentication, async (req, res) => {
 
   } catch (error) {
     console.error('Error while receiving signed image and generating individual PDF:', error);
-    res.status(500).json({ status: 'error', message: 'Internal server error' });
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
+//Handle the merging of the signed interview images into a single PDF
 app.post('/mergeInterview', checkAuthentication, async (req, res) => {
   try {
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     var formattedDate = req.session.formattedDate;
 
+    //This is the array of PDF files paths
     var pdfFiles = [];
 
     //Dynamically generate the list of PDFs based on the number of uploaded images.
@@ -1404,11 +1418,14 @@ app.post('/mergeInterview', checkAuthentication, async (req, res) => {
 
     for (let i = 0; i < totalPages; i++) {
       let pdfName = `interview_${formattedDate}_${userEmail}_page${i}.pdf`;
+      //Add at the end of the array the path to the PDF file
       pdfFiles.push(path.join(__dirname, 'interviews', pdfName));
     }
 
+    //This is the path to the final PDF file containing all the signed pages
     var finalPDFPath = path.join(__dirname, 'interviews', `interview_${formattedDate}_${userEmail}.pdf`);
 
+    //Merge the PDF files into a single PDF (using the pdf-merge library)
     PDFMerge(pdfFiles, { output: finalPDFPath })
       .then(() => {
         console.log("All PDFs merged successfully");
@@ -1416,22 +1433,23 @@ app.post('/mergeInterview', checkAuthentication, async (req, res) => {
       })
       .catch(error => {
         console.error('Error while merging PDFs:', error);
-        res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
+        res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
       });
 
   } catch (error) {
     console.error('Error during the merging process:', error);
-    res.status(500).json({ status: 'error', message: 'Internal server error during merging' });
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
 
-
+//Handle the routing choice for the photo agreement based on whether the client has agreed to have their photo taken
 app.get('/photoAgreementChoice', checkAuthentication, async (req, res) => {
   try {
     //Determine whether the client has agreed to have their photo taken
     console.log("The user's choice regarding the photo agreement: ", req.session.photoConsent);
 
+    //If the client has agreed to have their photo taken, then proceed with the file conversion
     if (req.session.photoConsent === true)
     {
       var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
@@ -1447,46 +1465,57 @@ app.get('/photoAgreementChoice', checkAuthentication, async (req, res) => {
       var numberOfPages = await countPDFPages(pdfBytes);  //Use pdf-parse to get the page count
 
       //Convert each page of the PDF to an image
-      let imagePaths = [];
-      for (let i = 0; i < numberOfPages; i++) {
+      let imagePaths = []; //Array of image paths
+      for (let i = 0; i < numberOfPages; i++)
+      {
+        //Assemble the image path for the individual page
         var imagePath = path.join(__dirname, 'agreements', `Photo_agreement_${formattedDate}_${userEmail}_page_${i}.png`);
+        //Convert the page to an image
         await pdftobuffer(pdfBytes, i).then((buffer) => {
           fs.writeFileSync(imagePath, buffer, null);
         });
+        //Add the image path to the array
         imagePaths.push(imagePath);
       }
-
+      //Pass the array of image paths to the session for further use
+      console.log("Image paths:", imagePaths);
       req.session.photoAgreementImagePaths = imagePaths; //Now it's an array of image paths
 
       res.render('SignPhotoAgreementPage', {
         imagePaths: imagePaths,
-        numberOfPages: numberOfPages,
+        numberOfPages: numberOfPages, //Pass the total number of pages of the document to the frontend
       });
     }
       else
     {
+      //If the client has not agreed to have their photo taken, then redirect them to the summary page
       res.redirect('/summaryPage');
     }
 
   } catch (error) {
     console.log('Error while loading the photo agreement choice page', error);
-    res.status(500).send("Internal server error");
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
+//Handle the sending of the photo agreement image to the user
 app.get('/PhotoAgreementImage/:index', checkAuthentication, async (req, res) => {
   try {
+    //Get the image's index and the array of image paths from the frontend request and the session
     var imageIndex = req.params.index;
     var photoAgreementImagePaths = req.session.photoAgreementImagePaths;
 
+    //Check if the image exists and if the image index is valid
     if(!photoAgreementImagePaths ||  !photoAgreementImagePaths[imageIndex])
     {
       return res.status(404).send("Image of photo agreement not found");
     }
 
+    //Send the image to the user
     var imagePath = photoAgreementImagePaths[imageIndex];
     console.log("Sending the photo agreement image to the user: ", imagePath);
 
+    //As the image contains confidential information, we must check is the user can access it
     fs.access(imagePath, fs.F_OK, (error) => {
       if (error)
       {
@@ -1495,6 +1524,7 @@ app.get('/PhotoAgreementImage/:index', checkAuthentication, async (req, res) => 
       }
         else
       {
+        //Set the headers to prevent the browser from caching the image due to the confidentiality of the data
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         res.sendFile(imagePath);
       }
@@ -1502,10 +1532,11 @@ app.get('/PhotoAgreementImage/:index', checkAuthentication, async (req, res) => 
 
   } catch (error) {
     console.log('Error while loading the photo agreement image overview page', error);
-    res.status(500).send("Internal server error");
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }
 });
 
+//Handle the uploading of the signed photo agreement image to the server
 app.post('/uploadPhotoAgreementSignature', checkAuthentication, async (req, res) => {
   try {
     var imageData = req.body.image; //Assuming images is an array of dataURLs sent from the client.
@@ -1516,6 +1547,7 @@ app.post('/uploadPhotoAgreementSignature', checkAuthentication, async (req, res)
 
     var pdfName = path.join(__dirname, 'agreements', `Photo_agreement_${formattedDate}_${userEmail}_page${pageIndex}.pdf`);
 
+    //Console.log the length of the image data for debugging purposes (if null/empty/0 than the image was not sent)
     console.log("ImageData length:", imageData.length);
 
     //Create a new PDF document
@@ -1558,10 +1590,11 @@ app.post('/uploadPhotoAgreementSignature', checkAuthentication, async (req, res)
 
   } catch (error) {
     console.error('Error while receiving signed images and generating PDF:', error);
-    res.status(500).json({ status: 'error', message: 'Internal server error' });
+    res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
   }    
 });
 
+//Handle the merging of the signed photo agreement images into a single PDF
 app.post('/mergePhotoAgreement', checkAuthentication, async (req, res) => {
   try {
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
