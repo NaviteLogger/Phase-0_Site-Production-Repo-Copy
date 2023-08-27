@@ -1057,7 +1057,7 @@ app.post('/mergeSelectedAgreement', checkAuthentication, async (req, res) => {
       })
       .catch(error => {
         console.error('Error while merging PDFs:', error);
-        res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
+        res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
       });
 
   } catch (error) {
@@ -1600,6 +1600,7 @@ app.post('/mergePhotoAgreement', checkAuthentication, async (req, res) => {
     var userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
     var formattedDate = req.session.formattedDate;
 
+    //This is the array of PDF files paths
     var pdfFiles = [];
 
     //Dynamically generate the list of PDFs based on the number of uploaded images.
@@ -1609,11 +1610,14 @@ app.post('/mergePhotoAgreement', checkAuthentication, async (req, res) => {
     for (let i = 0; i < totalPages; i++)
     {
       let pdfName = `Photo_agreement_${formattedDate}_${userEmail}_page${i}.pdf`;
+      //Add at the end of the array the path to the PDF file
       pdfFiles.push(path.join(__dirname, 'agreements', pdfName));
     }
 
+    //This is the path to the final PDF file containing all the signed pages
     var finalPDFPath = path.join(__dirname, 'agreements', `Photo_agreement_${formattedDate}_${userEmail}.pdf`);
 
+    //Merge the PDF files into a single PDF (using the pdf-merge library)
     PDFMerge(pdfFiles, { output: finalPDFPath })
       .then(() => {
         console.log("All PDFs merged successfully");
@@ -1621,7 +1625,7 @@ app.post('/mergePhotoAgreement', checkAuthentication, async (req, res) => {
       })
       .catch(error => {
         console.error('Error while merging PDFs:', error);
-        res.status(500).json({ status: 'error', message: 'Error while merging PDFs' });
+        res.status(500).json({ status: 'error', message: 'Internal server error: ' + error });
       });
 
   } catch (error) {
@@ -1630,6 +1634,7 @@ app.post('/mergePhotoAgreement', checkAuthentication, async (req, res) => {
   }
 });
 
+//Handle the request to the summary page
 app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     const userEmail = req.session.passport.user.email.replace(/[^a-zA-Z0-9]/g, "_");
@@ -1637,6 +1642,7 @@ app.get('/summaryPage', checkAuthentication, checkEmailConfirmation, async (req,
     //Determine whether the client has agreed to have their photo taken, and if so, send the photo agreement along with the other agreements
     if(req.session.photoConsent === true)
     {
+      //This email will contain the photo consent as well
       let emailOptions = {
         from: 'pomoc@prawokosmetyczne.pl',
         to: req.session.passport.user.email,
