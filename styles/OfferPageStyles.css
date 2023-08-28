@@ -1,21 +1,21 @@
 /*This is where the body of the page begins*/
-html {
+/* html {
   font-size: 14px;
-}
+} */
 
   /* On screens that are 890px or wider */
-  @media screen and (min-width: 890px) {
+  /* @media screen and (min-width: 890px) {
     html {
       font-size: 18px;
     }
-  }
+  } */
   
   /* On screens that are 650px or smaller */
-  @media screen and (max-width: 720px) {
+  /* @media screen and (max-width: 720px) {
     html {
       font-size: 8px;
     }
-  }
+  } */
 
 .offer-container { /*This is the container for the header and subscription boxes*/
   width: 100%;
