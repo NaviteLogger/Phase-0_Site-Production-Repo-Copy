@@ -60,7 +60,7 @@ header { /*This is the header of the page, containing the redirection buttons, l
 }
 
 #logo {
-  width: 100%;
+  width: 55%;
   height: auto;
 }
 
@@ -90,25 +90,30 @@ header { /*This is the header of the page, containing the redirection buttons, l
 /* On screens that are 890px or wider */
 @media screen and (min-width: 890px) {
   html {
-      font-size: 18px;
+    font-size: 18px;
+  }
+
+  #logo {
+    width: 70%;
+    height: auto;
   }
 }
 
 /* On screens that are 650px or smaller */
 @media screen and (max-width: 720px) {
   html {
-      font-size: 8px;
+    font-size: 12px;
   }
 
   .left,
   .middle,
   .right {
-      flex: 100%;
+    flex: 100%;
   }
   
   #logo {
-      width: 30%; /* Reduced the size of the logo on smaller screens */
-      height: auto;
+    width: 40%; /* Reduced the size of the logo on smaller screens */
+    height: auto;
   }
 
   .left {
@@ -135,7 +140,7 @@ header { /*This is the header of the page, containing the redirection buttons, l
 /* Large Tablet to Small Desktop View */
 @media screen and (max-width: 1200px) {
   .clients-portal {
-      font-size: 0.8rem;
-      padding: 5% 2%;
+    font-size: 0.8rem;
+    padding: 5% 2%;
   }
 }
