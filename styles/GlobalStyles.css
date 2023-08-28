@@ -112,7 +112,7 @@ header { /*This is the header of the page, containing the redirection buttons, l
   }
   
   #logo {
-    width: 40%; /* Reduced the size of the logo on smaller screens */
+    width: 30%; /* Reduced the size of the logo on smaller screens */
     height: auto;
   }
 
