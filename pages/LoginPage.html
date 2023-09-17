@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,28 +10,30 @@
   <script src="../scripts/LoginPageScript.js" defer></script>
   <title>Login Page</title>
 </head>
+
 <body>
   <header>
     <div class="left">
-        <a href="./indexPage.html" class="nav-link">STRONA GŁÓWNA</a>
-        <a href="/offerPage" class="nav-link">OFERTA</a> <!-- the href='/offerPage' specifies the url request that will be sent to the server -->
-        <a href="./AboutUsPage.html" class="nav-link">O NAS</a>
+      <a href="./indexPage.html" class="nav-link">STRONA GŁÓWNA</a>
+      <a href="/offerPage" class="nav-link">OFERTA</a>
+      <!-- the href='/offerPage' specifies the url request that will be sent to the server -->
+      <a href="./AboutUsPage.html" class="nav-link">O NAS</a>
     </div>
     <div class="middle">
-        <a href="./indexPage.html" class="nav-link-middle">
-            <img src="../images/logo.png" alt="Logo" id="logo">
-        </a>
+      <a href="./indexPage.html" class="nav-link-middle">
+        <img src="../images/logo.png" alt="Logo" id="logo">
+      </a>
     </div>
     <div class="right">
-        <a href="./ContactPage.html" class="nav-link nav-link-right">KONTAKT</a>
-        <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
+      <a href="./ContactPage.html" class="nav-link nav-link-right">KONTAKT</a>
+      <button class="clients-portal" id="clients-portal">PANEL KLIENTA</button>
     </div>
   </header>
 
   <div class="login-form">
     <h2>Witamy w panelu klienta</h2>
     <br>
-    <form id="login-form"> 
+    <form id="login-form">
       <div class="form-group">
         <label for="email">Podaj adres mailowy:</label>
         <input type="email" id="email" name="email" placeholder="Adres email">
@@ -47,11 +50,12 @@
       <p id='message' style="color: red"></p>
     </div>
   </div>
-    <div style="text-align: center">
-      <br>
-      <a href="./RegistrationPage.html">
-        <button class="register-button">Nie posiadasz jeszcze konta? Zarejestruj się</button>
-      </a>
-    </div>
+  <div style="text-align: center">
+    <br>
+    <a href="./RegistrationPage.html">
+      <button class="register-button">Nie posiadasz jeszcze konta? Zarejestruj się</button>
+    </a>
+  </div>
 </body>
+
 </html>
