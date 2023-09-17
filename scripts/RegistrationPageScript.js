@@ -1,15 +1,15 @@
 //Get the reference to the registration form
-const registrationForm = document.getElementById("registration-form");
+const registrationForm = document.getElementById('registration-form');
 
 //Add an event listener to the registration form
-registrationForm.addEventListener("submit", (event) => {
+registrationForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
   //Get the email and password values from the form
-  const email = document.getElementById("email").value;
-  const repeatedEmail = document.getElementById("repeatedEmail").value;
-  const password = document.getElementById("password").value;
-  const repeatedPassword = document.getElementById("repeatedPassword").value;
+  const email = document.getElementById('email').value;
+  const repeatedEmail = document.getElementById('repeatedEmail').value;
+  const password = document.getElementById('password').value;
+  const repeatedPassword = document.getElementById('repeatedPassword').value;
 
   //Regular expression for email validation
   let emailRegularExpression = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/i;
@@ -20,14 +20,14 @@ registrationForm.addEventListener("submit", (event) => {
   //Define max length of the email and password
   const MaxLength = 50;
 
-  const messageElement = document.getElementById("message");
+  const messageElement = document.getElementById('message');
 
   //Check if the email is valid
   if (
     !emailRegularExpression.test(email) ||
     !emailRegularExpression.test(repeatedEmail)
   ) {
-    messageElement.innerHTML = "Adres email zawiera niedozwolone znaki!";
+    messageElement.innerHTML = 'Adres email zawiera niedozwolone znaki!';
     return false;
   }
 
@@ -38,7 +38,7 @@ registrationForm.addEventListener("submit", (event) => {
     repeatedEmail.length > MaxLength ||
     repeatedEmail.length < 1
   ) {
-    messageElement.innerHTML = "Adres email musi zawierać od 1 do 50 znaków!";
+    messageElement.innerHTML = 'Adres email musi zawierać od 1 do 50 znaków!';
     return false;
   }
 
@@ -49,7 +49,7 @@ registrationForm.addEventListener("submit", (event) => {
     repeatedPassword.length > MaxLength ||
     repeatedPassword.length < 1
   ) {
-    messageElement.innerHTML = "Hasło musi zawierać od 1 do 50 znaków!";
+    messageElement.innerHTML = 'Hasło musi zawierać od 1 do 50 znaków!';
     return false;
   }
 
@@ -58,19 +58,19 @@ registrationForm.addEventListener("submit", (event) => {
     sqlInjectionPrevention.test(password) ||
     sqlInjectionPrevention.test(repeatedPassword)
   ) {
-    messageElement.innerHTML = "Hasło zawiera niedozwolone znaki!";
+    messageElement.innerHTML = 'Hasło zawiera niedozwolone znaki!';
     return false;
   }
 
   //Check if the email and repeated email are the same
   if (email !== repeatedEmail) {
-    messageElement.innerHTML = "Podano różne adresy email!";
+    messageElement.innerHTML = 'Podano różne adresy email!';
     return false;
   }
 
   //Check if the password and repeated password are the same
   if (password !== repeatedPassword) {
-    messageElement.innerHTML = "Podano różne hasła!";
+    messageElement.innerHTML = 'Podano różne hasła!';
     return false;
   }
 
@@ -83,10 +83,10 @@ registrationForm.addEventListener("submit", (event) => {
   };
 
   //Send a POST request to the server
-  fetch("/register", {
-    method: "POST",
+  fetch('/register', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(requestBody), //Indicate that we are sending JSON data in the request body
   })
@@ -95,10 +95,10 @@ registrationForm.addEventListener("submit", (event) => {
       messageElement.innerHTML = data.message;
     })
     .catch((error) => {
-      console.error("Error:", error);
+      console.error('Error:', error);
     });
 });
 
-document.getElementById("clients-portal").addEventListener("click", () => {
-  window.location.href = "/clientsPortalPage";
+document.getElementById('clients-portal').addEventListener('click', () => {
+  window.location.href = '/clientsPortalPage';
 });

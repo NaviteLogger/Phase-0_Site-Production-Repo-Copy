@@ -1,19 +1,19 @@
-document.getElementById("clearDrawing").addEventListener("click", () => {
+document.getElementById('clearDrawing').addEventListener('click', () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 });
 
 const maxPages = parseInt(
-  document.body.getAttribute("data-number-of-pages"),
+  document.body.getAttribute('data-number-of-pages'),
   10
 );
 var currentPage = 0; //Give that we start from the first page
 
-document.getElementById("nextPage").addEventListener("click", () => {
+document.getElementById('nextPage').addEventListener('click', () => {
   if (currentPage < maxPages - 1) {
-    signatures[currentPage] = canvas.toDataURL("image/png");
+    signatures[currentPage] = canvas.toDataURL('image/png');
 
-    console.log("Image Data URL:", signatures[currentPage]);
+    console.log('Image Data URL:', signatures[currentPage]);
 
     currentPage++;
     loadImage();
@@ -21,11 +21,11 @@ document.getElementById("nextPage").addEventListener("click", () => {
   }
 });
 
-document.getElementById("previousPage").addEventListener("click", () => {
+document.getElementById('previousPage').addEventListener('click', () => {
   if (currentPage > 0) {
-    signatures[currentPage] = canvas.toDataURL("image/png");
+    signatures[currentPage] = canvas.toDataURL('image/png');
 
-    console.log("Image Data URL:", signatures[currentPage]);
+    console.log('Image Data URL:', signatures[currentPage]);
 
     currentPage--;
     loadImage();
@@ -33,8 +33,8 @@ document.getElementById("previousPage").addEventListener("click", () => {
   }
 });
 
-const canvas = document.getElementById("signatureCanvas");
-const ctx = canvas.getContext("2d");
+const canvas = document.getElementById('signatureCanvas');
+const ctx = canvas.getContext('2d');
 let isDrawing = false;
 
 var image = new Image();
@@ -45,9 +45,9 @@ let signatures = [];
 
 function loadImage() {
   // Load the agreement image
-  image.src = "/InterviewImage/" + currentPage;
+  image.src = '/InterviewImage/' + currentPage;
   image.onload = () => {
-    console.log("Image loaded");
+    console.log('Image loaded');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
@@ -63,43 +63,43 @@ function loadImage() {
 }
 
 function updatePageDisplay() {
-  var pageIndicator = document.getElementById("pageIndicator");
+  var pageIndicator = document.getElementById('pageIndicator');
   pageIndicator.innerHTML = `Proszę podpisać wszystkie strony w wyznaczonych miejscach (W przypadku ich braku proszę podpisać się na dole strony). Strona ${
     currentPage + 1
   } z ${maxPages}`;
 
   // Disable or enable navigation buttons
-  document.getElementById("nextPage").disabled = currentPage >= maxPages - 1;
-  document.getElementById("previousPage").disabled = currentPage <= 0;
+  document.getElementById('nextPage').disabled = currentPage >= maxPages - 1;
+  document.getElementById('previousPage').disabled = currentPage <= 0;
 }
 
-canvas.addEventListener("mousedown", () => {
+canvas.addEventListener('mousedown', () => {
   isDrawing = true;
   ctx.beginPath();
 });
 
-canvas.addEventListener("mousemove", (event) => {
+canvas.addEventListener('mousemove', (event) => {
   if (!isDrawing) return;
   draw(event);
 });
 
-canvas.addEventListener("mouseup", () => {
+canvas.addEventListener('mouseup', () => {
   isDrawing = false;
   ctx.closePath();
 });
 
-canvas.addEventListener("touchstart", (event) => {
+canvas.addEventListener('touchstart', (event) => {
   isDrawing = true;
   ctx.beginPath();
 });
 
-canvas.addEventListener("touchmove", (event) => {
+canvas.addEventListener('touchmove', (event) => {
   if (!isDrawing) return;
   const touch = event.touches[0];
   draw(touch);
 });
 
-canvas.addEventListener("touchend", () => {
+canvas.addEventListener('touchend', () => {
   isDrawing = false;
   ctx.closePath();
 });
@@ -108,8 +108,8 @@ function draw(event) {
   const position = getCursorPosition(canvas, event);
 
   ctx.lineWidth = 3;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "black";
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'black';
 
   ctx.lineTo(position.x, position.y);
   ctx.stroke();
@@ -133,13 +133,13 @@ function getCursorPosition(canvas, event) {
   return { x, y };
 }
 
-document.getElementById("submitAllSignatures").addEventListener("click", () => {
-  signatures[currentPage] = canvas.toDataURL("image/png");
-  console.log("Signatures array:", signatures);
+document.getElementById('submitAllSignatures').addEventListener('click', () => {
+  signatures[currentPage] = canvas.toDataURL('image/png');
+  console.log('Signatures array:', signatures);
 
   if (signatures.length < maxPages) {
     alert(
-      "Proszę podpisać wszystkie strony (jeśli nie ma wyznaczonego miejsca to na dole strony)."
+      'Proszę podpisać wszystkie strony (jeśli nie ma wyznaczonego miejsca to na dole strony).'
     );
     return;
   }
@@ -156,35 +156,35 @@ function sendNextSignature() {
 
   if (currentIndex >= signatures.length) {
     // All signatures have been sent. Notify server to finalize processing.
-    fetch("/mergeInterview", {
-      method: "POST",
+    fetch('/mergeInterview', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ totalUploadedImages: totalUploadedImages }),
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.status === "success") {
-          alert("Wszystkie podpisy zostały pomyślnie zapisane!");
+        if (data.status === 'success') {
+          alert('Wszystkie podpisy zostały pomyślnie zapisane!');
           setTimeout(() => {
-            window.location.href = "/photoAgreementChoice"; // Redirect to the choice
+            window.location.href = '/photoAgreementChoice'; // Redirect to the choice
           }, 1000);
         } else {
-          console.error("Failed to process signatures.");
+          console.error('Failed to process signatures.');
         }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error('Error:', error);
       });
     return;
   }
 
-  fetch("/uploadInterviewSignature", {
+  fetch('/uploadInterviewSignature', {
     // Updated the endpoint name here
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       image: signatures[currentIndex],
@@ -193,7 +193,7 @@ function sendNextSignature() {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.status === "success") {
+      if (data.status === 'success') {
         console.log(`Signature ${currentIndex + 1} uploaded successfully!`);
         currentIndex++;
         sendNextSignature(); // Recursive call to send the next signature
@@ -202,7 +202,7 @@ function sendNextSignature() {
       }
     })
     .catch((error) => {
-      console.error("Error:", error);
+      console.error('Error:', error);
     });
 }
 

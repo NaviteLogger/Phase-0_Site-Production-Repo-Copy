@@ -1,8 +1,8 @@
 //Get the reference to the agreement form
-const agreementForm = document.getElementById("agreement-form");
+const agreementForm = document.getElementById('agreement-form');
 
 //Add an event listener to the agreement form
-agreementForm.addEventListener("submit", (event) => {
+agreementForm.addEventListener('submit', (event) => {
   // Prevent form from submitting normally
   event.preventDefault();
 
@@ -23,10 +23,10 @@ agreementForm.addEventListener("submit", (event) => {
     selectedAgreementId: selectedAgreementId,
   };
   // Use Fetch API to send the selected agreement to the server
-  fetch("/agreementSelectionPage", {
-    method: "POST",
+  fetch('/agreementSelectionPage', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(requestBody),
   })
@@ -36,16 +36,16 @@ agreementForm.addEventListener("submit", (event) => {
           `Network response was not ok, status: ${response.status}`
         );
       } else {
-        window.location.href = "/AgreementOverviewPage";
+        window.location.href = '/AgreementOverviewPage';
       }
     })
     .catch((error) => {
-      console.error("Error:", error);
+      console.error('Error:', error);
     });
 });
 
-document.getElementById("clients-portal").addEventListener("click", () => {
-  window.location.href = "/clientsPortalPage";
+document.getElementById('clients-portal').addEventListener('click', () => {
+  window.location.href = '/clientsPortalPage';
 });
 
 function validateForm() {
@@ -54,7 +54,7 @@ function validateForm() {
     'input[name="selectedAgreement"]:checked'
   );
   if (selectedAgreement == null) {
-    alert("Proszę wybrać umowę do wypełnienia");
+    alert('Proszę wybrać umowę do wypełnienia');
     return false;
   }
   return true;

@@ -1,14 +1,14 @@
 //Get the reference to the login form
-const loginForm = document.getElementById("login-form");
+const loginForm = document.getElementById('login-form');
 
 //Add an event listener to the login form
-loginForm.addEventListener("submit", (event) => {
+loginForm.addEventListener('submit', (event) => {
   //Prevent form from submitting normally
   event.preventDefault();
 
   //Get the email and password values from the form
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
   //Regular expression for email validation
   let emailRegularExpression = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/i;
@@ -19,29 +19,29 @@ loginForm.addEventListener("submit", (event) => {
   //Define max length of the email and password
   const MaxLength = 51;
 
-  const messageElement = document.getElementById("message");
+  const messageElement = document.getElementById('message');
 
   //Check if the email is valid
   if (!emailRegularExpression.test(email)) {
-    messageElement.innerHTML = "Adres email zawiera niedozwolone znaki!";
+    messageElement.innerHTML = 'Adres email zawiera niedozwolone znaki!';
     return false;
   }
 
   //Check if the email is within acceptable length
   if (email.length > MaxLength || email.length < 1) {
-    messageElement.innerHTML = "Adres email musi zawierać od 1 do 50 znaków!";
+    messageElement.innerHTML = 'Adres email musi zawierać od 1 do 50 znaków!';
     return false;
   }
 
   //Check if the password is within acceptable length
   if (password.length > MaxLength || password.length < 1) {
-    messageElement.innerHTML = "Hasło musi zawierać od 1 do 50 znaków!";
+    messageElement.innerHTML = 'Hasło musi zawierać od 1 do 50 znaków!';
     return false;
   }
 
   //Check if the password is valid
   if (sqlInjectionPrevention.test(password)) {
-    messageElement.innerHTML = "Hasło zawiera niedozwolone znaki!";
+    messageElement.innerHTML = 'Hasło zawiera niedozwolone znaki!';
     return false;
   }
 
@@ -52,29 +52,29 @@ loginForm.addEventListener("submit", (event) => {
   };
 
   //Send a POST request to the server
-  fetch("/login", {
-    method: "POST",
+  fetch('/login', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(requestBody), //Indicate that we are sending JSON data in the request body
   })
     .then((response) => response.json()) //Parse the incoming JSON response
     .then((data) => {
-      const serverMessageElement = document.getElementById("message");
+      const serverMessageElement = document.getElementById('message');
       serverMessageElement.innerHTML = data.message;
 
-      if (data.status === "logged_in") {
+      if (data.status === 'logged_in') {
         setTimeout(() => {
-          window.location.href = "/clientsPortalPage";
+          window.location.href = '/clientsPortalPage';
         }, 1500); //Redirect to the clients portal page after 1,5 seconds
       }
     })
     .catch((error) => {
-      console.error("Error:", error);
+      console.error('Error:', error);
     });
 });
 
-document.getElementById("clients-portal").addEventListener("click", () => {
-  window.location.href = "/clientsPortalPage";
+document.getElementById('clients-portal').addEventListener('click', () => {
+  window.location.href = '/clientsPortalPage';
 });
