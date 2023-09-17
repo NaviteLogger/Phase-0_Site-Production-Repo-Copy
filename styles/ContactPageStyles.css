@@ -1,31 +1,30 @@
 /*This is where the body of the page begins*/
 
-  .contact-info {
-    margin-top: 30px;
-    text-align: center;
-  }
-  
-  .contact-info h2 {
-    margin-bottom: 10px;
-  }
-  
-  .contact-info .info {
-    margin-top: 20px;
-  }
-  
-  .contact-info p {
-    margin-bottom: 10px;
-  }
-  
-  .contact-info p strong {
-    display: inline-block;
-    width: 120px;
-  }
-  
-  .contact-info .placeholder {
-    display: inline-block;
-    width: 200px;
-    height: 20px;
-    background-color: #ddd;
-  }
-  
+.contact-info {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.contact-info h2 {
+  margin-bottom: 10px;
+}
+
+.contact-info .info {
+  margin-top: 20px;
+}
+
+.contact-info p {
+  margin-bottom: 10px;
+}
+
+.contact-info p strong {
+  display: inline-block;
+  width: 120px;
+}
+
+.contact-info .placeholder {
+  display: inline-block;
+  width: 200px;
+  height: 20px;
+  background-color: #ddd;
+}
