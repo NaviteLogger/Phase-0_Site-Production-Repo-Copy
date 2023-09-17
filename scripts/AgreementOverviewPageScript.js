@@ -1,27 +1,27 @@
-document.getElementById("clients-portal").addEventListener("click", () => {
-  window.location.href = "/clientsPortalPage";
+document.getElementById('clients-portal').addEventListener('click', () => {
+  window.location.href = '/clientsPortalPage';
 });
 
 window.onload = function () {
   // Display current date
-  const dateDiv = document.getElementById("date");
+  const dateDiv = document.getElementById('date');
   const currentDate = new Date();
   dateDiv.innerText = `Dzisiejsza data: ${currentDate.getDate()}-${
     currentDate.getMonth() + 1
   }-${currentDate.getFullYear()}`;
 
   const agreementOverviewForm = document.getElementById(
-    "agreement-overview-form"
+    'agreement-overview-form'
   );
 
-  agreementOverviewForm.addEventListener("submit", (event) => {
+  agreementOverviewForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const clientFullName = document.getElementById("client-full-name").value;
+    const clientFullName = document.getElementById('client-full-name').value;
     const employeeFullName =
-      document.getElementById("employee-full-name").value;
+      document.getElementById('employee-full-name').value;
     const photoConsent = document.getElementById(
-      "photo-consent-checkbox"
+      'photo-consent-checkbox'
     ).checked;
 
     const requestBody = {
@@ -30,26 +30,26 @@ window.onload = function () {
       photoConsent: photoConsent,
     };
 
-    fetch("/postAgreementData", {
-      method: "POST",
+    fetch('/postAgreementData', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestBody),
     })
       .then((response) => response.json())
       .then((data) => {
-        const messageElement = document.getElementById("message");
+        const messageElement = document.getElementById('message');
         messageElement.innerHTML = data.message;
 
-        if (data.status === "success") {
+        if (data.status === 'success') {
           setTimeout(() => {
-            window.location.href = "/signRODOAgreement";
+            window.location.href = '/signRODOAgreement';
           }, 1500);
         }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error('Error:', error);
       });
   });
 };
