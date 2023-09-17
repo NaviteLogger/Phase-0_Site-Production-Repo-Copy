@@ -1,47 +1,47 @@
 canvas {
-    border: 1px solid black;
-    cursor: crosshair;
+  border: 1px solid black;
+  cursor: crosshair;
 }
 
 .canvas-container {
-    display: flex;
-    flex-direction: column;  /* Stack children vertically */
-    align-items: center;     /* Center children horizontally */
-    justify-content: center; /* Optional: If you want to center vertically as well */
-    /*height: 100vh;    */       /* Optional: Take full viewport height. Adjust or remove as needed. */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+  justify-content: center; /* Optional: If you want to center vertically as well */
+  /*height: 100vh;    */ /* Optional: Take full viewport height. Adjust or remove as needed. */
 }
 
 #signatureCanvas {
-    touch-action: none;
-    width: 595px;
-    height: 842px;
+  touch-action: none;
+  width: 595px;
+  height: 842px;
 }
 
 #pageIndicator {
-    text-align: center;
-    margin: 3%;
+  text-align: center;
+  margin: 3%;
 }
 
 .button-container {
-    text-align: center;
+  text-align: center;
 }
 
 .button-container button {
-    background-color: #4CAF50; /* Green background */
-    border: none;
-    color: white; /* White text color */
-    padding: 10px 20px; /* Padding around text */
-    text-align: center;
-    text-decoration: none;
-    display: inline-block; /* This makes the buttons sit side by side */
-    font-size: 1rem;
-    margin: 4px 2px; /* Spacing between buttons */
-    cursor: pointer;
-    border-radius: 8px; /* Rounded corners */
-    transition-duration: 0.4s; /* Transition effect for hover state */
+  background-color: #4caf50; /* Green background */
+  border: none;
+  color: white; /* White text color */
+  padding: 10px 20px; /* Padding around text */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block; /* This makes the buttons sit side by side */
+  font-size: 1rem;
+  margin: 4px 2px; /* Spacing between buttons */
+  cursor: pointer;
+  border-radius: 8px; /* Rounded corners */
+  transition-duration: 0.4s; /* Transition effect for hover state */
 }
 
 .button-container button:hover {
-    background-color: white; /* Dark green background on mouse-over */
-    color: #4CAF50;
+  background-color: white; /* Dark green background on mouse-over */
+  color: #4caf50;
 }

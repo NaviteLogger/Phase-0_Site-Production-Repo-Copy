@@ -1,78 +1,80 @@
 /* This is the main container for the Clients Portal page */
-  header {
-    padding: 1%;
+header {
+  padding: 1%;
+}
+
+.clients-portal-container {
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.headings {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 20px;
+}
+
+.agreements-list {
+  font-size: 1rem;
+  padding: 5px;
+  margin: 5px;
+}
+
+ol {
+  /*list-style-type: none;*/
+  margin: 1px;
+  padding: 1px;
+  font-size: 1rem;
+  text-align: left; /* Align text to the left within each list item */
+  width: fit-content; /* Shrink the list's width to its content */
+  margin: 0 auto; /* Center the list itself */
+}
+
+li {
+  padding: 10px;
+}
+
+/* buttons */
+.button-container {
+  display: flex; /* Turn on flexbox */
+  justify-content: space-around; /* Distribute space evenly between the buttons */
+}
+
+.buy-button {
+  flex: 1; /* All buttons take up equal space */
+  margin: 5px; /* Add some margin around each button */
+  text-align: center; /* Center the text on the button */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-width: 50px;
+  min-height: 10px;
+  padding: 2%;
+}
+
+@media screen and (max-width: 1200px) {
+  .clients-portal {
+    font-size: 0.8rem;
+    padding: 5% 1%;
   }
 
-  .clients-portal-container {
-    text-align: center;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  .buy-button.clients-portal {
+    font-size: 0.8rem;
+    padding: 2% 2%;
+    padding-bottom: 1%;
   }
+}
 
-  .headings {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 20px;
-  }
+#generator-button-top,
+#generator-button-bottom {
+  background-color: green;
+}
 
-  .agreements-list {
-    font-size: 1rem;
-    padding: 5px;
-    margin: 5px;
-  }
-  
-  ol {
-    /*list-style-type: none;*/
-    margin: 1px;
-    padding: 1px;
-    font-size: 1rem;
-    text-align: left; /* Align text to the left within each list item */
-    width: fit-content; /* Shrink the list's width to its content */
-    margin: 0 auto; /* Center the list itself */
-  }
-
-  li {
-    padding: 10px;
-  }
-
-  /* buttons */
-  .button-container {
-    display: flex;        /* Turn on flexbox */
-    justify-content: space-around; /* Distribute space evenly between the buttons */
-  }
-
-  .buy-button {
-    flex: 1;              /* All buttons take up equal space */
-    margin: 5px;         /* Add some margin around each button */
-    text-align: center;   /* Center the text on the button */
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-width: 50px;
-    min-height: 10px;
-    padding: 2%;
-  }
-
-  @media screen and (max-width: 1200px) {
-    .clients-portal {
-        font-size: 0.8rem;
-        padding: 5% 1%;
-    }
-
-    .buy-button.clients-portal {
-      font-size: 0.8rem;
-      padding: 2% 2%;
-      padding-bottom: 1%;
-    }
-  }
-
-  #generator-button-top, #generator-button-bottom {
-    background-color: green;
-  }
-
-  #logout-button-top, #logout-button-bottom {
-    background-color: red;
-  }
+#logout-button-top,
+#logout-button-bottom {
+  background-color: red;
+}

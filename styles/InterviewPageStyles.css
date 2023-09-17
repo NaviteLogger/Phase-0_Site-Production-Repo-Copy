@@ -1,80 +1,80 @@
 .interview-container {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .interview-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* Container for each question */
 .question {
-    display: grid;
-    grid-template-columns: 1fr auto auto; /* 1 fraction for the question, auto for the radio buttons and textarea */
-    align-items: center;
-    gap: 3%; /* Space between grid items */
-    margin: 3%;
-    border-bottom: 1px solid #ccc; /* Add a bottom border to each question */
-    transition: color 0.3s ease; /* Add a transition effect to the background color */
+  display: grid;
+  grid-template-columns: 1fr auto auto; /* 1 fraction for the question, auto for the radio buttons and textarea */
+  align-items: center;
+  gap: 3%; /* Space between grid items */
+  margin: 3%;
+  border-bottom: 1px solid #ccc; /* Add a bottom border to each question */
+  transition: color 0.3s ease; /* Add a transition effect to the background color */
 }
 
 /* Styling for the question label */
 .question-label {
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-align: justify; /* Justify the question text */
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: justify; /* Justify the question text */
 }
 
 /* Container for the radio buttons */
 .radio-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap:  10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 input[type="radio"] {
-    transform: scale(1.5);
+  transform: scale(1.5);
 }
 
 .radio-option {
-    margin: 10px;
+  margin: 10px;
 }
 
 /* Styling for the textarea */
 textarea {
-    width: 100%;
-    max-width: 300px;
-    height: 100px;
+  width: 100%;
+  max-width: 300px;
+  height: 100px;
 }
 
 .info-for-client-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .submit-container {
-    display: flex;
-    justify-content: center; /* Horizontally center the button */
-    align-items: center;     /* Vertically center the button (if needed) */
-    padding: 20px 0;        /* Optional: Add some padding around the button */
+  display: flex;
+  justify-content: center; /* Horizontally center the button */
+  align-items: center; /* Vertically center the button (if needed) */
+  padding: 20px 0; /* Optional: Add some padding around the button */
 }
 
 .submit-button {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    margin-top: 20px;
-    padding: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.5s ease;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
 }
