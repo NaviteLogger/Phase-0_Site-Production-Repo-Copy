@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <script src="../scripts/ClientsPortalPageScript.js" defer></script>
     <title>Client's Portal Page</title>
 </head>
+
 <body>
     <header>
         <div class="left">
@@ -31,35 +33,41 @@
             <a class="buy-button clients-portal">KUP SUBSKRYPCJĘ</a>
             <a class="buy-button clients-portal">KUP ZGODY</a>
             <a class="buy-button clients-portal">DRUKUJ ZGODY</a>
-            <a href="/agreementsGeneratorPage" class="buy-button clients-portal" id="generator-button-top">WYPEŁNIJ ZGODĘ</a>
+            <a href="/agreementsGeneratorPage" class="buy-button clients-portal" id="generator-button-top">WYPEŁNIJ
+                ZGODĘ</a>
             <a href="/logout" class="buy-button clients-portal" id="logout-button-top">WYLOGUJ</a>
         </div>
 
-        <h2>Witamy w portalu klienta przypisanym do konta: <%= email %></h2> <!-- The <%= %> tag is used to output the value of a JS expression into the table-->
+        <h2>Witamy w portalu klienta przypisanym do konta: <%= email %>
+        </h2> <!-- The <%= %> tag is used to output the value of a JS expression into the table-->
         <br>
         <p class="headings">W tym miejscu możesz zobaczyć swoje aktywne subskrypcje:</p>
         <h3 id="active-subscriptions">Brak aktywnych subskrypcji</h3>
         <br>
         <h3 class="headings">W tym miejscu możesz zobaczyć swoje zakupione zgody:</h3>
         <div class="agreements-list">
-        <% if (agreements.length == 0) { %> <!-- <%  %> is embedded JavaScript code into the HTML file -->
-            <p>Nie posiadasz zakupionych zgód</p>
-          <% } else { %>
-            <ol>
-              <% agreements.forEach(agreement => { %>
-                <li><%= agreement.agreement_name.replace(/_/g, ' ') %></li>
-              <% }) %>
-            </ol>
-          <% } %>
+            <% if (agreements.length==0) { %> <!-- <%  %> is embedded JavaScript code into the HTML file -->
+                <p>Nie posiadasz zakupionych zgód</p>
+                <% } else { %>
+                    <ol>
+                        <% agreements.forEach(agreement=> { %>
+                            <li>
+                                <%= agreement.agreement_name.replace(/_/g, ' ' ) %>
+                            </li>
+                            <% }) %>
+                    </ol>
+                    <% } %>
         </div>
         <br>
         <div class="buttons-container">
             <a class="buy-button clients-portal">KUP SUBSKRYPCJĘ</a>
             <a class="buy-button clients-portal">KUP ZGODY</a>
             <a class="buy-button clients-portal">DRUKUJ ZGODY</a>
-            <a href="/agreementsGeneratorPage" class="buy-button clients-portal" id="generator-button-bottom">WYPEŁNIJ ZGODĘ</a>
+            <a href="/agreementsGeneratorPage" class="buy-button clients-portal" id="generator-button-bottom">WYPEŁNIJ
+                ZGODĘ</a>
             <a href="/logout" class="buy-button clients-portal" id="logout-button-bottom">WYLOGUJ</a>
         </div>
     </div>
 </body>
+
 </html>

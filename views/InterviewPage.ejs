@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <script src="../scripts/InterviewPageScript.js" defer></script>
     <title>Interview Page</title>
 </head>
+
 <body class="interview-page">
     <header>
         <div class="left">
@@ -29,7 +31,7 @@
     <div class="interview-container">
         <form id="interview-form">
             <p class="interview-title">Wywiad z klientem</p>
-            <% questions.forEach((question) => { %>
+            <% questions.forEach((question)=> { %>
                 <div class="question 
                     <% if (question.category === 'TF') { %>
                         tf-category
@@ -40,30 +42,37 @@
                     <% } else { %>
                         default-category
                     <% } %>">
-                        <label class="question-label"><%= question.content %></label>
-            
-                        <div class="radio-container">
-                           <% if (question.category === 'TF' || question.category === 'TF_EXPLANATION') { %>
-                                <input type="radio" class="radio-option" name="question_<%= question.question_id %>" value="true"> Tak
-                                <input type="radio" class="radio-option" name="question_<%= question.question_id %>" value="false"> Nie
+                    <label class="question-label">
+                        <%= question.content %>
+                    </label>
+
+                    <div class="radio-container">
+                        <% if (question.category==='TF' || question.category==='TF_EXPLANATION' ) { %>
+                            <input type="radio" class="radio-option" name="question_<%= question.question_id %>"
+                                value="true"> Tak
+                            <input type="radio" class="radio-option" name="question_<%= question.question_id %>"
+                                value="false"> Nie
                             <% } %>
-                        </div>
-    
-                        <% if (question.category === 'TF_EXPLANATION' || question.category === 'DESCRIPTIVE') { %>
-                            <textarea name="explanation_<%= question.question_id %>" placeholder="Jakie? Proszę sprecyzować" required></textarea>
+                    </div>
+
+                    <% if (question.category==='TF_EXPLANATION' || question.category==='DESCRIPTIVE' ) { %>
+                        <textarea name="explanation_<%= question.question_id %>" placeholder="Jakie? Proszę sprecyzować"
+                            required></textarea>
                         <% } else { %>
-                         <!-- Empty div to maintain grid structure -->
+                            <!-- Empty div to maintain grid structure -->
                             <div></div>
-                        <% } %>
+                            <% } %>
                 </div>
-            <% }); %>
-            <div class="info-for-client-container">
-                <p class="info-for-client">Przed naciśnięciem przysiku "Wyślij" proszę przekazać urządzenie pracownikowi w celu weryfikacji poprawności wywiadu</p>
-            </div>
-            <div class="submit-container">
-                <button type="submit" class="submit-button">Wyślij</button> 
-            </div>
+                <% }); %>
+                    <div class="info-for-client-container">
+                        <p class="info-for-client">Przed naciśnięciem przysiku "Wyślij" proszę przekazać urządzenie
+                            pracownikowi w celu weryfikacji poprawności wywiadu</p>
+                    </div>
+                    <div class="submit-container">
+                        <button type="submit" class="submit-button">Wyślij</button>
+                    </div>
         </form>
-    </div>  
+    </div>
 </body>
+
 </html>

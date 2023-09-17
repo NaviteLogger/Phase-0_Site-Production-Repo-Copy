@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <script src="../scripts/AgreementOverviewPageScript.js" defer></script>
     <title>Agreement Overview</title>
 </head>
+
 <body>
     <header>
         <div class="left">
@@ -31,11 +33,14 @@
         <form id="agreement-overview-form">
             <div class="user-input">
                 <label for="client-full-name">Imię i nazwisko klienta:</label>
-                <input class="input-field" type="text" id="client-full-name" placeholder="Imię i nazwisko klienta" required>
+                <input class="input-field" type="text" id="client-full-name" placeholder="Imię i nazwisko klienta"
+                    required>
                 <label for="employee-full-name">Imię i nazwisko pracownika:</label>
-                <input class="input-field" type="text" id="employee-full-name" placeholder="Imię i nazwisko pracownika" required>
+                <input class="input-field" type="text" id="employee-full-name" placeholder="Imię i nazwisko pracownika"
+                    required>
             </div>
-            <p>W generatorze podanymi powyżej danymi zostaną wypełnione następujące zgody (Zgoda na zdjęcie jest opcjonalna, należy zaznaczyć kwadrat przy polu 'Zgoda na zdjęcie' w celu jej wyboru):</p>
+            <p>W generatorze podanymi powyżej danymi zostaną wypełnione następujące zgody (Zgoda na zdjęcie jest
+                opcjonalna, należy zaznaczyć kwadrat przy polu 'Zgoda na zdjęcie' w celu jej wyboru):</p>
             <div class="table-container">
                 <table class="information-table">
                     <tr class="table-row">
@@ -45,7 +50,8 @@
                         <td class="table-data">Wywiad z klientem</td>
                     </tr>
                     <tr class="table-row">
-                        <td class="table-data">Zgoda na zabieg: wybrana zgoda to: <%= agreementName %></td>
+                        <td class="table-data">Zgoda na zabieg: wybrana zgoda to: <%= agreementName %>
+                        </td>
                     </tr>
                     <tr class="table-row">
                         <td class="table-data">
@@ -60,11 +66,13 @@
                     </tr>
                 </table>
             </div>
-            <button class="submit-button" id="submit-button" type="submit">Zatwierdz i przejdź do podpisania zgód</button>
+            <button class="submit-button" id="submit-button" type="submit">Zatwierdz i przejdź do podpisania
+                zgód</button>
         </form>
     </div>
     <div id="server-response">
         <p id='message' style="color: red"></p>
     </div>
 </body>
+
 </html>
