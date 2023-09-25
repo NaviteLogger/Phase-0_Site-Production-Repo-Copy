@@ -1,30 +1,20 @@
-/*This is where the body of the page begins*/
-
-.contact-info {
-  margin-top: 30px;
-  text-align: center;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align content to the top */
+  height: 100vh;
+  margin-top: 20px; /* Add margin to move it down from the top */
 }
 
-.contact-info h2 {
-  margin-bottom: 10px;
+.grid {
+  display: flex;
+  justify-content: space-between;
 }
 
-.contact-info .info {
-  margin-top: 20px;
+.left-column, .right-column {
+  flex-basis: 48%;
 }
 
-.contact-info p {
-  margin-bottom: 10px;
-}
-
-.contact-info p strong {
-  display: inline-block;
-  width: 120px;
-}
-
-.contact-info .placeholder {
-  display: inline-block;
-  width: 200px;
-  height: 20px;
-  background-color: #ddd;
+.placeholder {
+  font-style: italic;
 }

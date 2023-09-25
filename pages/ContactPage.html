@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="../styles/normalize.css" rel="stylesheet" type="text/css" />
     <link href="../styles/GlobalStyles.css" rel="stylesheet" type="text/css" />
-    <link
-      href="../styles/ContactPageStyles.css"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <link href="../styles/ContactPageStyles.css" rel="stylesheet" type="text/css"/>
     <script src="../scripts/ContactPageScript.js" defer></script>
     <title>Contact Page</title>
   </head>
@@ -35,19 +31,24 @@
       </div>
     </header>
 
-    <div class="contact-info">
-      <h2>Kontakt do naszego zespołu</h2>
-      <div class="info">
-        <p>
-          <strong>Adres firmy:</strong> <span class="placeholder">Grzybowska 2 / 31, 00-131 Warszawa, Polska</span>
-        </p>
-        <p>
-          <strong>Adres email:</strong> <span class="placeholder">...</span>
-        </p>
-        <p>
-          <strong>Numer telefonu:</strong> <span class="placeholder">...</span>
-        </p>
+    <div class="container">
+      <div class="contact-info">
+        <h2>Kontakt do naszego zespołu</h2>
+        <div class="info">
+          <div class="grid">
+            <div class="left-column">
+              <p><strong>Kontakt:</strong></p>
+              <p><strong>Adres:</strong></p>
+              <p><strong>Numer telefonu:</strong></p>
+            </div>
+            <div class="right-column">
+              <p><span class="placeholder">...</span></p>
+              <p><span class="placeholder">Grzybowska 2 / 31, 00-131 Warszawa, Polska</span></p>
+              <p><span class="placeholder">...</span></p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </div>        
   </body>
 </html>
