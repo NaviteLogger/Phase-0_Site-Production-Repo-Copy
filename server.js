@@ -768,6 +768,15 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
       config
     );
 
+    //Extract the payment URL from the response
+    const redirectionUri = response.data.redirectUri;
+
+    if(!redirectionUri) {
+      console.log("No redirection URI provided");
+      res.status(400).send("No redirection URI provided");
+      return;
+    }
+
     //Handle the response
     res.json({ status: "success", message: "Redirecting the user" });
 
