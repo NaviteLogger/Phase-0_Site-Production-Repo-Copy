@@ -14,7 +14,7 @@ document.getElementById("payment-button").addEventListener("click", () => {
   const email = document.getElementById("email").value;
 
   //The payment is processed by the server for security reasons
-  fetch("/makePaymentsForAgreements", {
+  fetch("/makePaymentForAgreements", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
