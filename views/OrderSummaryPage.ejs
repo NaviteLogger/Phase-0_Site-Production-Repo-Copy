@@ -40,23 +40,25 @@
       <h2>Podsumowanie Twojego zamówienia:</h2>
     </div>
     <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nazwa zgody</th>
-                    <th>Cena</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for(let i = 0; i < selectedAgreementsNames.length; i++) { %>
-                    <tr>
-                        <td><%= selectedAgreementsNames[i].replace(/_/g, ' ' ) %></td>
-                        <!-- <td><%= selectedAgreementsPrices[i] %></td> -->
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
+      <table>
+        <thead>
+          <tr>
+            <th>Nazwa zgody</th>
+            <th>Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i = 0; i < selectedAgreementsNames.length; i++) { %>
+          <tr>
+            <td><%= selectedAgreementsNames[i].replace(/_/g, ' ' ) %></td>
+            <!-- <td><%= selectedAgreementsPrices[i] %></td> -->
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+      <div class="payment-button">
+        <button class="payu-button">Zapłać</button>
+      </div>
     </div>
-
   </body>
 </html>
