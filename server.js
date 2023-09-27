@@ -460,6 +460,24 @@ function deleteFilesInDirectory(directory, keyword) {
   });
 }
 
+async function getPayUToken() {
+  const url = `${PAYU_CONFIG.BASE_URL}pl/standard/user/oauth/authorize`;
+  const data = {
+      grant_type: 'client_credentials',
+      client_id: PAYU_CONFIG.CLIENT_ID,
+      client_secret: PAYU_CONFIG.CLIENT_SECRET
+  };
+
+  const response = await axios.post(url, new URLSearchParams(data), {
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      }
+  });
+  return response.data.access_token;
+}
+
+/*********************************************************************************/
+
 //Handle the incoming POST request to the verify email page
 app.post('/verifyEmailAddress', (req, res) => {
   const email = req.body.email;
