@@ -47,7 +47,7 @@ tbody tr:hover {
 }
 
 .payu-button {
-  background-color: #ff6600; /* PayU's signature color */
+  background-color: #00ff00; /* PayU's signature color */
   color: #ffffff;
   padding: 12px 20px;
   border: none;
