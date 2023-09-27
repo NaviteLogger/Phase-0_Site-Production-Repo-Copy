@@ -672,6 +672,8 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
     console.log("Selected agreements' names: ", selectedAgreementsNames);
     const selectedAgreementsPrices = req.body.selectedAgreementsPrices;
     console.log("Selected agreements' prices: ", selectedAgreementsPrices);
+    cosnt email = req.body.email;
+    console.log("Email: ", email);
 
     //Calculate the total price of the selected agreements
     console.log("Calculating the total price of the selected agreements");
@@ -704,7 +706,7 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
       totalAmount: totalAmount,
       buyer: {
         // Fill this data based on your user's information
-        email: "",
+        email: email,
       },
       products: products,
     };

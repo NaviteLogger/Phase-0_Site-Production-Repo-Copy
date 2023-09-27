@@ -10,6 +10,9 @@ document.getElementById("payment-button").addEventListener("click", () => {
     "selectedAgreementsPrices"
   );
 
+  //Get the email of the client
+  const email = document.body.getElementById("email").value;
+
   //The payment is processed by the server for security reasons
   fetch("/makePaymentsForAgreements", {
     method: "POST",
@@ -19,6 +22,7 @@ document.getElementById("payment-button").addEventListener("click", () => {
     body: JSON.stringify({
       selectedAgreementsNames: selectedAgreementsNames,
       selectedAgreementsPrices: selectedAgreementsPrices,
+      email: email,
     }),
   })
     .then((response) => response.json())
