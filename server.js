@@ -538,7 +538,7 @@ app.post("/verifyEmailAddress", (req, res) => {
 /*********************************************************************************/
 
 //Handle the incoming POST request to the 'buy selected agreements' option
-app.post("/buySelectedAgreements", (req, res) => {
+app.post("/buySelectedAgreements", async (req, res) => {
   try {
     const selectedAgreements = req.body;
     console.log("Selected agreements: ", selectedAgreements);
@@ -547,40 +547,54 @@ app.post("/buySelectedAgreements", (req, res) => {
     const selectedAgreementsNames = [];
     const selectedAgreementsPrices = [];
 
-    selectedAgreements.forEach((agreementId) => {
+    selectedAgreements.forEach(async (agreementId) => {
       console.log("Agreement id: ", agreementId);
 
       //Query the database to retrieve the agreements' name from the agreements' id
-      connection.query(
-        "SELECT agreement_name FROM Agreements WHERE agreement_id = ?",
-        [agreementId],
-        (error, results) => {
-          if (error) {
-            console.log("Error while querying the database", error);
-          } else {
-            //Append the selected agreement name to the array
-            console.log("Agreement name: ", results[0].agreement_name);
-            selectedAgreementsNames.push(results[0].agreement_name);
-            console.log("Now the array of names contains: ", selectedAgreementsNames);
+      await new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT agreement_name FROM Agreements WHERE agreement_id = ?",
+          [agreementId],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              //Append the selected agreement name to the array
+              console.log("Agreement name: ", results[0].agreement_name);
+              selectedAgreementsNames.push(results[0].agreement_name);
+              console.log(
+                "Now the array of names contains: ",
+                selectedAgreementsNames
+              );
+              resolve();
+            }
           }
-        }
-      );
+        );
+      });
 
       //Query the database to retrieve the agreements' price from the agreements' id
-      connection.query(
-        "SELECT agreement_price FROM Agreements WHERE agreement_id = ?",
-        [agreementId],
-        (error, results) => {
-          if (error) {
-            console.log("Error while querying the database", error);
-          } else {
-            //Append the selected agreement price to the array
-            console.log("Agreement price: ", results[0].agreement_price);
-            selectedAgreementsPrices.push(results[0].agreement_price);
-            console.log("Now the array of prices contains: ", selectedAgreementsPrices);
+      await new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT agreement_price FROM Agreements WHERE agreement_id = ?",
+          [agreementId],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              //Append the selected agreement price to the array
+              console.log("Agreement price: ", results[0].agreement_price);
+              selectedAgreementsPrices.push(results[0].agreement_price);
+              console.log(
+                "Now the array of prices contains: ",
+                selectedAgreementsPrices
+              );
+              resolve();
+            }
           }
-        }
-      );
+        );
+      });
     });
 
     //Save the selected agreements' names and prices in the session
