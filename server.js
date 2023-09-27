@@ -645,10 +645,16 @@ app.get("/orderSummaryPage", (req, res) => {
       selectedAgreementsPrices
     );
 
+    const totalPrice = 0;
+    selectedAgreementsPrices.forEach((price) => {
+      totalPrice += price;
+    });
+
     //Display the order's summary page
     res.render("OrderSummaryPage", {
       selectedAgreementsNames: selectedAgreementsNames,
       selectedAgreementsPrices: selectedAgreementsPrices,
+      totalPrice: totalPrice,
     });
   } catch (error) {
     console.log("Error while displaying the order's summary page", error);
@@ -693,16 +699,12 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
       notifyUrl: "https://your.eshop.com/notify",
       customerIp: "127.0.0.1",
       merchantPosId: PAYU_CONFIG.POS_ID,
-      description: "Agreements Payment",
+      description: "Zakup pojedynczych zgód",
       currencyCode: "PLN",
       totalAmount: totalAmount,
       buyer: {
         // Fill this data based on your user's information
-        email: "john.doe@example.com",
-        phone: "654111654",
-        firstName: "John",
-        lastName: "Doe",
-        language: "pl",
+        email: "",
       },
       products: products,
     };

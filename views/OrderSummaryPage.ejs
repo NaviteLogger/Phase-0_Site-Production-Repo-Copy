@@ -11,10 +11,10 @@
       type="text/css"
     />
     <script src="../scripts/OrderSummaryPageScript.js" defer></script>
-    <title>Agreement Overview</title>
+    <title>Order Summary</title>
   </head>
 
-  <body selectedAgreementsNames="<%= selectedAgreementsNames %>" selectedAgreementsPrices="<%= selectedAgreementsPrices %>">
+  <body selectedAgreementsNames="<%= selectedAgreementsNames %>" selectedAgreementsPrices="<%= selectedAgreementsPrices %>" totalPrice="<%= totalPrice %>">
     <header>
       <div class="left">
         <a href="../pages/indexPage.html" class="nav-link">STRONA GŁÓWNA</a>
@@ -56,6 +56,13 @@
           <% } %>
         </tbody>
       </table>
+      <div class="total-price">
+        <h3>Suma: <%= totalPrice %> zł</h3>
+      </div>
+      <div class="email-input">
+        <label for="email">Podaj swój adres e-mail, na który mają zostać wysłane zgody:</label>
+        <input type="email" id="email" name="email" />
+      </div>
       <div class="payment-button">
         <button id="payment-button" class="payu-button">Zapłać z PayU</button>
       </div>
