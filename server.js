@@ -593,7 +593,7 @@ app.post("/buySelectedAgreements", (req, res) => {
   }
 });
 
-app.post("/orderSummaryPage", (req, res) => {
+app.get("/orderSummaryPage", (req, res) => {
   try {
     console.log("Received a request to the order's summary page");
     //Extract the selected agreements' names and prices from the session
