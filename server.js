@@ -548,6 +548,7 @@ app.post("/buySelectedAgreements", (req, res) => {
     const selectedAgreementsPrices = [];
 
     selectedAgreements.forEach((agreementId) => {
+      console.log("Agreement id: ", agreementId);
 
       //Query the database to retrieve the agreements' name from the agreements' id
       connection.query(
@@ -572,7 +573,7 @@ app.post("/buySelectedAgreements", (req, res) => {
             console.log("Error while querying the database", error);
           } else {
             //Append the selected agreement price to the array
-            selectedAgreementsPrices.push(results[0].price);
+            selectedAgreementsPrices.push(results[0].agreement_price);
           }
         }
       );
