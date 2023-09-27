@@ -595,9 +595,12 @@ app.post("/buySelectedAgreements", (req, res) => {
 
 app.post("/orderSummaryPage", (req, res) => {
   try {
+    console.log("Received a request to the order's summary page");
     //Extract the selected agreements' names and prices from the session
     const selectedAgreementsNames = req.session.selectedAgreementsNames;
+    console.log("Selected agreements' names: ", selectedAgreementsNames);
     const selectedAgreementsPrices = req.session.selectedAgreementsPrices;
+    console.log("Selected agreements' prices: ", selectedAgreementsPrices);
 
     //Display the order's summary page
     res.render("OrderSummaryPage", {
