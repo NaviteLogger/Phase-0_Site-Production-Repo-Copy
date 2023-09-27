@@ -45,6 +45,8 @@ const moment = require("moment-timezone");
 //For communicating with the API
 const fetch = require("node-fetch");
 const axios = require("axios");
+//For hashing the data
+const crypto = require("crypto");
 /*********************************************************************************/
 
 //Load environment variables from the .env file - the file allows the access to the database and API keys
@@ -477,6 +479,20 @@ async function getPayUToken() {
   return response.data.access_token;
 }
 
+async function createOrder(token, orderDetails) {
+  const PAYU_ORDER_URL = `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  const response = await axios.post(PAYU_ORDER_URL, orderDetails, {
+    headers: headers,
+  });
+
+  return response.data;
+}
+
 async function getOrderStatus(orderId) {
   const token = await getPayUToken();
 
@@ -693,13 +709,11 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
 
     //Create a PayU order here with the total price
     console.log("Creating a PayU order with the total price: " + totalPrice);
-    const payuToken = await getPayUToken();
-    console.log("PayU token: " + payuToken);
 
     //Make a request to the PayU API to create an order
     const orderData = {
-      notifyUrl: "https://your.eshop.com/notify",
-      customerIp: "127.0.0.1",
+      notifyUrl: "https://prawokosmetyczne.pl/paymentNotification",
+      customerIp: req.ip,
       merchantPosId: PAYU_CONFIG.POS_ID,
       description: "Zakup pojedynczych zgód",
       currencyCode: "PLN",
@@ -710,6 +724,14 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
       },
       products: products,
     };
+
+    //Get the token from the PayU API
+    getPayUToken().then((token) => {
+      createOrder(token, orderData).then((response) => {
+        console.log("Order created: ", response);
+      });
+    });
+
     console.log("Order: ", order);
 
     try {
@@ -736,6 +758,11 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
       .status(500)
       .json({ status: "error", message: "Internal server error: " + error });
   }
+});
+
+//Handle the server-to-server notification from PayU
+app.post("/paymentNotification", async (req, res) => {
+  const notification = req.body;
 });
 
 /*********************************************************************************/
