@@ -464,7 +464,7 @@ function deleteFilesInDirectory(directory, keyword) {
 }
 
 async function getPayUToken() {
-  const url = `${PAYU_CONFIG.BASE_URL}pl/standard/user/oauth/authorize`;
+  const url = `${PAYU_CONFIG.BASE_URL}.pl/standard/user/oauth/authorize`;
   const data = {
     grant_type: "client_credentials",
     client_id: PAYU_CONFIG.CLIENT_ID,
@@ -751,7 +751,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     //Create a signature for the order
     const signature = generateSignature(orderData, PAYU_CONFIG.SECOND_KEY, "SHA-256", PAYU_CONFIG.POS_ID);
-    console.log("Signature: ", signature);
+    //console.log("Signature: ", signature);
 
     const token = await getPayUToken();
 
