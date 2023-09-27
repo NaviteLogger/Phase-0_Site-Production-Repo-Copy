@@ -36,5 +36,25 @@
       </div>
     </header>
 
+    <h2>Podsumowanie Twojego zamówienia:</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nazwa zgody</th>
+                    <th>Cena</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i = 0; i < selectedAgreementsName.length; i++) { %>
+                    <tr>
+                        <td><%= selectedAgreementsName[i] %></td>
+                        <td><%= selectedAgreementsPrice[i] %></td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
   </body>
 </html>
