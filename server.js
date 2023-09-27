@@ -542,6 +542,43 @@ app.post("/buySelectedAgreements", (req, res) => {
   try {
     const selectedAgreements = req.body;
     console.log("Selected agreements: ", selectedAgreements);
+
+    //Create 2 arrays to store the agreement names and prices
+    const selectedAgreementsNames = [];
+    const selectedAgreementsPrices = [];
+
+    selectedAgreements.forEach((agreementId) => {
+
+      //Query the database to retrieve the agreement\'s name from the agreement\'s id
+      connection.query(
+        "SELECT agreement_name FROM Agreements WHERE agreement_id = ?",
+        [agreementId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+          } else {
+            //Append the selected agreement name to the array
+            selectedAgreementsNames.push(results[0].agreement_name);
+          }
+        }
+      );
+
+      //Query the database to retrieve the agreement\'s price from the agreement\'s id
+      connection.query(
+        "SELECT price FROM Agreements WHERE agreement_id = ?",
+        [agreementId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+          } else {
+            //Append the selected agreement price to the array
+            selectedAgreementsPrices.push(results[0].price);
+          }
+        }
+      );
+    });
+
+    //Send the response to the client
     
   } catch (error) {
     console.log("Error while buying selected agreements", error);
