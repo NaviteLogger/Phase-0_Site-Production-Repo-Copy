@@ -559,7 +559,8 @@ app.post("/buySelectedAgreements", (req, res) => {
             console.log("Error while querying the database", error);
           } else {
             //Append the selected agreement name to the array
-            selectedAgreementsNames.push(agreement_name);
+            console.log("Agreement name: ", results[0].agreement_name);
+            selectedAgreementsNames.push(results[0].agreement_name);
           }
         }
       );
@@ -573,7 +574,8 @@ app.post("/buySelectedAgreements", (req, res) => {
             console.log("Error while querying the database", error);
           } else {
             //Append the selected agreement price to the array
-            selectedAgreementsPrices.push(agreement_price);
+            console.log("Agreement price: ", results[0].agreement_price);
+            selectedAgreementsPrices.push(results[0].agreement_price);
           }
         }
       );
