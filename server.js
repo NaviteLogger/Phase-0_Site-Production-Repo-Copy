@@ -606,9 +606,9 @@ app.get("/orderSummaryPage", (req, res) => {
     console.log("Received a request to the order's summary page");
     //Extract the selected agreements' names and prices from the session
     const selectedAgreementsNames = req.session.selectedAgreementsNames;
-    console.log("Selected agreements' names: ", selectedAgreementsNames);
+    console.log("Received selected agreements' names: ", selectedAgreementsNames);
     const selectedAgreementsPrices = req.session.selectedAgreementsPrices;
-    console.log("Selected agreements' prices: ", selectedAgreementsPrices);
+    console.log("Received selected agreements' prices: ", selectedAgreementsPrices);
 
     //Display the order's summary page
     res.render("OrderSummaryPage", {
