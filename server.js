@@ -464,7 +464,7 @@ function deleteFilesInDirectory(directory, keyword) {
 }
 
 async function getPayUToken() {
-  const url = `${PAYU_CONFIG.BASE_URL}.pl/standard/user/oauth/authorize`;
+  const url = `${PAYU_CONFIG.BASE_URL}/pl/standard/user/oauth/authorize`;
   const data = {
     grant_type: "client_credentials",
     client_id: PAYU_CONFIG.CLIENT_ID,
