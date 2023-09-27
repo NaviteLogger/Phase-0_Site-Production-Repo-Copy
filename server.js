@@ -44,6 +44,7 @@ const fontkit = require('@pdf-lib/fontkit');
 const moment = require('moment-timezone');
 //For communicating with the API
 const fetch = require('node-fetch');
+const axios = require('axios');
 /*********************************************************************************/
 
 //Load environment variables from the .env file - the file allows the access to the database and API keys
