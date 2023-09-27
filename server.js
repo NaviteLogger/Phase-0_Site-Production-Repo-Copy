@@ -778,7 +778,7 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
     }
 
     //Handle the response
-    res.json({ status: "success", message: "Redirecting the user" });
+    res.json({ status: "success", message: "Redirecting the user", redirectionUri: redirectionUri });
 
   } catch (error) {
     console.log("Error while making payment for the agreements", error);
