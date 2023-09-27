@@ -605,7 +605,7 @@ app.post("/buySelectedAgreements", async (req, res) => {
 
     //Send the user to the order's summary page
     console.log("Redirecting the user to the order's summary page");
-    res.redirect('/orderSummaryPage');
+    res.json({ status: "success", message: "Redirecting the user" });
     
   } catch (error) {
     console.log("Error while buying selected agreements", error);

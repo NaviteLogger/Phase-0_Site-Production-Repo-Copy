@@ -43,6 +43,11 @@ document
           );
         }
       })
+      .then((data) => {
+        if(data.message === "success") {
+          window.location.href = "/clientsPortalPage";
+        }
+      })
       .catch((error) => {
         console.error(
           "There has been a problem with your fetch operation:",
