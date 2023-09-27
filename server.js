@@ -702,7 +702,7 @@ app.get("/orderSummaryPage", (req, res) => {
   }
 });
 
-app.post("/makePaymentForTheAgreements", async (req, res) => {
+app.post("/makePaymentForAgreements", async (req, res) => {
   try {
     console.log("Received a request to make payment for the agreements");
     //Retrieve the selected agreements' names and prices from the request body
