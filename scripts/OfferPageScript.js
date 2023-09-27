@@ -38,7 +38,7 @@ document
     })
       .then((response) => response.json())
       .then((data) => {
-        if(data.message === "success") {
+        if(data.status === "success") {
           window.location.href = "/orderSummaryPage";
         }
       })
