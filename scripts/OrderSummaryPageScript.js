@@ -11,7 +11,7 @@ document.getElementById("payment-button").addEventListener("click", () => {
   );
 
   //Get the email of the client
-  const email = document.body.getElementById("email").value;
+  const email = document.getElementById("email").value;
 
   //The payment is processed by the server for security reasons
   fetch("/makePaymentsForAgreements", {
