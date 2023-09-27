@@ -42,6 +42,8 @@ const upload = multer();
 const fontkit = require('@pdf-lib/fontkit');
 //For managing the timezone
 const moment = require('moment-timezone');
+//For communicating with the API
+const fetch = require('node-fetch');
 /*********************************************************************************/
 
 //Load environment variables from the .env file - the file allows the access to the database and API keys
