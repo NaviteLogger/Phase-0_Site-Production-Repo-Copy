@@ -480,12 +480,15 @@ async function getPayUToken() {
 async function getOrderStatus(orderId) {
   const token = await getPayUToken();
 
-  const response = await axios.get(`${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/${orderId}`, {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
-  });
+  const response = await axios.get(
+    `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/${orderId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   return response.data.status;
 }
@@ -619,7 +622,6 @@ app.post("/buySelectedAgreements", async (req, res) => {
     //Send the user to the order's summary page
     console.log("Redirecting the user to the order's summary page");
     res.json({ status: "success", message: "Redirecting the user" });
-    
   } catch (error) {
     console.log("Error while buying selected agreements", error);
     res
@@ -633,9 +635,15 @@ app.get("/orderSummaryPage", (req, res) => {
     console.log("Received a request to the order's summary page");
     //Extract the selected agreements' names and prices from the session
     const selectedAgreementsNames = req.session.selectedAgreementsNames;
-    console.log("Received selected agreements' names: ", selectedAgreementsNames);
+    console.log(
+      "Received selected agreements' names: ",
+      selectedAgreementsNames
+    );
     const selectedAgreementsPrices = req.session.selectedAgreementsPrices;
-    console.log("Received selected agreements' prices: ", selectedAgreementsPrices);
+    console.log(
+      "Received selected agreements' prices: ",
+      selectedAgreementsPrices
+    );
 
     //Display the order's summary page
     res.render("OrderSummaryPage", {
@@ -652,50 +660,63 @@ app.get("/orderSummaryPage", (req, res) => {
 
 app.get("/makePaymentForTheAgreements", async (req, res) => {
   try {
+    console.log("Received a request to make payment for the agreements");
+    console.log(
+      "Selected agreements' names: ",
+      req.session.selectedAgreementsNames
+    );
     const selectedAgreementsNames = req.session.selectedAgreementsNames;
+    console.log(
+      "Selected agreements' prices: ",
+      req.session.selectedAgreementsPrices
+    );
     const selectedAgreementsPrices = req.session.selectedAgreementsPrices;
 
     //Calculate the total price of the selected agreements
+    console.log("Calculating the total price of the selected agreements");
     let totalPrice = 0;
     selectedAgreementsPrices.forEach((price) => {
       totalPrice += price;
     });
+    console.log("Total price: " + totalPrice);
 
     //Create a PayU order here with the total price
+    console.log("Creating a PayU order with the total price: " + totalPrice);
     const payuToken = await getPayUToken();
     console.log("PayU token: " + payuToken);
 
+    console.log("Creating a PayU order");
     const order = {
       // Create order payload based on your requirements
-      notifyUrl: "https://your_callback_url",
+      notifyUrl: "https://prawokosmetyczne.pl/orderStatus",
       customerIp: "127.0.0.1",
       merchantPosId: PAYU_CONFIG.POS_ID,
       description: "Payment for agreements",
       currencyCode: "PLN",
       totalAmount: totalPrice.toString(),
-      products: selectedAgreementsNames.map(agreement => ({
+      products: selectedAgreementsNames.map((agreement) => ({
         name: agreement.name,
         unitPrice: agreement.price,
-        quantity: "1"
-      }))
-  };
+        quantity: "1",
+      })),
+    };
+    console.log("Order: ", order);
 
+    const response = await axios.post(
+      `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders`,
+      order,
+      {
+        headers: {
+          Authorization: `Bearer ${payuToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    //Handle the response
+    res.json({ status: "success" });
   } catch (error) {
     console.log("Error while making payment for the agreements", error);
-    res
-      .status(500)
-      .json({ status: "error", message: "Internal server error: " + error });
-  }
-});
-
-app.get("/orderStatus/:orderId", async (req, res) => {
-  try{
-    const orderId = req.params.orderId;
-
-    const status = await getOrderStatus(orderId);
-    res.json({ status: status });
-  } catch (error) {
-    console.log("Error while getting the order status", error);
     res
       .status(500)
       .json({ status: "error", message: "Internal server error: " + error });
