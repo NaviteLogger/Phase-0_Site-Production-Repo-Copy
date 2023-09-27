@@ -683,7 +683,7 @@ app.get("/orderSummaryPage", (req, res) => {
       selectedAgreementsPrices
     );
 
-    let totalPrice = 0;
+    let totalAmount = 0;
     selectedAgreementsPrices.forEach((price) => {
       totalPrice += price;
     });
