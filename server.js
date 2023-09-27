@@ -715,9 +715,9 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
 
     //Calculate the total price of the selected agreements
     console.log("Calculating the total price of the selected agreements");
-    let totalPrice = 0;
+    let totalAmount = 0;
     selectedAgreementsPrices.forEach((price) => {
-      totalPrice += price;
+      totalAmount += price;
     });
     console.log("Total price: " + totalPrice);
 
@@ -730,7 +730,7 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
     });
 
     //Create a PayU order here with the total price
-    console.log("Creating a PayU order with the total price: " + totalPrice);
+    console.log("Creating a PayU order with the total price: " + totalAmount);
 
     //Make a request to the PayU API to create an order
     const orderData = {
@@ -751,33 +751,26 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
     const signature = generateSignature(orderData, PAYU_CONFIG.SECOND_KEY, "SHA-256", PAYU_CONFIG.POS_ID);
     console.log("Signature: ", signature);
 
-    //Get the token from the PayU API
-    getPayUToken().then((token) => {
-      createOrder(token, orderData).then((response) => {
-        console.log("Order created: ", response);
-      });
-    });
+    const token = await getPayUToken();
 
-    console.log("Order: ", order);
+    //Set up the headers and other config for the request
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
 
-    try {
-      const response = await axios.post(
-        `${PAYU_CONFIG.BASE_URL}api/v2_1/orders/`,
-        orderData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      res.send(response.data);
-    } catch (error) {
-      res.status(500).send(error.response.data);
-    }
+    //Create the order using axios and get the response
+    const response = await axios.post(
+      `${PAYU_CONFIG.BASE_URL}api/v2_1/orders/`,
+      orderData,
+      config
+    );
 
     //Handle the response
-    res.json({ status: "success" });
+    res.json({ status: "success", message: "Redirecting the user" });
+
   } catch (error) {
     console.log("Error while making payment for the agreements", error);
     res
@@ -800,7 +793,28 @@ app.post("/paymentNotification", async (req, res) => {
     const [key, value] = part.split("=");
     acc[key] = value;
     return acc;
+  }, {});
+
+  const incomigSignature = headerParts["signature"];
+  const algorithmName = headerParts["algorithm"] || "SHA-256";
+
+  //Combine the notification body with the second_key from the config
+  const concatenatedBody = JSON.stringify(req.body) + PAYU_CONFIG.SECOND_KEY;
+
+  //Generat4e the expected signature
+  const hash = crypto.createHash(algorithmName);
+  hash.update(concatenatedBody);
+  const expectedSignature = hash.digest("hex");
+
+  //Compare the expected signature with the incoming signature
+  if (incomigSignature !== expectedSignature) {
+    console.log("Invalid signature");
+    res.status(400).send("Invalid signature");
+    return;
+  } else {
+    console.log("Valid signature");
   }
+
 });
 
 /*********************************************************************************/
