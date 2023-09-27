@@ -29,7 +29,7 @@ document.getElementById("payment-button").addEventListener("click", () => {
     .then((data) => {
       if (data.status === 'success') {
         setTimeout(() => {
-          window.location.href = "..."; // Redirect to the choice
+          window.location.href = data.redirecUri; // Redirect to the choice
         }, 1000);
       } else {
         console.error("Failed to create order.");
