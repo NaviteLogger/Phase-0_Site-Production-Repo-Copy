@@ -765,7 +765,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     //Create the order using axios and get the response
     const response = await axios.post(
-      `${PAYU_CONFIG.BASE_URL}api/v2_1/orders/`,
+      `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
       orderData,
       config
     );
