@@ -578,10 +578,34 @@ app.post("/buySelectedAgreements", (req, res) => {
       );
     });
 
-    //Send the response to the client
+    //Save the selected agreements' names and prices in the session
+    req.session.selectedAgreementsNames = selectedAgreementsNames;
+    req.session.selectedAgreementsPrices = selectedAgreementsPrices;
+
+    //Send the user to the order's summary page
+    res.redirect('/orderSummaryPage');
     
   } catch (error) {
     console.log("Error while buying selected agreements", error);
+    res
+      .status(500)
+      .json({ status: "error", message: "Internal server error: " + error });
+  }
+});
+
+app.post("/orderSummaryPage", (req, res) => {
+  try {
+    //Extract the selected agreements' names and prices from the session
+    const selectedAgreementsNames = req.session.selectedAgreementsNames;
+    const selectedAgreementsPrices = req.session.selectedAgreementsPrices;
+
+    //Display the order's summary page
+    res.render("OrderSummaryPage", {
+      selectedAgreementsNames: selectedAgreementsNames,
+      selectedAgreementsPrices: selectedAgreementsPrices,
+    });
+  } catch (error) {
+    console.log("Error while displaying the order's summary page", error);
     res
       .status(500)
       .json({ status: "error", message: "Internal server error: " + error });
