@@ -527,7 +527,7 @@ async function generateSignature(form, privateKey, algorithmName, posId) {
   const hashedContent = hash.digest("hex");
 
   //Construct the signature string
-  const result = `signature=${signatureValue};algorithm=${algorithmName};sender=${posId}`;
+  const result = `signature=${hashedContent};algorithm=${algorithmName};sender=${posId}`;
   return result;
 }
 
