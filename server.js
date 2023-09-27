@@ -477,6 +477,19 @@ async function getPayUToken() {
   return response.data.access_token;
 }
 
+async function getOrderStatus(orderId) {
+  const token = await getPayUToken();
+
+  const response = await axios.get(`${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/${orderId}`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+  });
+
+  return response.data.status;
+}
+
 /*********************************************************************************/
 
 //Handle the incoming POST request to the verify email page
@@ -669,6 +682,20 @@ app.get("/makePaymentForTheAgreements", async (req, res) => {
 
   } catch (error) {
     console.log("Error while making payment for the agreements", error);
+    res
+      .status(500)
+      .json({ status: "error", message: "Internal server error: " + error });
+  }
+});
+
+app.get("/orderStatus/:orderId", async (req, res) => {
+  try{
+    const orderId = req.params.orderId;
+
+    const status = await getOrderStatus(orderId);
+    res.json({ status: status });
+  } catch (error) {
+    console.log("Error while getting the order status", error);
     res
       .status(500)
       .json({ status: "error", message: "Internal server error: " + error });
