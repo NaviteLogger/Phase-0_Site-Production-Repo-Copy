@@ -28,7 +28,7 @@ document.getElementById("payment-button").addEventListener("click", () => {
           window.location.href = "..."; // Redirect to the choice
         }, 1000);
       } else {
-        console.error("Failed to process payment.");
+        console.error("Failed to create order.");
       }
     });
 });

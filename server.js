@@ -658,19 +658,14 @@ app.get("/orderSummaryPage", (req, res) => {
   }
 });
 
-app.get("/makePaymentForTheAgreements", async (req, res) => {
+app.post("/makePaymentForTheAgreements", async (req, res) => {
   try {
     console.log("Received a request to make payment for the agreements");
-    console.log(
-      "Selected agreements' names: ",
-      req.session.selectedAgreementsNames
-    );
-    const selectedAgreementsNames = req.session.selectedAgreementsNames;
-    console.log(
-      "Selected agreements' prices: ",
-      req.session.selectedAgreementsPrices
-    );
-    const selectedAgreementsPrices = req.session.selectedAgreementsPrices;
+    //Retrieve the selected agreements' names and prices from the request body
+    const selectedAgreementsNames = req.body.selectedAgreementsNames;
+    console.log("Selected agreements' names: ", selectedAgreementsNames);
+    const selectedAgreementsPrices = req.body.selectedAgreementsPrices;
+    console.log("Selected agreements' prices: ", selectedAgreementsPrices);
 
     //Calculate the total price of the selected agreements
     console.log("Calculating the total price of the selected agreements");
@@ -680,38 +675,54 @@ app.get("/makePaymentForTheAgreements", async (req, res) => {
     });
     console.log("Total price: " + totalPrice);
 
+    const agreements = selectedAgreementsNames.map((name, index) => {
+      return {
+        name: name,
+        unitPrice: selectedAgreementsPrices[index],
+        quantity: 1,
+      };
+    });
+
     //Create a PayU order here with the total price
     console.log("Creating a PayU order with the total price: " + totalPrice);
     const payuToken = await getPayUToken();
     console.log("PayU token: " + payuToken);
 
-    console.log("Creating a PayU order");
-    const order = {
-      // Create order payload based on your requirements
-      notifyUrl: "https://prawokosmetyczne.pl/orderStatus",
+    //Make a request to the PayU API to create an order
+    const orderData = {
+      notifyUrl: "https://your.eshop.com/notify",
       customerIp: "127.0.0.1",
       merchantPosId: PAYU_CONFIG.POS_ID,
-      description: "Payment for agreements",
+      description: "Agreements Payment",
       currencyCode: "PLN",
-      totalAmount: totalPrice.toString(),
-      products: selectedAgreementsNames.map((agreement) => ({
-        name: agreement.name,
-        unitPrice: agreement.price,
-        quantity: "1",
-      })),
+      totalAmount: totalAmount,
+      buyer: {
+        // Fill this data based on your user's information
+        email: "john.doe@example.com",
+        phone: "654111654",
+        firstName: "John",
+        lastName: "Doe",
+        language: "pl",
+      },
+      products: products,
     };
     console.log("Order: ", order);
 
-    const response = await axios.post(
-      `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders`,
-      order,
-      {
-        headers: {
-          Authorization: `Bearer ${payuToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    try {
+      const response = await axios.post(
+        `${PAYU_CONFIG.BASE_URL}api/v2_1/orders/`,
+        orderData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      res.send(response.data);
+    } catch (error) {
+      res.status(500).send(error.response.data);
+    }
 
     //Handle the response
     res.json({ status: "success" });
