@@ -565,7 +565,7 @@ app.post("/buySelectedAgreements", (req, res) => {
 
       //Query the database to retrieve the agreements' price from the agreements' id
       connection.query(
-        "SELECT price FROM Agreements WHERE agreement_id = ?",
+        "SELECT agreement_price FROM Agreements WHERE agreement_id = ?",
         [agreementId],
         (error, results) => {
           if (error) {
