@@ -579,7 +579,9 @@ app.post("/buySelectedAgreements", (req, res) => {
     });
 
     //Save the selected agreements' names and prices in the session
+    console.log("Selected agreements' names: ", selectedAgreementsNames);
     req.session.selectedAgreementsNames = selectedAgreementsNames;
+    console.log("Selected agreements' prices: ", selectedAgreementsPrices);
     req.session.selectedAgreementsPrices = selectedAgreementsPrices;
 
     //Send the user to the order's summary page
