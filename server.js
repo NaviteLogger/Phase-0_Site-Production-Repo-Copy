@@ -684,15 +684,15 @@ app.get("/orderSummaryPage", (req, res) => {
     );
 
     let totalAmount = 0;
-    selectedAgreementsPrices.forEach((price) => {
-      totalPrice += price;
-    });
+    for (const key in selectedAgreementsPrices) {
+      totalAmount += selectedAgreementsPrices[key];
+    }
 
     //Display the order's summary page
     res.render("OrderSummaryPage", {
       selectedAgreementsNames: selectedAgreementsNames,
       selectedAgreementsPrices: selectedAgreementsPrices,
-      totalPrice: totalPrice,
+      totalAmount: totalAmount,
     });
   } catch (error) {
     console.log("Error while displaying the order's summary page", error);
@@ -719,7 +719,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     for (const key in selectedAgreementsPrices) {
       totalAmount += selectedAgreementsPrices[key];
     }
-    console.log("Total price: " + totalPrice);
+    console.log("Total price: " + totalAmount);
 
     const agreements = selectedAgreementsNames.map((name, index) => {
       return {
