@@ -561,6 +561,7 @@ app.post("/buySelectedAgreements", (req, res) => {
             //Append the selected agreement name to the array
             console.log("Agreement name: ", results[0].agreement_name);
             selectedAgreementsNames.push(results[0].agreement_name);
+            console.log("Now the array of names contains: ", selectedAgreementsNames);
           }
         }
       );
@@ -576,6 +577,7 @@ app.post("/buySelectedAgreements", (req, res) => {
             //Append the selected agreement price to the array
             console.log("Agreement price: ", results[0].agreement_price);
             selectedAgreementsPrices.push(results[0].agreement_price);
+            console.log("Now the array of prices contains: ", selectedAgreementsPrices);
           }
         }
       );
