@@ -721,13 +721,15 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     }
     console.log("Total price: " + totalAmount);
 
-    const agreements = selectedAgreementsNames.map((name, index) => {
-      return {
-        name: name,
-        unitPrice: selectedAgreementsPrices[index],
+    const agreements = [];
+
+    for (let i = 0; i < selectedAgreementsNames.length; i++) {
+      agreements.push({
+        name: selectedAgreementsNames[i],
+        unitPrice: selectedAgreementsPrices[i],
         quantity: 1,
-      };
-    });
+      });
+    }
 
     //Create a PayU order here with the total price
     console.log("Creating a PayU order with the total price: " + totalAmount);
