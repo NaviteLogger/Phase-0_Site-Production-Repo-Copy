@@ -549,7 +549,7 @@ app.post("/buySelectedAgreements", (req, res) => {
 
     selectedAgreements.forEach((agreementId) => {
 
-      //Query the database to retrieve the agreement\'s name from the agreement\'s id
+      //Query the database to retrieve the agreements' name from the agreements' id
       connection.query(
         "SELECT agreement_name FROM Agreements WHERE agreement_id = ?",
         [agreementId],
@@ -563,7 +563,7 @@ app.post("/buySelectedAgreements", (req, res) => {
         }
       );
 
-      //Query the database to retrieve the agreement\'s price from the agreement\'s id
+      //Query the database to retrieve the agreements' price from the agreements' id
       connection.query(
         "SELECT price FROM Agreements WHERE agreement_id = ?",
         [agreementId],
