@@ -60,6 +60,7 @@ tbody tr:hover {
   outline: none;
   text-align: center;
   display: inline-block;
+  margin: 10px;
 }
 
 .payu-button:hover {
