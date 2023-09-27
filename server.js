@@ -645,7 +645,7 @@ app.get("/orderSummaryPage", (req, res) => {
       selectedAgreementsPrices
     );
 
-    const totalPrice = 0;
+    let totalPrice = 0;
     selectedAgreementsPrices.forEach((price) => {
       totalPrice += price;
     });
