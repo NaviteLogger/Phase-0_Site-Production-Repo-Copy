@@ -3,5 +3,6 @@ document.getElementById('clients-portal').addEventListener('click', () => {
   });
 
 document.getElementById('payment-button').addEventListener('click', () => {
-  
+  //The payment is processed by the server for security reasons
+  window.location.href = '/makePaymentForTheAgreements';
 });

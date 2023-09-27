@@ -637,6 +637,10 @@ app.get("/orderSummaryPage", (req, res) => {
   }
 });
 
+app.post("/makePaymentForTheAgreements", async (req, res) => {
+
+});
+
 /*********************************************************************************/
 
 //Handle the request to the client\'s portal page,
