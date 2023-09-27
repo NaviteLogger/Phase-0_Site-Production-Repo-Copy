@@ -547,7 +547,7 @@ app.post("/buySelectedAgreements", async (req, res) => {
     const selectedAgreementsNames = [];
     const selectedAgreementsPrices = [];
 
-    selectedAgreements.forEach(async (agreementId) => {
+    for (const agreementId of selectedAgreements) {
       console.log("Agreement id: ", agreementId);
 
       //Query the database to retrieve the agreements' name from the agreements' id
@@ -595,7 +595,7 @@ app.post("/buySelectedAgreements", async (req, res) => {
           }
         );
       });
-    });
+    }
 
     //Save the selected agreements' names and prices in the session
     console.log("Selected agreements' names: ", selectedAgreementsNames);
