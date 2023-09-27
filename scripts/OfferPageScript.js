@@ -36,13 +36,7 @@ document
       },
       body: JSON.stringify(selectedAgreements), //Send the selected agreements to the server
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `Network response was not ok, status: ${response.status}`
-          );
-        }
-      })
+      .then((response) => response.json())
       .then((data) => {
         if(data.message === "success") {
           window.location.href = "/orderSummaryPage";
