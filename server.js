@@ -637,8 +637,42 @@ app.get("/orderSummaryPage", (req, res) => {
   }
 });
 
-app.post("/makePaymentForTheAgreements", async (req, res) => {
+app.get("/makePaymentForTheAgreements", async (req, res) => {
+  try {
+    const selectedAgreementsNames = req.session.selectedAgreementsNames;
+    const selectedAgreementsPrices = req.session.selectedAgreementsPrices;
 
+    //Calculate the total price of the selected agreements
+    let totalPrice = 0;
+    selectedAgreementsPrices.forEach((price) => {
+      totalPrice += price;
+    });
+
+    //Create a PayU order here with the total price
+    const payuToken = await getPayUToken();
+    console.log("PayU token: " + payuToken);
+
+    const order = {
+      // Create order payload based on your requirements
+      notifyUrl: "https://your_callback_url",
+      customerIp: "127.0.0.1",
+      merchantPosId: PAYU_CONFIG.POS_ID,
+      description: "Payment for agreements",
+      currencyCode: "PLN",
+      totalAmount: totalPrice.toString(),
+      products: selectedAgreementsNames.map(agreement => ({
+        name: agreement.name,
+        unitPrice: agreement.price,
+        quantity: "1"
+      }))
+  };
+
+  } catch (error) {
+    console.log("Error while making payment for the agreements", error);
+    res
+      .status(500)
+      .json({ status: "error", message: "Internal server error: " + error });
+  }
 });
 
 /*********************************************************************************/
