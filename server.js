@@ -139,6 +139,14 @@ connection.connect((err) => {
   console.log('Successfully connected to the MYSQL database!');
 });
 
+const PAYU_CONFIG = {
+  POS_ID: process.env.POS_ID,
+  SECOND_KEY: process.env.SECOND_KEY,
+  CLIENT_ID: process.env.CLIENT_ID,
+  CLIENT_SECRET: process.env.CLIENT_SECRET,
+  BASE_URL: 'https://secure.snd.payu.com', //For sandbox testing
+};
+
 /*********************************************************************************/
 
 //Handle the incoming GET request to the home page
