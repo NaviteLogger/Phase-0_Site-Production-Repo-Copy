@@ -509,6 +509,28 @@ async function getOrderStatus(orderId) {
   return response.data.status;
 }
 
+async function generateSignature(form, privateKey, algorithmName, posId) {
+  //Sort the form data alphabetically
+  const sortedForm = Object.keys(form).sort();
+  let content = "";
+  sortedForm.forEach((key) => {
+    content += key + "=" + encodeURIComponent(form[key]) + "&";
+  });
+  content += privateKey;
+
+  //Remove the trailing ampersand
+  content = content.slice(0, -1);
+
+  //Hash the content
+  const hash = crypto.createHash(algorithmName);
+  hash.update(content);
+  const hashedContent = hash.digest("hex");
+
+  //Construct the signature string
+  const result = `signature=${signatureValue};algorithm=${algorithmName};sender=${posId}`;
+  return result;
+}
+
 /*********************************************************************************/
 
 //Handle the incoming POST request to the verify email page
@@ -722,8 +744,12 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
         // Fill this data based on your user's information
         email: email,
       },
-      products: products,
+      products: agreements,
     };
+
+    //Create a signature for the order
+    const signature = generateSignature(orderData, PAYU_CONFIG.SECOND_KEY, "SHA-256", PAYU_CONFIG.POS_ID);
+    console.log("Signature: ", signature);
 
     //Get the token from the PayU API
     getPayUToken().then((token) => {
@@ -762,7 +788,19 @@ app.post("/makePaymentForTheAgreements", async (req, res) => {
 
 //Handle the server-to-server notification from PayU
 app.post("/paymentNotification", async (req, res) => {
-  const notification = req.body;
+  const signatureHeader = req.headers["openpayu-signature"];
+
+  if(!signatureHeader) {
+    console.log("No signature header provided");
+    res.status(400).send("No signature header provided");
+    return;
+  }
+
+  const headerParts = signatureHeader.split(";").reduce((acc, part) => {
+    const [key, value] = part.split("=");
+    acc[key] = value;
+    return acc;
+  }
 });
 
 /*********************************************************************************/
