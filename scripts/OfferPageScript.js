@@ -45,7 +45,7 @@ document
       })
       .then((data) => {
         if(data.message === "success") {
-          window.location.href = "/clientsPortalPage";
+          window.location.href = "/orderSummaryPage";
         }
       })
       .catch((error) => {
