@@ -590,6 +590,7 @@ app.post("/buySelectedAgreements", (req, res) => {
     req.session.selectedAgreementsPrices = selectedAgreementsPrices;
 
     //Send the user to the order's summary page
+    console.log("Redirecting the user to the order's summary page");
     res.redirect('/orderSummaryPage');
     
   } catch (error) {
