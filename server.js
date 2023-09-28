@@ -806,11 +806,11 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     console.log("Response from PayU: ", response.data);
 
-    if (!redirectionUri) {
-      console.log("No redirection URI provided");
-      res.status(400).send("No redirection URI provided");
-      return;
-    }
+    // if (!redirectionUri) {
+    //   console.log("No redirection URI provided");
+    //   res.status(400).send("No redirection URI provided");
+    //   return;
+    // }
 
     //Render the redirection page
     res.send(response);
