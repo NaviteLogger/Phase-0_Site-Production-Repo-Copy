@@ -542,7 +542,7 @@ app.post("/verifyEmailAddress", (req, res) => {
 /*********************************************************************************/
 
 //Handle the incoming POST request to the 'buy selected agreements' option
-app.post("/buySelectedAgreements", async (req, res) => {
+app.post("/buySelectedAgreements", checkAuthentication, async (req, res) => {
   try {
     const selectedAgreements = req.body;
     console.log("Selected agreements: ", selectedAgreements);
@@ -1035,7 +1035,7 @@ app.post("/paymentNotification", async (req, res) => {
           to: email,
           subject: "Zakupione zgody",
           text: "Zakupione zgody:",
-
+          attachments: boughtAgreementsFileNames,
 
 
         break;
