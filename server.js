@@ -715,6 +715,24 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     const email = req.body.email;
     console.log("Email: ", email);
 
+    // Check if they are strings and try to parse them
+if (typeof selectedAgreementsNames === 'string') {
+  try {
+      selectedAgreementsNames = JSON.parse(selectedAgreementsNames);
+  } catch (err) {
+      console.error("Error parsing selectedAgreementsNames:", err);
+  }
+}
+
+if (typeof selectedAgreementsPrices === 'string') {
+  try {
+      selectedAgreementsPrices = selectedAgreementsPrices.split(',').map(Number);
+  } catch (err) {
+      console.error("Error parsing selectedAgreementsPrices:", err);
+  }
+}
+
+
     //Calculate the total price of the selected agreements
     console.log("Calculating the total price of the selected agreements");
     let totalAmount = 0;
