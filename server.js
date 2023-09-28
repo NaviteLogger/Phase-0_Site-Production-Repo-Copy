@@ -1022,7 +1022,7 @@ app.post("/paymentNotification", async (req, res) => {
                     orderId +
                     " have been retrieved from the database"
                 );
-                resolve(results);
+                resolve(results[0].file_name);
               }
             }
           )
