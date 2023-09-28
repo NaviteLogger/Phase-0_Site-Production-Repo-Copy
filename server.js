@@ -1016,8 +1016,18 @@ app.post("/paymentNotification", async (req, res) => {
         //Get the file names of the bought agreements
         const boughtAgreementsFileNames = [];
 
+        //Modify the boughtAgreements agreements names into file names
         for (const agreement of boughtAgreements) {
-          boughtAgreementsFileNames.push(
+          let agreementName = agreement.replace(/^Zgoda/i, 'agreement') + '.docx';
+          agreementName = agreementName.replace(/ /g, '_');
+          boughtAgreementsFileNames.push(agreementName);
+        }
+
+        //Construct the path for each bought agreement
+        const boughtAgreementsPaths = [];
+        for (const fileName of boughtAgreementsFileNames) {
+          boughtAgreementsPaths.push(path.join(__dirname, "agreements", fileName));
+        }
 
         //Send the bought agreements to the client using the email provided in the notification
         let emailOptions = {
