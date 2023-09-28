@@ -1028,7 +1028,7 @@ app.post("/paymentNotification", async (req, res) => {
           )
         });
 
-        const boughtAgreements = boughtAgreementsNames.map((agreement) => {
+        const boughtAgreementsPromises = boughtAgreementsNames.map((agreement) => {
           return new Promise((resolve, reject) => {
             connection.query(
               "SELECT file_name FROM Agreements WHERE agreement_name = ?",
@@ -1049,6 +1049,8 @@ app.post("/paymentNotification", async (req, res) => {
             )
           });
         });
+
+        const boughtAgreements = await Promise.all(boughtAgreementsPromises);
 
         //Console.log it for debugging purposes
         console.log("Bought agreements: ", boughtAgreements);
