@@ -25,14 +25,27 @@ document.getElementById("payment-button").addEventListener("click", () => {
       email: email,
     }),
   })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.status === 'success') {
-        setTimeout(() => {
-          window.location.href = data.redirecUri; // Redirect to the choice
-        }, 1000);
+    .then((response) => {
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json")) {
+        return response.json();
       } else {
-        console.error("Failed to create order.");
+        return response.text();
+      }   
+    })
+    .then((data) => {
+      if(typeof data === 'string') {
+        //Handle the HTML response
+        document.body.innerHTML = data;
+      } else if (data.status === 'success') {
+        setTimeout(() => {
+          window.location.href = data.redirectUrl;
+        }, 2000);
+      } else {
+        console.log("Error while creating the order");
       }
+    })
+    .catch((error) => {
+      console.log(error);
     });
 });
