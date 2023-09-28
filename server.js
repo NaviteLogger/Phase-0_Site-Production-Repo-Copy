@@ -122,6 +122,8 @@ app.use(
   )
 );
 
+app.use('trust proxy', true);
+
 //Set up the nodemailer (SMTP transport)
 const transporter = nodemailer.createTransport({
   host: "smtp.sendgrid.net",
@@ -779,14 +781,26 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     };
     console.log("Order data: ", orderData);
 
-    //Create a signature for the order
-    const signature = generateSignature(
-      orderData,
-      PAYU_CONFIG.SECOND_KEY,
-      "SHA-256",
-      PAYU_CONFIG.POS_ID
-    );
-    //console.log("Signature: ", signature);
+    //Insert the order into the database
+    await new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO Orders (extOrderId, orderCreateDate, total_amount, status) VALUES (?, ?, ?, ?)",
+        [extOrderId, new Date().toISOString(), totalAmount, "CREATED"],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+            reject(error);
+          } else {
+            console.log(
+              "Order with order id: " +
+                extOrderId +
+                " has been inserted into the database"
+            );
+            resolve();
+          }
+        }
+      );
+    });
 
     const token = await getPayUToken();
 
