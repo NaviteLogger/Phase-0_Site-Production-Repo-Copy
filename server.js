@@ -766,7 +766,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     for (let i = 0; i < selectedAgreementsNames.length; i++) {
       await new Promise((resolve, reject) => {
         connection.query(
-          "INSERT INTO OrderProducts (extOrderId, productName, productPrice, quantity) VALUES (?, ?, ?)",
+          "INSERT INTO OrderProducts (extOrderId, productName, unitPrice, quantity) VALUES (?, ?, ?)",
           [extOrderId, selectedAgreementsNames[i], selectedAgreementsPrices[i], 1],
           (error, results) => {
             if (error) {
