@@ -804,6 +804,8 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       config
     );
 
+    console.log("Response from PayU: ", response.data);
+    
     //Extract the payment URL from the response
     const redirectionUri = response.redirectUri;
 
