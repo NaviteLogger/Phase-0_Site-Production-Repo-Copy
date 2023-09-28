@@ -874,7 +874,7 @@ app.post("/paymentNotification", async (req, res) => {
     //Insert the status information into the database
     await new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO Orders (orderId, status) VALUES (?, ?) WHERE extOrderId = ?",
+        "UPDATE Orders SET orderId = ?, status = ? WHERE extOrderId = ?",
         [orderId, status, extOrderId],
         (error, results) => {
           if (error) {
@@ -895,7 +895,7 @@ app.post("/paymentNotification", async (req, res) => {
     //Insert the order status into the OrderProducts table
     await new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO OrderProducts (orderId, status) VALUES (?, ?) WHERE extOrderId = ?",
+        "UPDATE OrderProducts SET orderId = ?, status = ? WHERE extOrderId = ?",
         [orderId, status, extOrderId],
         (error, results) => {
           if (error) {
