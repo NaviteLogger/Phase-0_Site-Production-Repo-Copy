@@ -753,6 +753,15 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     //Create a PayU order here with the total price
     console.log("Creating a PayU order with the total price: " + totalAmount);
 
+    //Generate the orderId for the order
+    let randomPart = crypto.randomBytes(16).toString("hex");
+    const datePart = new Date().toISOString().split('T')[0].replace(/-/g, '');
+    const emailHash = crypto.createHash('sha256').update(email).digest('hex');
+    const emailPart = emailHash.substring(0, 8);
+
+    const extOrderId = `${datePart}_${emailPart}_${randomPart}`;
+
+
     //Make a request to the PayU API to create an order
     const orderData = {
       notifyUrl: "https://prawokosmetyczne.pl/paymentNotification",
@@ -761,6 +770,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       description: "Zakup pojedynczych zgód",
       currencyCode: "PLN",
       totalAmount: totalAmountString,
+      extOrderId: extOrderId,
       buyer: {
         // Fill this data based on your user's information
         email: emailString,
@@ -798,12 +808,6 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
       console.log("Response from PayU: ", response.data);
 
-      // //Store the response in the session
-      // if (response.headers['content-type'] && response.headers['content-type'].includes("text/html")) {
-      //   storedHTML = response.data;
-      //   res.json({ status: "success" });
-      // }
-
       //Store the redirectUri in the session
       const redirectUri = response.data.location;
       res.json({ status: "success", redirectUri: redirectUri });
@@ -821,19 +825,6 @@ app.post("/makePaymentForAgreements", async (req, res) => {
           });
       }
     }
-
-    // if (!redirectionUri) {
-    //   console.log("No redirection URI provided");
-    //   res.status(400).send("No redirection URI provided");
-    //   return;
-    // }
-
-    // //Handle the response
-    // res.json({
-    //   status: "success",
-    //   message: "Redirecting the user",
-    //   redirectionUri: redirectionUri,
-    // });
   } catch (error) {
     console.log("Error while making payment for the agreements", error);
     res
@@ -881,6 +872,21 @@ app.post("/paymentNotification", async (req, res) => {
 
     //Handle the incoming notification as a JSON object
     const notification = req.body;
+
+    //Extract the payment status from the notification
+    const paymentStatus = notification.order.status;
+
+    //Extract the relevant information to be inserted into the database from the notification
+    const orderId = notification.order.orderId;
+    const serverOrderId = 
+    const orderCreateDate = notification.order.createDateTime;
+    const totalAmount = notification.order.totalAmount;
+    const status = notification.order.status;
+
+    //Insert the payment information into the database
+
+    //Manage the different statuses of the payment
+
 
     console.log("Received a payment notification: ", notification);
 
