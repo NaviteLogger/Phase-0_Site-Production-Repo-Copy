@@ -751,6 +751,9 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     }
     console.log("Total price: " + totalAmount);
 
+    totalAmountString = `${totalAmount}`;
+    emailString = `${email}`;
+
     const agreements = [];
 
     for (let i = 0; i < selectedAgreementsNames.length; i++) {
@@ -766,17 +769,17 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     //Make a request to the PayU API to create an order
     const orderData = {
-      notifyUrl: "https://prawokosmetyczne.pl/paymentNotification",
-      customerIp: req.ip,
-      merchantPosId: PAYU_CONFIG.POS_ID,
-      description: "Zakup pojedynczych zgód",
-      currencyCode: "PLN",
-      totalAmount: totalAmount,
-      buyer: {
+      "notifyUrl": "https://prawokosmetyczne.pl/paymentNotification",
+      "customerIp": "127.0.0.1",
+      "merchantPosId": PAYU_CONFIG.POS_ID,
+      "description": "Zakup pojedynczych zgód",
+      "currencyCode": "PLN",
+      "totalAmount": totalAmountString,
+      "buyer": {
         // Fill this data based on your user's information
-        email: email,
+        "email": emailString,
       },
-      products: agreements,
+      "products": agreements,
     };
     console.log("Order data: ", orderData);
 
@@ -794,7 +797,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     //Set up the headers and other config for the request
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     };
