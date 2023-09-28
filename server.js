@@ -744,7 +744,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     //Insert the order into the database
     await new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, total_amount) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, totalAmount) VALUES (?, ?, ?, ?, ?)",
         [extOrderId, new Date().toISOString(), req.ip, email, totalAmount],
         (error, results) => {
           if (error) {
