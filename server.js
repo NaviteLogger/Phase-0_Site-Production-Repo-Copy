@@ -702,6 +702,8 @@ app.get("/orderSummaryPage", (req, res) => {
   }
 });
 
+let storedHTML = "";
+
 app.post("/makePaymentForAgreements", async (req, res) => {
   try {
     console.log("Received a request to make payment for the agreements");
@@ -799,25 +801,23 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     try {
       const response = await axios.post(
-          `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
-          orderData,
-          config
+        `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
+        orderData,
+        config
       );
 
       console.log("Response from PayU: ", response.data);
 
-      // Check if the response is in the expected format (HTML in this case)
-      if (typeof response.data === 'string' && response.data.startsWith('<!DOCTYPE html>')) {
-          res.send(response.data);
-      } else {
-          // Handle unexpected response formats
-          console.error('Unexpected response format from PayU:', response.data);
-          res.status(500).send('Unexpected response from payment provider.');
+      //Store the response in the session
+      if(response.headers.get("content-type").includes("text/html")) {
+        storedHTML = response.data;
+        res.json({ status: "success" });
       }
-  } catch (error) {
+
+    } catch (error) {
       console.error("Error from PayU:", error);
-      res.status(500).send('Error processing payment.');
-  }
+      res.status(500).send("Error processing payment.");
+    }
 
     // if (!redirectionUri) {
     //   console.log("No redirection URI provided");
@@ -837,6 +837,10 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       .status(500)
       .json({ status: "error", message: "Internal server error: " + error });
   }
+});
+
+app.get("/getPaymentPage", async (req, res) => {
+  res.send(storedHTML);
 });
 
 //Handle the server-to-server notification from PayU

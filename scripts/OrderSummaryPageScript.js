@@ -25,27 +25,14 @@ document.getElementById("payment-button").addEventListener("click", () => {
       email: email,
     }),
   })
-    .then((response) => {
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json")) {
-        return response.json();
-      } else {
-        return response.text();
-      }   
-    })
+    .then((response) => response.json())
     .then((data) => {
-      if(typeof data === 'string') {
-        //Handle the HTML response
-        document.body.innerHTML = data;
-      } else if (data.status === 'success') {
+      if (data.status === 'success') {
         setTimeout(() => {
-          window.location.href = data.redirectUrl;
-        }, 2000);
+          window.location.href = '/getPaymentPage'; // Redirect to the choice
+        }, 1000);
       } else {
-        console.log("Error while creating the order");
+        console.error("Failed to create order.");
       }
-    })
-    .catch((error) => {
-      console.log(error);
     });
 });
