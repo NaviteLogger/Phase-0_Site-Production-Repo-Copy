@@ -717,7 +717,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     console.log("Calculating the total price of the selected agreements");
     let totalAmount = 0;
     for (const key in selectedAgreementsPrices) {
-      totalAmount += selectedAgreementsPrices[key];
+      totalAmount += selectedAgreementsPrices[key] * 100;
     }
     console.log("Total price: " + totalAmount);
 
