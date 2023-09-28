@@ -846,40 +846,48 @@ app.get("/getPaymentPage", async (req, res) => {
 
 //Handle the server-to-server notification from PayU
 app.post("/paymentNotification", async (req, res) => {
-  const signatureHeader = req.headers["openpayu-signature"];
+  try {
+      const signatureHeader = req.headers["openpayu-signature"];
 
-  if (!signatureHeader) {
-    console.log("No signature header provided");
-    res.status(400).send("No signature header provided");
-    return;
-  }
+      if (!signatureHeader) {
+          console.log("No signature header provided");
+          return res.status(400).send("No signature header provided");
+      }
 
-  const headerParts = signatureHeader.split(";").reduce((acc, part) => {
-    const [key, value] = part.split("=");
-    acc[key] = value;
-    return acc;
-  }, {});
+      const headerParts = signatureHeader.split(";").reduce((acc, part) => {
+          const [key, value] = part.split("=");
+          acc[key] = value;
+          return acc;
+      }, {});
 
-  const incomigSignature = headerParts["signature"];
-  const algorithmName = headerParts["algorithm"] || "SHA-256";
+      const incomingSignature = headerParts["signature"];
+      const algorithmName = headerParts["algorithm"] || "SHA-256";
 
-  //Combine the notification body with the second_key from the config
-  const concatenatedBody = JSON.stringify(req.body) + PAYU_CONFIG.SECOND_KEY;
+      // Combine the notification body with the second_key from the config
+      const concatenatedBody = JSON.stringify(req.body) + PAYU_CONFIG.SECOND_KEY;
 
-  //Generat4e the expected signature
-  const hash = crypto.createHash(algorithmName);
-  hash.update(concatenatedBody);
-  const expectedSignature = hash.digest("hex");
+      // Generate the expected signature
+      const hash = crypto.createHash(algorithmName);
+      hash.update(concatenatedBody);
+      const expectedSignature = hash.digest("hex");
 
-  //Compare the expected signature with the incoming signature
-  if (incomigSignature !== expectedSignature) {
-    console.log("Invalid signature");
-    res.status(400).send("Invalid signature");
-    return;
-  } else {
-    console.log("Valid signature");
+      // Compare the expected signature with the incoming signature
+      if (incomingSignature !== expectedSignature) {
+          console.log("Invalid signature");
+          return res.status(400).send("Invalid signature");
+      }
+
+      // TODO: Process the notification content. For instance, update the payment status in your database.
+
+      console.log("Valid signature. Payment notification processed successfully.");
+      return res.status(200).send("Notification processed");
+
+  } catch (error) {
+      console.error("Error processing payment notification:", error);
+      return res.status(500).send("Internal server error");
   }
 });
+
 
 /*********************************************************************************/
 
