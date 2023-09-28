@@ -1066,6 +1066,17 @@ app.post("/paymentNotification", async (req, res) => {
   }
 });
 
+app.get("/orderStatus/:orderId", async (req, res) => {
+  try {
+
+  } catch (error) {
+    console.log("Error while getting the order status", error);
+    res
+      .status(500)
+      .json({ status: "error", message: "Internal server error: " + error });
+  }
+});
+
 /*********************************************************************************/
 
 //Handle the request to the client\'s portal page,
