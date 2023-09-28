@@ -770,7 +770,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     try {
       const response = await axios.post(
-        `${PAYU_CONFIG.BASE_URL}api/v2_1/orders/`,
+        `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
         orderData,
         config
       );
