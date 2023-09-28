@@ -722,14 +722,14 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     console.log("Email: ", email);
 
     // Check if they are strings and try to parse them
-    // if (typeof selectedAgreementsNames === "string") {
-    //   try {
-    //     selectedAgreementsNames = selectedAgreementsNames.split(",");
-    //     selectedAgreementsNames = JSON.parse(selectedAgreementsNames);
-    //   } catch (err) {
-    //     console.error("Error parsing selectedAgreementsNames:", err);
-    //   }
-    // }
+    if (typeof selectedAgreementsNames === "string") {
+      try {
+        selectedAgreementsNames = selectedAgreementsNames.split(",");
+        //selectedAgreementsNames = JSON.parse(selectedAgreementsNames);
+      } catch (err) {
+        console.error("Error parsing selectedAgreementsNames:", err);
+      }
+    }
 
     if (typeof selectedAgreementsPrices === "string") {
       try {
