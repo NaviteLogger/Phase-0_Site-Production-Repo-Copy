@@ -805,9 +805,6 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     );
 
     console.log("Response from PayU: ", response.data);
-    
-    //Extract the payment URL from the response
-    const redirectionUri = response.redirectUri;
 
     if (!redirectionUri) {
       console.log("No redirection URI provided");
@@ -815,12 +812,15 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       return;
     }
 
-    //Handle the response
-    res.json({
-      status: "success",
-      message: "Redirecting the user",
-      redirectionUri: redirectionUri,
-    });
+    //Render the redirection page
+    res.send(response);
+
+    // //Handle the response
+    // res.json({
+    //   status: "success",
+    //   message: "Redirecting the user",
+    //   redirectionUri: redirectionUri,
+    // });
   } catch (error) {
     console.log("Error while making payment for the agreements", error);
     res
