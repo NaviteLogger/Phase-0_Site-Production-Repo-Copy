@@ -481,44 +481,6 @@ async function getPayUToken() {
   return response.data.access_token;
 }
 
-async function getOrderStatus(orderId) {
-  const token = await getPayUToken();
-
-  const response = await axios.get(
-    `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/${orderId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-
-  return response.data.status;
-}
-
-async function generateSignature(form, privateKey, algorithmName, posId) {
-  //Sort the form data alphabetically
-  const sortedForm = Object.keys(form).sort();
-  let content = "";
-  sortedForm.forEach((key) => {
-    content += key + "=" + encodeURIComponent(form[key]) + "&";
-  });
-  content += privateKey;
-
-  //Remove the trailing ampersand
-  content = content.slice(0, -1);
-
-  //Hash the content
-  const hash = crypto.createHash(algorithmName);
-  hash.update(content);
-  const hashedContent = hash.digest("hex");
-
-  //Construct the signature string
-  const result = `signature=${hashedContent};algorithm=${algorithmName};sender=${posId}`;
-  return result;
-}
-
 /*********************************************************************************/
 
 //Handle the incoming POST request to the verify email page
@@ -1068,6 +1030,37 @@ app.post("/paymentNotification", async (req, res) => {
 
 app.get("/orderStatus/:orderId", async (req, res) => {
   try {
+    const orderId = req.params.orderId;
+
+    //Check if the order status is provided
+    if (!orderId) {
+      console.log("No order id provided");
+      return res.status(400).send("No order id provided");
+    }
+
+    //Fetch the order status from the database
+    const orderStatus = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT status FROM Orders WHERE orderId = ?",
+        [orderId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+            reject(error);
+          } else {
+            console.log(
+              "Order status: " +
+                results[0].status +
+                " has been retrieved from the database"
+            );
+            resolve(results[0].status);
+          }
+        }
+      )
+    });
+
+    //Send the order status to the client
+    res.json({ orderId: orderId, status: orderStatus });
 
   } catch (error) {
     console.log("Error while getting the order status", error);
