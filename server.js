@@ -755,17 +755,17 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     //Make a request to the PayU API to create an order
     const orderData = {
-      "notifyUrl": "https://prawokosmetyczne.pl/paymentNotification",
-      "customerIp": "127.0.0.1",
-      "merchantPosId": PAYU_CONFIG.POS_ID,
-      "description": "Zakup pojedynczych zgód",
-      "currencyCode": "PLN",
-      "totalAmount": totalAmountString,
-      "buyer": {
+      notifyUrl: "https://prawokosmetyczne.pl/paymentNotification",
+      customerIp: "127.0.0.1",
+      merchantPosId: PAYU_CONFIG.POS_ID,
+      description: "Zakup pojedynczych zgód",
+      currencyCode: "PLN",
+      totalAmount: totalAmountString,
+      buyer: {
         // Fill this data based on your user's information
-        "email": emailString,
+        email: emailString,
       },
-      "products": agreements,
+      products: agreements,
     };
     console.log("Order data: ", orderData);
 
@@ -783,7 +783,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     //Set up the headers and other config for the request
     const config = {
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       maxRedirects: 0,
@@ -807,16 +807,18 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       //Store the redirectUri in the session
       const redirectUri = response.data.location;
       res.json({ status: "success", redirectUri: redirectUri });
-
     } catch (error) {
       if (error.response && error.response.status === 302) {
         const redirectUri = error.response.headers.location;
-        res.json({ status: 'success', redirectUri: redirectUri });
+        res.json({ status: "success", redirectUri: redirectUri });
       } else {
         console.log("Error while making payment for the agreements", error);
         res
           .status(500)
-          .json({ status: "error", message: "Internal server error: " + error });
+          .json({
+            status: "error",
+            message: "Internal server error: " + error,
+          });
       }
     }
 
@@ -847,47 +849,50 @@ app.get("/getPaymentPage", async (req, res) => {
 //Handle the server-to-server notification from PayU
 app.post("/paymentNotification", async (req, res) => {
   try {
-      const signatureHeader = req.headers["openpayu-signature"];
+    const signatureHeader = req.headers["openpayu-signature"];
 
-      if (!signatureHeader) {
-          console.log("No signature header provided");
-          return res.status(400).send("No signature header provided");
-      }
+    if (!signatureHeader) {
+      console.log("No signature header provided");
+      return res.status(400).send("No signature header provided");
+    }
 
-      const headerParts = signatureHeader.split(";").reduce((acc, part) => {
-          const [key, value] = part.split("=");
-          acc[key] = value;
-          return acc;
-      }, {});
+    const headerParts = signatureHeader.split(";").reduce((acc, part) => {
+      const [key, value] = part.split("=");
+      acc[key] = value;
+      return acc;
+    }, {});
 
-      const incomingSignature = headerParts["signature"];
-      const algorithmName = headerParts["algorithm"] || "SHA-256";
+    const incomingSignature = headerParts["signature"];
+    const algorithmName = headerParts["algorithm"] || "SHA-256";
 
-      // Combine the notification body with the second_key from the config
-      const concatenatedBody = JSON.stringify(req.body) + PAYU_CONFIG.SECOND_KEY;
+    //Combine the notification body with the second_key from the config
+    const concatenatedBody = JSON.stringify(req.body) + PAYU_CONFIG.SECOND_KEY;
 
-      // Generate the expected signature
-      const hash = crypto.createHash(algorithmName);
-      hash.update(concatenatedBody);
-      const expectedSignature = hash.digest("hex");
+    //Generate the expected signature
+    const hash = crypto.createHash(algorithmName);
+    hash.update(concatenatedBody);
+    const expectedSignature = hash.digest("hex");
 
-      // Compare the expected signature with the incoming signature
-      if (incomingSignature !== expectedSignature) {
-          console.log("Invalid signature");
-          return res.status(400).send("Invalid signature");
-      }
+    //Compare the expected signature with the incoming signature
+    if (incomingSignature !== expectedSignature) {
+      console.log("Invalid signature");
+      return res.status(400).send("Invalid signature");
+    }
 
-      // TODO: Process the notification content. For instance, update the payment status in your database.
+    //Handle the incoming notification as a JSON object
+    const notification = req.body;
 
-      console.log("Valid signature. Payment notification processed successfully.");
-      return res.status(200).send("Notification processed");
+    console.log("Received a payment notification: ", notification);
 
+    console.log(
+      "Valid signature. Payment notification processed successfully."
+    );
+    return res.status(200).send("Notification processed");
   } catch (error) {
-      console.error("Error processing payment notification:", error);
-      return res.status(500).send("Internal server error");
+    console.error("Error processing payment notification:", error);
+    return res.status(500).send("Internal server error");
   }
 });
-
 
 /*********************************************************************************/
 
