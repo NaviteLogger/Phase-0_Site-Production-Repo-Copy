@@ -809,7 +809,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     }
 
     //Extract the payment URL from the response
-    const redirectionUri = response.data.redirectUri;
+    const redirectionUri = response.redirectUri;
 
     if (!redirectionUri) {
       console.log("No redirection URI provided");
