@@ -479,13 +479,6 @@ async function getPayUToken() {
   return response.data.access_token;
 }
 
-async function createOrder(token, orderDetails) {
-  const PAYU_ORDER_URL = `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`;
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
-
   const response = await axios.post(PAYU_ORDER_URL, orderDetails, {
     headers: headers,
   });
