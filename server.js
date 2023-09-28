@@ -542,7 +542,7 @@ app.post("/verifyEmailAddress", (req, res) => {
 /*********************************************************************************/
 
 //Handle the incoming POST request to the 'buy selected agreements' option
-app.post("/buySelectedAgreements", checkAuthentication, async (req, res) => {
+app.post("/buySelectedAgreements", async (req, res) => {
   try {
     const selectedAgreements = req.body;
     console.log("Selected agreements: ", selectedAgreements);
@@ -618,7 +618,7 @@ app.post("/buySelectedAgreements", checkAuthentication, async (req, res) => {
   }
 });
 
-app.get("/orderSummaryPage", (req, res) => {
+app.get("/orderSummaryPage", checkAuthentication, (req, res) => {
   try {
     console.log("Received a request to the order's summary page");
     //Extract the selected agreements' names and prices from the session
