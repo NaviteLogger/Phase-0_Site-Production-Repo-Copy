@@ -748,6 +748,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       },
       products: agreements,
     };
+    console.log("Order data: ", orderData);
 
     //Create a signature for the order
     const signature = generateSignature(
