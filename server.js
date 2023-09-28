@@ -1008,9 +1008,9 @@ app.post("/paymentNotification", async (req, res) => {
         });
 
         //Retrieve from the database the agreements the user has bought
-        const boughtAgreements = await new Promise((resolve, reject) => {
+        const boughtAgreementsNames = await new Promise((resolve, reject) => {
           connection.query(
-            "SELECT file_name FROM Agreements WHERE agreement_name = (SELECT productName FROM OrderProducts WHERE extOrderId = ?)",
+            "(SELECT productName FROM OrderProducts WHERE extOrderId = ?",
             [extOrderId],
             (error, results) => {
               if (error) {
@@ -1022,10 +1022,32 @@ app.post("/paymentNotification", async (req, res) => {
                     orderId +
                     " have been retrieved from the database"
                 );
-                resolve(results[0].file_name);
+                resolve(results);
               }
             }
           )
+        });
+
+        const boughtAgreements = boughtAgreementsNames.map((agreement) => {
+          return new Promise((resolve, reject) => {
+            connection.query(
+              "SELECT file_name FROM Agreements WHERE agreement_name = ?",
+              [agreement.productName],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Bought agreement: " +
+                      results[0].agreement_name +
+                      " has been retrieved from the database"
+                  );
+                  resolve(results[0].fileName);
+                }
+              }
+            )
+          });
         });
 
         //Console.log it for debugging purposes
