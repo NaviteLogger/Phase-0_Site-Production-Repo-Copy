@@ -479,13 +479,6 @@ async function getPayUToken() {
   return response.data.access_token;
 }
 
-  const response = await axios.post(PAYU_ORDER_URL, orderDetails, {
-    headers: headers,
-  });
-
-  return response.data;
-}
-
 async function getOrderStatus(orderId) {
   const token = await getPayUToken();
 
