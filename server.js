@@ -1043,7 +1043,7 @@ app.post("/paymentNotification", async (req, res) => {
                       results[0].agreement_name +
                       " has been retrieved from the database"
                   );
-                  resolve(results[0].fileName);
+                  resolve(results[0].file_name);
                 }
               }
             )
