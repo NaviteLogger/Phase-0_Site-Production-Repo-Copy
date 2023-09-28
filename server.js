@@ -1014,6 +1014,12 @@ app.post("/paymentNotification", async (req, res) => {
         console.log("Bought agreements: ", boughtAgreements);
 
         //Send the bought agreements to the client using the email provided in the notification
+        let emailOptions = {
+          from: "pomoc@prawokosmetyczne.pl",
+          to: email,
+          subject: "Zakupione zgody",
+          text: "Zakupione zgody:",
+          
 
 
         break;
@@ -1348,21 +1354,21 @@ app.post("/postAgreementData", checkAuthentication, async (req, res) => {
     //Check if the user has given a photo consent
     const photoConsent = req.body.photoConsent;
 
-    //Store the client\'s name in the session for further use
+    //Store the client's name in the session for further use
     req.session.clientFullName = req.body.clientFullName;
 
     //Store the info whether the user has given a photo consent in the session for further use
     req.session.photoConsent = photoConsent;
     console.log("Photo consent: ", photoConsent);
 
-    //Get the user\'s email
+    //Get the user's email
     const userEmail = req.session.passport.user.email.replace(
       /[^a-zA-Z0-9]/g,
       "_"
     );
     console.log("User's email has been extracted and modified: ", userEmail);
 
-    //Get the user\'s choice of agreement
+    //Get the user's choice of agreement
     const agreementId = req.session.selectedAgreementId;
     console.log(
       "Received a request to fill the selected agreement: ",
