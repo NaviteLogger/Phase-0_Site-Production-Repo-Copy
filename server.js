@@ -122,7 +122,7 @@ app.use(
   )
 );
 
-app.use('trust proxy', true);
+app.set('trust proxy', true);
 
 //Set up the nodemailer (SMTP transport)
 const transporter = nodemailer.createTransport({
