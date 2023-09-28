@@ -825,7 +825,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     } catch (error) {
       if (error.response && error.response.status === 302) {
         const redirectUri = error.response.headers.location;
-        res.json({ status: "success", redirectUri: redirectUri });
+        res.json({ status: 'success', redirectUri: redirectUri });
       } else {
         console.log("Error while making payment for the agreements", error);
         res
