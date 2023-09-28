@@ -800,6 +800,29 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       );
     });
 
+    //Insert the ordered products into the database
+    for (let i = 0; i < selectedAgreementsNames.length; i++) {
+      await new Promise((resolve, reject) => {
+        connection.query(
+          "INSERT INTO OrdersProducts (extOrderId, productName, productPrice, quantity) VALUES (?, ?, ?)",
+          [extOrderId, selectedAgreementsNames[i], selectedAgreementsPrices[i], 1],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              console.log(
+                "Product with name: " +
+                  selectedAgreementsNames[i] +
+                  " has been inserted into the database"
+              );
+              resolve();
+            }
+          }
+        );
+      });
+    }
+
     const token = await getPayUToken();
 
     //Set up the headers and other config for the request
@@ -881,17 +904,17 @@ app.post("/paymentNotification", async (req, res) => {
     //Handle the incoming notification as a JSON object
     const notification = req.body;
 
-    //Extract the payment status from the notification
-    const paymentStatus = notification.order.status;
-
     //Extract the relevant information to be inserted into the database from the notification
     const orderId = notification.order.orderId;
-    const extOrderId = 
-    const orderCreateDate = notification.order.createDateTime;
-    const totalAmount = notification.order.totalAmount;
+    const extOrderId = notification.order.extOrderId;
     const status = notification.order.status;
 
     //Insert the payment information into the database
+    await new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO Orders"
+      )
+    });
 
     //Manage the different statuses of the payment
 
