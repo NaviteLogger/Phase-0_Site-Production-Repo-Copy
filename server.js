@@ -909,7 +909,7 @@ app.post("/paymentNotification", async (req, res) => {
     const extOrderId = notification.order.extOrderId;
     const status = notification.order.status;
 
-    //Insert the payment information into the database
+    //Insert the status information into the database
     await new Promise((resolve, reject) => {
       connection.query(
         "INSERT INTO Orders (orderId, status) VALUES (?, ?) WHERE extOrderId = ?",
@@ -929,6 +929,28 @@ app.post("/paymentNotification", async (req, res) => {
         }
       )
     });
+
+    //Insert the order status into the OrderProducts table
+    await new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO OrderProducts (orderId, status) VALUES (?, ?) WHERE extOrderId = ?",
+        [orderId, status, extOrderId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+            reject(error);
+          } else {
+            console.log(
+              "Payment information for order with order id: " +
+                orderId +
+                " has been inserted into the database"
+            );
+            resolve();
+          }
+        }
+      )
+    });
+
 
     //Manage the different statuses of the payment
 
