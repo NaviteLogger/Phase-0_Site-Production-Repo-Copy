@@ -727,7 +727,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     //Make a request to the PayU API to create an order
     const orderData = {
       notifyUrl: "https://prawokosmetyczne.pl/paymentNotification",
-      customerIp: "127.0.0.1",
+      customerIp: req.ip,
       merchantPosId: PAYU_CONFIG.POS_ID,
       description: "Zakup pojedynczych zgód",
       currencyCode: "PLN",
@@ -745,10 +745,10 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     await new Promise((resolve, reject) => {
       connection.query(
         "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, totalAmount) VALUES (?, ?, ?, ?, ?)",
-        [extOrderId, new Date().toISOString(), req.ip, email, totalAmount],
+        [extOrderId, new Date().toISOString().slice(0, 19).replace('T', ' '), req.ip, email, totalAmount],
         (error, results) => {
           if (error) {
-            console.log("Error while querying the database", error);
+            console.log("Error while querying the database: ", error);
             reject(error);
           } else {
             console.log(
@@ -770,7 +770,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
           [extOrderId, selectedAgreementsNames[i], selectedAgreementsPrices[i], 1],
           (error, results) => {
             if (error) {
-              console.log("Error while querying the database", error);
+              console.log("Error while querying the database: ", error);
               reject(error);
             } else {
               console.log(
@@ -813,7 +813,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
         const redirectUri = error.response.headers.location;
         res.json({ status: "success", redirectUri: redirectUri });
       } else {
-        console.log("Error while making payment for the agreements", error);
+        console.log("Error while making payment for the agreements: ", error);
         res
           .status(500)
           .json({
