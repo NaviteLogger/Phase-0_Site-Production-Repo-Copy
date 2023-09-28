@@ -708,8 +708,10 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     //Retrieve the selected agreements' names and prices from the request body
     const selectedAgreementsNames = req.body.selectedAgreementsNames;
     console.log("Selected agreements' names: ", selectedAgreementsNames);
+    console.log("Type of selected agreements' names: ", typeof selectedAgreementsNames);
     const selectedAgreementsPrices = req.body.selectedAgreementsPrices;
     console.log("Selected agreements' prices: ", selectedAgreementsPrices);
+    console.log("Type of selected agreements' prices: ", typeof selectedAgreementsPrices);
     const email = req.body.email;
     console.log("Email: ", email);
 
