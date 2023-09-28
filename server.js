@@ -706,32 +706,39 @@ app.post("/makePaymentForAgreements", async (req, res) => {
   try {
     console.log("Received a request to make payment for the agreements");
     //Retrieve the selected agreements' names and prices from the request body
-    const selectedAgreementsNames = req.body.selectedAgreementsNames;
+    let selectedAgreementsNames = req.body.selectedAgreementsNames;
     console.log("Selected agreements' names: ", selectedAgreementsNames);
-    console.log("Type of selected agreements' names: ", typeof selectedAgreementsNames);
-    const selectedAgreementsPrices = req.body.selectedAgreementsPrices;
+    console.log(
+      "Type of selected agreements' names: ",
+      typeof selectedAgreementsNames
+    );
+    let selectedAgreementsPrices = req.body.selectedAgreementsPrices;
     console.log("Selected agreements' prices: ", selectedAgreementsPrices);
-    console.log("Type of selected agreements' prices: ", typeof selectedAgreementsPrices);
+    console.log(
+      "Type of selected agreements' prices: ",
+      typeof selectedAgreementsPrices
+    );
     const email = req.body.email;
     console.log("Email: ", email);
 
     // Check if they are strings and try to parse them
-if (typeof selectedAgreementsNames === 'string') {
-  try {
-      selectedAgreementsNames = JSON.parse(selectedAgreementsNames);
-  } catch (err) {
-      console.error("Error parsing selectedAgreementsNames:", err);
-  }
-}
+    if (typeof selectedAgreementsNames === "string") {
+      try {
+        selectedAgreementsNames = JSON.parse(selectedAgreementsNames);
+      } catch (err) {
+        console.error("Error parsing selectedAgreementsNames:", err);
+      }
+    }
 
-if (typeof selectedAgreementsPrices === 'string') {
-  try {
-      selectedAgreementsPrices = selectedAgreementsPrices.split(',').map(Number);
-  } catch (err) {
-      console.error("Error parsing selectedAgreementsPrices:", err);
-  }
-}
-
+    if (typeof selectedAgreementsPrices === "string") {
+      try {
+        selectedAgreementsPrices = selectedAgreementsPrices
+          .split(",")
+          .map(Number);
+      } catch (err) {
+        console.error("Error parsing selectedAgreementsPrices:", err);
+      }
+    }
 
     //Calculate the total price of the selected agreements
     console.log("Calculating the total price of the selected agreements");
