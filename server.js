@@ -812,11 +812,15 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
       console.log("Response from PayU: ", response.data);
 
-      //Store the response in the session
-      if (response.headers['content-type'] && response.headers['content-type'].includes("text/html")) {
-        storedHTML = response.data;
-        res.json({ status: "success" });
-      }
+      // //Store the response in the session
+      // if (response.headers['content-type'] && response.headers['content-type'].includes("text/html")) {
+      //   storedHTML = response.data;
+      //   res.json({ status: "success" });
+      // }
+
+      //Store the redirectUri in the session
+      const redirectUri = response.data.location;
+      res.json({ status: "success", redirectUri: redirectUri });
 
     } catch (error) {
       console.error("Error from PayU:", error);
