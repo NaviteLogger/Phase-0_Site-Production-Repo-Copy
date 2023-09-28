@@ -1056,20 +1056,18 @@ app.post("/paymentNotification", async (req, res) => {
         console.log("Bought agreements: ", boughtAgreements);
 
         //Modify the boughtAgreements agreements names into file names
-        // function getFileNameFromProducts(productName) {
-        //   let fileName = productName.replace("Zgoda_", "");
-
-        //   // Convert the string to uppercase
-        //   fileName = fileName.toUpperCase();
+        function getFileNameFromProducts(productName) {
       
-        //   // Prepend the new prefix
-        //   fileName = "agreement_" + fileName + ".docx";
+        // Prepend the new prefix
+          productName = productName + ".docx";
 
-        //   return fileName;
-        // }
+          return productName;
+        }
+
+        //Add the suffix to the file names
 
         //Construct the path for each bought agreement
-        //const fileNames = boughtAgreements.map((agreement) => getFileNameFromProducts(agreement.productName));
+        const fileNames = boughtAgreements.map((agreement) => getFileNameFromProducts(agreement.productName));
 
         //Create the actual attachments for the email
         const attachments = boughtAgreements.map((fileName) => {
