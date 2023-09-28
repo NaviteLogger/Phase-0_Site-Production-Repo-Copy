@@ -690,8 +690,6 @@ app.get("/orderSummaryPage", (req, res) => {
   }
 });
 
-let storedHTML = "";
-
 app.post("/makePaymentForAgreements", async (req, res) => {
   try {
     console.log("Received a request to make payment for the agreements");
@@ -847,10 +845,6 @@ app.post("/makePaymentForAgreements", async (req, res) => {
   }
 });
 
-app.get("/getPaymentPage", async (req, res) => {
-  res.send(storedHTML);
-});
-
 //Handle the server-to-server notification from PayU
 app.post("/paymentNotification", async (req, res) => {
   try {
@@ -892,7 +886,7 @@ app.post("/paymentNotification", async (req, res) => {
 
     //Extract the relevant information to be inserted into the database from the notification
     const orderId = notification.order.orderId;
-    const serverOrderId = 
+    const extOrderId = 
     const orderCreateDate = notification.order.createDateTime;
     const totalAmount = notification.order.totalAmount;
     const status = notification.order.status;
