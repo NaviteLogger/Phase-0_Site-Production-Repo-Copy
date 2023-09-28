@@ -800,6 +800,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      maxRedirects: 0,
     };
 
     try {
