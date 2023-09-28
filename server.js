@@ -1040,7 +1040,7 @@ app.post("/paymentNotification", async (req, res) => {
         const fileNames = boughtAgreements.map((agreement) => getFileNameFromProducts(agreement.productName));
 
         //Create the actual attachments for the email
-        const attachments = boughtAgreementsFileNames.map((fileName) => {
+        const attachments = fileNames.map((fileName) => {
           return {
             path: `/var/www/html/agreements/${fileName}`
           };
