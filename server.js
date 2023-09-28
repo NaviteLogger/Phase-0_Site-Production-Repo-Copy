@@ -797,23 +797,33 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       },
     };
 
-    //Make a request to the PayU API to create an order
-    const response = await axios.post(
-      `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
-      orderData,
-      config
-    );
+    try {
+      const response = await axios.post(
+          `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
+          orderData,
+          config
+      );
 
-    console.log("Response from PayU: ", response.data);
+      console.log("Response from PayU: ", response.data);
+
+      // Check if the response is in the expected format (HTML in this case)
+      if (typeof response.data === 'string' && response.data.startsWith('<!DOCTYPE html>')) {
+          res.send(response.data);
+      } else {
+          // Handle unexpected response formats
+          console.error('Unexpected response format from PayU:', response.data);
+          res.status(500).send('Unexpected response from payment provider.');
+      }
+  } catch (error) {
+      console.error("Error from PayU:", error);
+      res.status(500).send('Error processing payment.');
+  }
 
     // if (!redirectionUri) {
     //   console.log("No redirection URI provided");
     //   res.status(400).send("No redirection URI provided");
     //   return;
     // }
-
-    //Render the redirection page
-    res.send(response);
 
     // //Handle the response
     // res.json({
