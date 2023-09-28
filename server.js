@@ -1013,13 +1013,19 @@ app.post("/paymentNotification", async (req, res) => {
         //Console.log it for debugging purposes
         console.log("Bought agreements: ", boughtAgreements);
 
+        //Get the file names of the bought agreements
+        const boughtAgreementsFileNames = [];
+
+        for (const agreement of boughtAgreements) {
+          boughtAgreementsFileNames.push(
+
         //Send the bought agreements to the client using the email provided in the notification
         let emailOptions = {
           from: "pomoc@prawokosmetyczne.pl",
           to: email,
           subject: "Zakupione zgody",
           text: "Zakupione zgody:",
-          
+
 
 
         break;
