@@ -1038,8 +1038,11 @@ app.post("/paymentNotification", async (req, res) => {
 
         //Construct the path for each bought agreement
         const fileNames = boughtAgreements.map((agreement) => getFileNameFromProducts(agreement.productName));
+
+        //Create an array to store the bought agreements paths
+        const boughtAgreementsFileNames = [];
         for (const fileName of fileNames) {
-          boughtAgreements.push(path.join(__dirname, "agreements", fileName));
+          boughtAgreementsFileNames.push(path.join(__dirname, "agreements", fileName));
         }
 
         //Send the bought agreements to the client using the email provided in the notification
