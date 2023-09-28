@@ -797,16 +797,12 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       },
     };
 
-    try {
-      const response = await axios.post(
-        `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
-        orderData,
-        config
-      );
-    } catch (error) {
-      console.log("Error response body:", error.response); // This will give you the detailed error message.
-      throw error;
-    }
+    //Make a request to the PayU API to create an order
+    const response = await axios.post(
+      `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
+      orderData,
+      config
+    );
 
     //Extract the payment URL from the response
     const redirectionUri = response.redirectUri;
