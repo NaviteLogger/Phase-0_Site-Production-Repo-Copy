@@ -895,11 +895,11 @@ app.post("/paymentNotification", async (req, res) => {
     //Insert the order status into the OrderProducts table
     await new Promise((resolve, reject) => {
       connection.query(
-        "UPDATE OrderProducts SET orderId = ?, status = ? WHERE extOrderId = ?",
-        [orderId, status, extOrderId],
+        "UPDATE OrderProducts SET orderId = ? WHERE extOrderId = ?",
+        [orderId, extOrderId],
         (error, results) => {
           if (error) {
-            console.log("Error while querying the database", error);
+            console.log("Error while querying the database: ", error);
             reject(error);
           } else {
             console.log(
