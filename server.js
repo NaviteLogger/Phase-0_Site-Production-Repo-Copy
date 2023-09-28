@@ -951,9 +951,108 @@ app.post("/paymentNotification", async (req, res) => {
       )
     });
 
-
     //Manage the different statuses of the payment
+    switch (status) {
+      case 'PENDING':
+        console.log("Payment is pending");
+        //Update order status in the database
+        await new Promise((resolve, reject) => {
+          connection.query(
+            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+            [status, extOrderId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "Order with order id: " +
+                    orderId +
+                    " has been updated in the database"
+                );
+                resolve();
+              }
+            }
+          )
+        });
+        break;
 
+      case 'WAITING_FOR_CONFIRMATION':
+        console.log("Payment is waiting for confirmation");
+        //Update order status in the database
+        await new Promise((resolve, reject) => {
+          connection.query(
+            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+            [status, extOrderId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "Order with order id: " +
+                    orderId +
+                    " has been updated in the database"
+                );
+                resolve();
+              }
+            }
+          )
+        });
+        break;
+
+      case 'COMPLETED':
+        console.log("Payment is completed");
+        //Update order status in the database
+        await new Promise((resolve, reject) => {
+          connection.query(
+            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+            [status, extOrderId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "Order with order id: " +
+                    orderId +
+                    " has been updated in the database"
+                );
+                resolve();
+              }
+            }
+          )
+        });
+        break;
+
+      case 'CANCELED':
+        console.log("Payment is canceled");
+        //Update order status in the database
+        await new Promise((resolve, reject) => {
+          connection.query(
+            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+            [status, extOrderId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "Order with order id: " +
+                    orderId +
+                    " has been updated in the database"
+                );
+                resolve();
+              }
+            }
+          )
+        });
+        break;
+
+      default:
+        console.log("Payment status is unknown");
+        break;
+    }
 
     console.log("Received a payment notification: ", notification);
 
