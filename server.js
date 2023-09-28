@@ -724,6 +724,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     // Check if they are strings and try to parse them
     if (typeof selectedAgreementsNames === "string") {
       try {
+        selectedAgreementsNames = selectedAgreementsNames.split(",");
         selectedAgreementsNames = JSON.parse(selectedAgreementsNames);
       } catch (err) {
         console.error("Error parsing selectedAgreementsNames:", err);
