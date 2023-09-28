@@ -750,7 +750,12 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     };
 
     //Create a signature for the order
-    const signature = generateSignature(orderData, PAYU_CONFIG.SECOND_KEY, "SHA-256", PAYU_CONFIG.POS_ID);
+    const signature = generateSignature(
+      orderData,
+      PAYU_CONFIG.SECOND_KEY,
+      "SHA-256",
+      PAYU_CONFIG.POS_ID
+    );
     //console.log("Signature: ", signature);
 
     const token = await getPayUToken();
@@ -765,27 +770,30 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     try {
       const response = await axios.post(
-          `${PAYU_CONFIG.BASE_URL}api/v2_1/orders/`,
-          orderData,
-          config
+        `${PAYU_CONFIG.BASE_URL}api/v2_1/orders/`,
+        orderData,
+        config
       );
-  } catch (error) {
-      console.log("Error response body:", error.response.data);  // This will give you the detailed error message.
+    } catch (error) {
+      console.log("Error response body:", error.response); // This will give you the detailed error message.
       throw error;
-  }  
+    }
 
     //Extract the payment URL from the response
     const redirectionUri = response.data.redirectUri;
 
-    if(!redirectionUri) {
+    if (!redirectionUri) {
       console.log("No redirection URI provided");
       res.status(400).send("No redirection URI provided");
       return;
     }
 
     //Handle the response
-    res.json({ status: "success", message: "Redirecting the user", redirectionUri: redirectionUri });
-
+    res.json({
+      status: "success",
+      message: "Redirecting the user",
+      redirectionUri: redirectionUri,
+    });
   } catch (error) {
     console.log("Error while making payment for the agreements", error);
     res
@@ -798,7 +806,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 app.post("/paymentNotification", async (req, res) => {
   const signatureHeader = req.headers["openpayu-signature"];
 
-  if(!signatureHeader) {
+  if (!signatureHeader) {
     console.log("No signature header provided");
     res.status(400).send("No signature header provided");
     return;
@@ -829,7 +837,6 @@ app.post("/paymentNotification", async (req, res) => {
   } else {
     console.log("Valid signature");
   }
-
 });
 
 /*********************************************************************************/
