@@ -1033,7 +1033,15 @@ app.post("/paymentNotification", async (req, res) => {
 
         //Modify the boughtAgreements agreements names into file names
         function getFileNameFromProducts(productName) {
-          return productName.replace('Zgoda_', 'agreement_') + '.docx';
+          let fileName = productName.replace("Zgoda_", "");
+
+          // Convert the string to uppercase
+          fileName = fileName.toUpperCase();
+      
+          // Prepend the new prefix
+          fileName = "agreement_" + fileName + ".docx";
+
+          return fileName;
         }
 
         //Construct the path for each bought agreement
