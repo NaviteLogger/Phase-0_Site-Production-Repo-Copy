@@ -985,6 +985,37 @@ app.post("/paymentNotification", async (req, res) => {
             }
           )
         });
+
+        //Send the bought agreements to the client
+        const email = notification.buyer.email;
+
+        //Retrieve from the database the agreements the user has bought
+        const boughtAgreements = await new Promise((resolve, reject) => {
+          connection.query(
+            "SELECT productName FROM OrderProducts WHERE extOrderId = ?",
+            [extOrderId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "Bought agreements for order with order id: " +
+                    orderId +
+                    " have been retrieved from the database"
+                );
+                resolve(results);
+              }
+            }
+          )
+        });
+
+        //Console.log it for debugging purposes
+        console.log("Bought agreements: ", boughtAgreements);
+
+        //Send the bought agreements to the client using the email provided in the notification
+
+
         break;
 
       case 'CANCELED':
