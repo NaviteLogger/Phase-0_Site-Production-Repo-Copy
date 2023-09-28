@@ -823,8 +823,15 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       res.json({ status: "success", redirectUri: redirectUri });
 
     } catch (error) {
-      console.error("Error from PayU:", error);
-      res.status(500).send("Error processing payment.");
+      if (error.response && error.response.status === 302) {
+        const redirectUri = error.response.headers.location;
+        res.json({ status: "success", redirectUri: redirectUri });
+      } else {
+        console.log("Error while making payment for the agreements", error);
+        res
+          .status(500)
+          .json({ status: "error", message: "Internal server error: " + error });
+      }
     }
 
     // if (!redirectionUri) {
