@@ -1036,8 +1036,15 @@ app.post("/paymentNotification", async (req, res) => {
           subject: "Zakupione zgody",
           text: "Zakupione zgody:",
           attachments: boughtAgreementsFileNames,
+        }
 
-
+        transporter.sendMail(emailOptions, (error, info) => {
+          if (error) {
+            console.log("Error during email sending: ", error);
+          } else {
+            console.log("Email sent: ", info.response);
+          }
+        });
         break;
 
       case 'CANCELED':
