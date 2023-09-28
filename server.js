@@ -1031,19 +1031,14 @@ app.post("/paymentNotification", async (req, res) => {
         //Console.log it for debugging purposes
         console.log("Bought agreements: ", boughtAgreements);
 
-        //Get the file names of the bought agreements
-        const boughtAgreementsFileNames = [];
-
         //Modify the boughtAgreements agreements names into file names
-        for (const agreement of boughtAgreements) {
-          let agreementName = agreement.replace(/^Zgoda/i, 'agreement') + '.docx';
-          agreementName = agreementName.replace(/ /g, '_');
-          boughtAgreementsFileNames.push(agreementName);
+        function getFileNameFromProducts(productName) {
+          return productName.replace('Zgoda_', 'agreement_') + '.docx';
         }
 
         //Construct the path for each bought agreement
-        const boughtAgreementsPaths = [];
-        for (const fileName of boughtAgreementsFileNames) {
+        const fileNames = boughtAgreements.map((fileName) => getFileNameFromProducts(agreement.productName));
+        for (const fileName of fileNames) {
           boughtAgreementsPaths.push(path.join(__dirname, "agreements", fileName));
         }
 
