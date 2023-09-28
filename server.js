@@ -986,8 +986,26 @@ app.post("/paymentNotification", async (req, res) => {
           )
         });
 
-        //Send the bought agreements to the client
-        const email = notification.buyer.email;
+        //Retrieve from the database the email of the user who bought the agreements
+        const email = await new Promise((resolve, reject) => {
+          connection.query(
+            "SELECT customerEmail FROM Orders WHERE extOrderId = ?",
+            [extOrderId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "Email for order with order id: " +
+                    orderId +
+                    " has been retrieved from the database"
+                );
+                resolve(results[0].customerEmail);
+              }
+            }
+          )
+        });
 
         //Retrieve from the database the agreements the user has bought
         const boughtAgreements = await new Promise((resolve, reject) => {
