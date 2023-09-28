@@ -1010,7 +1010,7 @@ app.post("/paymentNotification", async (req, res) => {
         //Retrieve from the database the agreements the user has bought
         const boughtAgreementsNames = await new Promise((resolve, reject) => {
           connection.query(
-            "(SELECT productName FROM OrderProducts WHERE extOrderId = ?",
+            "SELECT productName FROM OrderProducts WHERE extOrderId = ?",
             [extOrderId],
             (error, results) => {
               if (error) {
