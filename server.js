@@ -1039,11 +1039,12 @@ app.post("/paymentNotification", async (req, res) => {
         //Construct the path for each bought agreement
         const fileNames = boughtAgreements.map((agreement) => getFileNameFromProducts(agreement.productName));
 
-        //Create an array to store the bought agreements paths
-        const boughtAgreementsFileNames = [];
-        for (const fileName of fileNames) {
-          boughtAgreementsFileNames.push(path.join(__dirname, "agreements", fileName));
-        }
+        //Create the actual attachments for the email
+        const attachments = boughtAgreementsFileNames.map((fileName) => {
+          return {
+            path: `/var/www/html/agreements/${fileName}`
+          };
+        });
 
         //Send the bought agreements to the client using the email provided in the notification
         let emailOptions = {
@@ -1051,7 +1052,7 @@ app.post("/paymentNotification", async (req, res) => {
           to: email,
           subject: "Zakupione zgody",
           text: "Zakupione zgody:",
-          attachments: boughtAgreementsFileNames,
+          attachments: attachments,
         }
 
         transporter.sendMail(emailOptions, (error, info) => {
