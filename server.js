@@ -884,7 +884,7 @@ app.post("/paymentNotification", async (req, res) => {
             console.log(
               "Payment information for order with order id: " +
                 orderId +
-                " has been inserted into the database"
+                " has been inserted into the Orders table"
             );
             resolve();
           }
@@ -905,7 +905,7 @@ app.post("/paymentNotification", async (req, res) => {
             console.log(
               "Payment information for order with order id: " +
                 orderId +
-                " has been inserted into the database"
+                " has been inserted into the OrderProducts table"
             );
             resolve();
           }
@@ -1040,7 +1040,7 @@ app.post("/paymentNotification", async (req, res) => {
                 } else {
                   console.log(
                     "Bought agreement: " +
-                      results[0].agreement_name +
+                      results[0].file_name +
                       " has been retrieved from the database"
                   );
                   resolve(results[0].file_name);
