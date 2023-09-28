@@ -763,12 +763,16 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       },
     };
 
-    //Create the order using axios and get the response
-    const response = await axios.post(
-      `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
-      orderData,
-      config
-    );
+    try {
+      const response = await axios.post(
+          `${PAYU_CONFIG.BASE_URL}api/v2_1/orders/`,
+          orderData,
+          config
+      );
+  } catch (error) {
+      console.log("Error response body:", error.response.data);  // This will give you the detailed error message.
+      throw error;
+  }  
 
     //Extract the payment URL from the response
     const redirectionUri = response.data.redirectUri;
