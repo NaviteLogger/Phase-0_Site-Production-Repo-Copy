@@ -1067,7 +1067,7 @@ app.post("/paymentNotification", async (req, res) => {
         //Add the suffix to the file names
 
         //Construct the path for each bought agreement
-        const fileNames = boughtAgreements.map((agreement) => getFileNameFromProducts(agreement.productName));
+        const fileNames = boughtAgreements.map((fileName) => getFileNameFromProducts(fileName));
 
         //Create the actual attachments for the email
         const attachments = fileNames.map((fileName) => {
