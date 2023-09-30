@@ -62,6 +62,7 @@ const connection = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+  timezone: "Europe/Warsaw",
 });
 
 //Parse JSON bodies (as sent by HTML forms)
@@ -73,7 +74,7 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 //Set up the view engine
 app.set("view engine", "ejs");
 
-//Serve static files from the \'styles' directory
+//Serve static files from the 'styles' directory
 app.use("/styles", express.static(path.join(__dirname, "styles")));
 
 //Serve static files from the 'photos' directory
@@ -82,13 +83,13 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 //Serve static files from the 'pages' directory
 app.use("/pages", express.static(path.join(__dirname, "pages")));
 
-//Serve static files from the \'scripts' directory
+//Serve static files from the 'scripts' directory
 app.use("/scripts", express.static(path.join(__dirname, "scripts")));
 
 //Serve static files from the 'fonts' directory
 app.use("/fonts", express.static(path.join(__dirname, "fonts")));
 
-//Include the session middleware for user\'s session management
+//Include the session middleware for user's session management
 app.use(
   session({
     secret: process.env.SESSION_SECRET, //This is to be changed in production: we need a more secure secret
