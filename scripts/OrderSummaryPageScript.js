@@ -13,6 +13,9 @@ document.getElementById("payment-button").addEventListener("click", () => {
   //Get the email of the client
   const email = document.getElementById("email").value;
 
+  //Get the IP of the client
+  const ip = document.getElementById("ip").value;
+
   //The payment is processed by the server for security reasons
   fetch("/makePaymentForAgreements", {
     method: "POST",
@@ -23,6 +26,7 @@ document.getElementById("payment-button").addEventListener("click", () => {
       selectedAgreementsNames: selectedAgreementsNames,
       selectedAgreementsPrices: selectedAgreementsPrices,
       email: email,
+      ip: ip,
     }),
   })
     .then((response) => response.json())

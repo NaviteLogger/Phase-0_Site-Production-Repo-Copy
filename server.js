@@ -634,6 +634,12 @@ app.get("/orderSummaryPage", checkAuthentication, (req, res) => {
       selectedAgreementsPrices
     );
 
+    //Log the ip address of the user
+    console.log("User's IP address: ", req.ip);
+
+    //Save it to the session
+    req.session.ip = req.ip;
+
     let totalAmount = 0;
     for (const key in selectedAgreementsPrices) {
       totalAmount += selectedAgreementsPrices[key];
@@ -644,6 +650,7 @@ app.get("/orderSummaryPage", checkAuthentication, (req, res) => {
       selectedAgreementsNames: selectedAgreementsNames,
       selectedAgreementsPrices: selectedAgreementsPrices,
       totalAmount: totalAmount,
+      ip: req.ip,
     });
   } catch (error) {
     console.log("Error while displaying the order's summary page", error);
@@ -671,6 +678,10 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     );
     const email = req.body.email;
     console.log("Email: ", email);
+
+    //Log the user's ip address
+    let ip = req.body.ip;
+    console.log("User's IP address: ", ip);
 
     // Check if they are strings and try to parse them
     if (typeof selectedAgreementsNames === "string") {
@@ -727,7 +738,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     //Make a request to the PayU API to create an order
     const orderData = {
       notifyUrl: "https://prawokosmetyczne.pl/paymentNotification",
-      customerIp: req.ip,
+      customerIp: ip,
       merchantPosId: PAYU_CONFIG.POS_ID,
       description: "Zakup pojedynczych zgód",
       currencyCode: "PLN",
