@@ -123,7 +123,7 @@ app.use(
   )
 );
 
-app.set('trust proxy', true);
+app.set("trust proxy", true);
 
 //Set up the nodemailer (SMTP transport)
 const transporter = nodemailer.createTransport({
@@ -718,12 +718,11 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     //Generate the orderId for the order
     let randomPart = crypto.randomBytes(16).toString("hex");
-    const datePart = new Date().toISOString().split('T')[0].replace(/-/g, '');
-    const emailHash = crypto.createHash('sha256').update(email).digest('hex');
+    const datePart = new Date().toISOString().split("T")[0].replace(/-/g, "");
+    const emailHash = crypto.createHash("sha256").update(email).digest("hex");
     const emailPart = emailHash.substring(0, 8);
 
     const extOrderId = `${datePart}_${emailPart}_${randomPart}`;
-
 
     //Make a request to the PayU API to create an order
     const orderData = {
@@ -746,7 +745,13 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     await new Promise((resolve, reject) => {
       connection.query(
         "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, totalAmount) VALUES (?, ?, ?, ?, ?)",
-        [extOrderId, new Date().toISOString().slice(0, 19).replace('T', ' '), req.ip, email, totalAmount],
+        [
+          extOrderId,
+          new Date().toISOString().slice(0, 19).replace("T", " "),
+          req.ip,
+          email,
+          totalAmount,
+        ],
         (error, results) => {
           if (error) {
             console.log("Error while querying the database: ", error);
@@ -815,12 +820,10 @@ app.post("/makePaymentForAgreements", async (req, res) => {
         res.json({ status: "success", redirectUri: redirectUri });
       } else {
         console.log("Error while making payment for the agreements: ", error);
-        res
-          .status(500)
-          .json({
-            status: "error",
-            message: "Internal server error: " + error,
-          });
+        res.status(500).json({
+          status: "error",
+          message: "Internal server error: " + error,
+        });
       }
     }
   } catch (error) {
@@ -890,7 +893,7 @@ app.post("/paymentNotification", async (req, res) => {
             resolve();
           }
         }
-      )
+      );
     });
 
     //Insert the order status into the OrderProducts table
@@ -911,12 +914,12 @@ app.post("/paymentNotification", async (req, res) => {
             resolve();
           }
         }
-      )
+      );
     });
 
     //Manage the different statuses of the payment
     switch (status) {
-      case 'PENDING':
+      case "PENDING":
         console.log("Payment is pending");
         //Update order status in the database
         await new Promise((resolve, reject) => {
@@ -936,11 +939,11 @@ app.post("/paymentNotification", async (req, res) => {
                 resolve();
               }
             }
-          )
+          );
         });
         break;
 
-      case 'WAITING_FOR_CONFIRMATION':
+      case "WAITING_FOR_CONFIRMATION":
         console.log("Payment is waiting for confirmation");
         //Update order status in the database
         await new Promise((resolve, reject) => {
@@ -960,37 +963,16 @@ app.post("/paymentNotification", async (req, res) => {
                 resolve();
               }
             }
-          )
+          );
         });
         break;
 
-      case 'COMPLETED':
-        console.log("Payment is completed");
-        //Update order status in the database
-        await new Promise((resolve, reject) => {
+      case "COMPLETED":
+        //Before running this code, check is the email has been sent
+        //For that pursope, extract the 'wasSent' column value from the database
+        const wasSent = await new Promise((resolve, reject) => {
           connection.query(
-            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
-            [status, extOrderId],
-            (error, results) => {
-              if (error) {
-                console.log("Error while querying the database", error);
-                reject(error);
-              } else {
-                console.log(
-                  "Order with order id: " +
-                    orderId +
-                    " has been updated in the database"
-                );
-                resolve();
-              }
-            }
-          )
-        });
-
-        //Retrieve from the database the email of the user who bought the agreements
-        const email = await new Promise((resolve, reject) => {
-          connection.query(
-            "SELECT customerEmail FROM Orders WHERE extOrderId = ?",
+            "SELECT wasSent FROM Orders WHERE extOrderId = ?",
             [extOrderId],
             (error, results) => {
               if (error) {
@@ -998,104 +980,157 @@ app.post("/paymentNotification", async (req, res) => {
                 reject(error);
               } else {
                 console.log(
-                  "Email for order with order id: " +
+                  "WasSent column value for order with order id: " +
                     orderId +
                     " has been retrieved from the database"
                 );
-                resolve(results[0].customerEmail);
+                resolve(results[0].wasSent);
               }
             }
-          )
+          );
         });
 
-        //Retrieve from the database the agreements the user has bought
-        const boughtAgreementsNames = await new Promise((resolve, reject) => {
-          connection.query(
-            "SELECT productName FROM OrderProducts WHERE extOrderId = ?",
-            [extOrderId],
-            (error, results) => {
-              if (error) {
-                console.log("Error while querying the database", error);
-                reject(error);
-              } else {
-                console.log(
-                  "Bought agreements for order with order id: " +
-                    orderId +
-                    " have been retrieved from the database"
-                );
-                resolve(results);
-              }
-            }
-          )
-        });
-
-        const boughtAgreementsPromises = boughtAgreementsNames.map((agreement) => {
-          return new Promise((resolve, reject) => {
+        if (wasSent === 0) {
+          console.log("Payment is completed");
+          //Update order status in the database
+          await new Promise((resolve, reject) => {
             connection.query(
-              "SELECT file_name FROM Agreements WHERE agreement_name = ?",
-              [agreement.productName],
+              "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+              [status, extOrderId],
               (error, results) => {
                 if (error) {
                   console.log("Error while querying the database", error);
                   reject(error);
                 } else {
                   console.log(
-                    "Bought agreement: " +
-                      results[0].file_name +
-                      " has been retrieved from the database"
+                    "Order with order id: " +
+                      orderId +
+                      " has been updated in the database"
                   );
-                  resolve(results[0].file_name);
+                  resolve();
                 }
               }
-            )
+            );
           });
-        });
 
-        const boughtAgreements = await Promise.all(boughtAgreementsPromises);
+          //Retrieve from the database the email of the user who bought the agreements
+          const email = await new Promise((resolve, reject) => {
+            connection.query(
+              "SELECT customerEmail FROM Orders WHERE extOrderId = ?",
+              [extOrderId],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Email for order with order id: " +
+                      orderId +
+                      " has been retrieved from the database"
+                  );
+                  resolve(results[0].customerEmail);
+                }
+              }
+            );
+          });
 
-        //Console.log it for debugging purposes
-        console.log("Bought agreements: ", boughtAgreements);
+          //Retrieve from the database the agreements the user has bought
+          const boughtAgreementsNames = await new Promise((resolve, reject) => {
+            connection.query(
+              "SELECT productName FROM OrderProducts WHERE extOrderId = ?",
+              [extOrderId],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Bought agreements for order with order id: " +
+                      orderId +
+                      " have been retrieved from the database"
+                  );
+                  resolve(results);
+                }
+              }
+            );
+          });
 
-        //Modify the boughtAgreements agreements names into file names
-        function getFileNameFromProducts(productName) {
-      
-        // Prepend the new prefix
-          productName = productName + ".docx";
+          const boughtAgreementsPromises = boughtAgreementsNames.map(
+            (agreement) => {
+              return new Promise((resolve, reject) => {
+                connection.query(
+                  "SELECT file_name FROM Agreements WHERE agreement_name = ?",
+                  [agreement.productName],
+                  (error, results) => {
+                    if (error) {
+                      console.log("Error while querying the database", error);
+                      reject(error);
+                    } else {
+                      console.log(
+                        "Bought agreement: " +
+                          results[0].file_name +
+                          " has been retrieved from the database"
+                      );
+                      resolve(results[0].file_name);
+                    }
+                  }
+                );
+              });
+            }
+          );
 
-          return productName;
-        }
+          const boughtAgreements = await Promise.all(boughtAgreementsPromises);
 
-        //Add the suffix to the file names
+          //Console.log it for debugging purposes
+          console.log("Bought agreements: ", boughtAgreements);
 
-        //Construct the path for each bought agreement
-        const fileNames = boughtAgreements.map((fileName) => getFileNameFromProducts(fileName));
+          //Modify the boughtAgreements agreements names into file names
+          function getFileNameFromProducts(productName) {
+            // Prepend the new prefix
+            productName = productName + ".docx";
 
-        //Create the actual attachments for the email
-        const attachments = fileNames.map((fileName) => {
-          return {
-            path: `/var/www/html/agreements/${fileName}`
-          };
-        });
-
-        //Send the bought agreements to the client using the email provided in the notification
-        let emailOptions = {
-          from: "pomoc@prawokosmetyczne.pl",
-          to: email,
-          subject: "Zakupione zgody",
-          text: "Zakupione zgody:",
-          attachments: attachments,
-        }
-
-        transporter.sendMail(emailOptions, (error, info) => {
-          if (error) {
-            console.log("Error during email sending: ", error);
-          } else {
-            console.log("Email sent: ", info.response);
+            return productName;
           }
-        });
+
+          //Add the suffix to the file names
+
+          //Construct the path for each bought agreement
+          const fileNames = boughtAgreements.map((fileName) =>
+            getFileNameFromProducts(fileName)
+          );
+
+          //Create the actual attachments for the email
+          const attachments = fileNames.map((fileName) => {
+            return {
+              path: `/var/www/html/agreements/${fileName}`,
+            };
+          });
+
+          //Send the bought agreements to the client using the email provided in the notification
+          let emailOptions = {
+            from: "pomoc@prawokosmetyczne.pl",
+            to: email,
+            subject: "Zakupione zgody",
+            text: "Zakupione zgody:",
+            attachments: attachments,
+          };
+
+          transporter.sendMail(emailOptions, (error, info) => {
+            if (error) {
+              console.log("Error during email sending: ", error);
+            } else {
+              console.log("Email sent: ", info.response);
+            }
+          });
+        } else {
+          console.log(
+            "Email has already been sent for oder with order id: " + orderId
+          );
+        }
+
         break;
 
-      case 'CANCELED':
+      case "CANCELED":
         console.log("Payment is canceled");
         //Update order status in the database
         await new Promise((resolve, reject) => {
@@ -1115,7 +1150,7 @@ app.post("/paymentNotification", async (req, res) => {
                 resolve();
               }
             }
-          )
+          );
         });
         break;
 
@@ -1164,12 +1199,11 @@ app.get("/orderStatus/:orderId", async (req, res) => {
             resolve(results[0].status);
           }
         }
-      )
+      );
     });
 
     //Send the order status to the client
     res.json({ orderId: orderId, status: orderStatus });
-
   } catch (error) {
     console.log("Error while getting the order status", error);
     res
