@@ -1385,7 +1385,7 @@ app.post(
       //Query the database to retrieve the agreement\'s name from the agreement\'s id
       const results = await new Promise((resolve, reject) => {
         connection.query(
-          "SELECT agreement_name FROM Agreements WHERE agreement_id = ?",
+          "SELECT agreementName FROM Agreements WHERE agreementId = ?",
           [selectedAgreementId],
           (error, results) => {
             if (error) {
@@ -2201,7 +2201,7 @@ app.post(
 
           const results = await new Promise((resolve, reject) => {
             connection.query(
-              "SELECT content FROM Questions WHERE question_id = ?",
+              "SELECT content FROM Questions WHERE questionId = ?",
               [questionId],
               (error, results) => {
                 if (error) {
@@ -3184,7 +3184,7 @@ app.post("/register", async (req, res) => {
       //Insert the client_id into the 'EmailVerifications' table
       await new Promise((resolve, reject) => {
         connection.query(
-          "INSERT INTO Email_Verifications (client_id, verification_code, is_verified, account_created_date) VALUES ((SELECT client_id FROM Clients WHERE email = ?), ?, ?, ?)",
+          "INSERT INTO EmailVerifications (clientId, verificationCode, isVerified, accountCreatedDate) VALUES ((SELECT clientId FROM Clients WHERE email = ?), ?, ?, ?)",
           [email, verificationCode, isVerified, mysqlFormattedDate],
           function (error, results, fields) {
             if (error) {
