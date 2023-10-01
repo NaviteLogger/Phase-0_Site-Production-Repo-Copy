@@ -558,7 +558,7 @@ app.post("/buySelectedAgreements", async (req, res) => {
       //Query the database to retrieve the agreements' name from the agreements' id
       await new Promise((resolve, reject) => {
         connection.query(
-          "SELECT agreement_name FROM Agreements WHERE agreement_id = ?",
+          "SELECT agreementName FROM Agreements WHERE agreementId = ?",
           [agreementId],
           (error, results) => {
             if (error) {
@@ -581,7 +581,7 @@ app.post("/buySelectedAgreements", async (req, res) => {
       //Query the database to retrieve the agreements' price from the agreements' id
       await new Promise((resolve, reject) => {
         connection.query(
-          "SELECT agreement_price FROM Agreements WHERE agreement_id = ?",
+          "SELECT agreementPrice FROM Agreements WHERE agreementId = ?",
           [agreementId],
           (error, results) => {
             if (error) {
