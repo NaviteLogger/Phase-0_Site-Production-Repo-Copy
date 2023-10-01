@@ -493,7 +493,7 @@ app.post("/verifyEmailAddress", (req, res) => {
 
   //Check if the input code is correct
   connection.query(
-    "SELECT verification_code FROM Email_Verifications WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)",
+    "SELECT verificationCode FROM EmailVerifications WHERE clientId = (SELECT clientId FROM Clients WHERE email = ?)",
     [email],
     (error, results) => {
       if (error) {
@@ -511,7 +511,7 @@ app.post("/verifyEmailAddress", (req, res) => {
         console.log("Email verification code is correct");
         //Update the database to set the is_verified column to 1
         connection.query(
-          "UPDATE Email_Verifications SET is_verified = 1 WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)",
+          "UPDATE EmailVerifications SET isVerified = 1 WHERE clientId = (SELECT clientId FROM Clients WHERE email = ?)",
           [email],
           (error, results) => {
             if (error) {
