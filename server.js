@@ -3239,7 +3239,7 @@ app.get("/logout", checkAuthentication, checkEmailConfirmation, (req, res) => {
 //Prevent the idling of the db connection
 setInterval(function () {
   connection.query("SELECT 1");
-}, 60000);
+}, 600000);
 
 //Start the server
 const port = 3000;
