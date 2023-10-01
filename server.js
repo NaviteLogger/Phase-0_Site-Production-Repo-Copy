@@ -175,7 +175,7 @@ app.get("/offerPage", async (req, res) => {
   //Query the database to retrieve all the available agreement from the Offers table
   await new Promise((resolve, reject) => {
     connection.query(
-      "sELECT * FROM Agreements",
+      "SELECT * FROM Agreements",
       function (error, results, fields) {
         if (error) {
           reject(error);
@@ -277,7 +277,7 @@ passport.deserializeUser((user, done) => {
 
   //Query the database to find the user with the given id
   connection.query(
-    "SELECT * FROM Clients WHERE client_id = ?",
+    "SELECT * FROM Clients WHERE clientId = ?",
     [id],
     (error, rows) => {
       //If the user is not found, return an error message, otherwise return the user object
@@ -314,7 +314,7 @@ function checkEmailConfirmation(req, res, next) {
 
   //Query the database to find the user with the given email
   connection.query(
-    "SELECT * FROM Email_Verifications WHERE client_id = (SELECT client_id FROM Clients WHERE email = ?)",
+    "SELECT * FROM EmailVerifications WHERE clientId = (SELECT clientId FROM Clients WHERE email = ?)",
     [email],
     (error, results) => {
       if (error) {
@@ -383,7 +383,7 @@ async function getAgreementFileNameById(agreementId) {
 
   const fileName = await new Promise((resolve, reject) => {
     connection.query(
-      "SELECT file_name FROM Agreements WHERE agreement_id = ?",
+      "SELECT fileName FROM Agreements WHERE agreementId = ?",
       [agreementId],
       (error, results) => {
         if (error) {
