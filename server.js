@@ -783,7 +783,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     for (let i = 0; i < selectedAgreementsNames.length; i++) {
       await new Promise((resolve, reject) => {
         connection.query(
-          "INSERT INTO OrderProducts (extOrderId, productName, unitPrice, quantity) VALUES (?, ?, ?, 1)",
+          "INSERT INTO OrderedProducts (extOrderId, productName, unitPrice, quantity) VALUES (?, ?, ?, 1)",
           [extOrderId, selectedAgreementsNames[i], selectedAgreementsPrices[i]],
           (error, results) => {
             if (error) {
@@ -910,7 +910,7 @@ app.post("/paymentNotification", async (req, res) => {
     //Insert the order status into the OrderProducts table
     await new Promise((resolve, reject) => {
       connection.query(
-        "UPDATE OrderProducts SET orderId = ? WHERE extOrderId = ?",
+        "UPDATE OrderedProducts SET orderId = ? WHERE extOrderId = ?",
         [orderId, extOrderId],
         (error, results) => {
           if (error) {
@@ -1070,7 +1070,7 @@ app.post("/paymentNotification", async (req, res) => {
             (agreement) => {
               return new Promise((resolve, reject) => {
                 connection.query(
-                  "SELECT file_name FROM Agreements WHERE agreement_name = ?",
+                  "SELECT fileName FROM Agreements WHERE agreementName = ?",
                   [agreement.productName],
                   (error, results) => {
                     if (error) {
