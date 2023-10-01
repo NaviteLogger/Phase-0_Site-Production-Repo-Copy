@@ -1245,10 +1245,10 @@ app.get(
       const results = await new Promise((resolve, reject) => {
         connection.query(
           `
-        SELECT Agreements.agreement_name
+        SELECT Agreements.agreementName
         FROM Agreements 
-        INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
-        WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
+        INNER JOIN AgreementsOwnerships ON Agreements.agreementId = AgreementsOwnerships.agreementId 
+        WHERE AgreementsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
         `,
           [userEmail],
           (error, results) => {
