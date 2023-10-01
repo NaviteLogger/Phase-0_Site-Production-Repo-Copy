@@ -1337,10 +1337,10 @@ app.get(
       await new Promise((resolve, reject) => {
         connection.query(
           `
-        SELECT Agreements.agreement_name, Agreements.agreement_id
+        SELECT Agreements.agreementName, Agreements.agreementId
         FROM Agreements 
-        INNER JOIN Agreements_Ownerships ON Agreements.agreement_id = Agreements_Ownerships.agreement_id 
-        WHERE Agreements_Ownerships.client_id = (SELECT client_id FROM Clients WHERE email = ?)
+        INNER JOIN Agreements_Ownerships ON Agreements.agreementId = AgreementsOwnerships.agreementId 
+        WHERE AgreementsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
       `,
           [userEmail, currentDate, dateAfter30Days],
           (error, results) => {
@@ -1353,6 +1353,7 @@ app.get(
               agreements: results,
               email: userEmail,
             });
+            resolve();
           }
         );
       });
