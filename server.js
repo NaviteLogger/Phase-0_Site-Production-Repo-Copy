@@ -739,11 +739,10 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     const individualAgreementsPaymentNotifyUrl = process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL;
     //Construct the notifyUrl
     const notifyUrl = `https://prawokosmetyczne.pl/${individualAgreementsPaymentNotifyUrl}`;
-    //Wrap it up in brackets
 
     //Make a request to the PayU API to create an order
     const orderData = {
-      notifyUrl: `https://prawokosmetyczne.pl/${process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL}`,
+      notifyUrl: notifyUrl,
       customerIp: ip,
       merchantPosId: PAYU_CONFIG.POS_ID,
       description: "Zakup pojedynczych zgód",
