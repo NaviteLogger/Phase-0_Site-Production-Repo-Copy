@@ -735,9 +735,12 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     const extOrderId = `${datePart}_${emailPart}_${randomPart}`;
 
+    //Extract the .env individual agreements payment notify url
+    const individualAgreementsPaymentNotifyUrl = process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL;
+
     //Make a request to the PayU API to create an order
     const orderData = {
-      notifyUrl: "https://prawokosmetyczne.pl/paymentNotification",
+      notifyUrl: `https://prawokosmetyczne.pl/${process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL}`,
       customerIp: ip,
       merchantPosId: PAYU_CONFIG.POS_ID,
       description: "Zakup pojedynczych zgód",
@@ -846,7 +849,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 });
 
 //Handle the server-to-server notification from PayU
-app.post("/paymentNotification", async (req, res) => {
+app.post(process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL, async (req, res) => {
   try {
     const signatureHeader = req.headers["openpayu-signature"];
 
