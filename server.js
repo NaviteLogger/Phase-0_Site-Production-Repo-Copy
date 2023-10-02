@@ -851,7 +851,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 });
 
 //Handle the server-to-server notification from PayU
-app.post(process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL, async (req, res) => {
+app.post(`/${process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL}`, async (req, res) => {
   try {
     const signatureHeader = req.headers["openpayu-signature"];
 
