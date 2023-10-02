@@ -737,6 +737,9 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     //Extract the .env individual agreements payment notify url
     const individualAgreementsPaymentNotifyUrl = process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL;
+    //Construct the notifyUrl
+    const notifyUrl = `https://prawokosmetyczne.pl/${individualAgreementsPaymentNotifyUrl}`;
+    //Wrap it up in brackets
 
     //Make a request to the PayU API to create an order
     const orderData = {
