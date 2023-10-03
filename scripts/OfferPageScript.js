@@ -50,81 +50,90 @@ document
       });
   });
 
-document.getElementById('buy-1-subscription').addEventListener('click', () => {
-  fetch('/buySubscription', {
-    method: 'POST',
+document.getElementById("buy-1-subscription").addEventListener("click", () => {
+  fetch("/buySubscription", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({subscriptionId: 1})
+    body: JSON.stringify({ subscriptionId: 1 }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'success') {
-      window.location.href = '/orderSummaryPage'
-    }
-  })
-  .catch(error => {
-    console.error('There has been a problem with your fetch operation:', error);
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        window.location.href = "/orderSummaryPage";
+      }
+    })
+    .catch((error) => {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
+    });
 });
 
-
-document.getElementById('buy-2-subscription').addEventListener('click', () => {
-  fetch('/buySubscription', {
-    method: 'POST',
+document.getElementById("buy-2-subscription").addEventListener("click", () => {
+  fetch("/buySubscription", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({subscriptionId: 2})
+    body: JSON.stringify({ subscriptionId: 2 }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'success') {
-      window.location.href = '/subscriptionOrderSummaryPage'
-    }
-  })
-  .catch(error => {
-    console.error('There has been a problem with your fetch operation:', error);
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        window.location.href = "/subscriptionOrderSummaryPage";
+      }
+    })
+    .catch((error) => {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
+    });
 });
 
-
-document.getElementById('buy-3-subscription').addEventListener('click', () => {
-  fetch('/buySubscription', {
-    method: 'POST',
+document.getElementById("buy-3-subscription").addEventListener("click", () => {
+  fetch("/buySubscription", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({subscriptionId: 3})
+    body: JSON.stringify({ subscriptionId: 3 }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'success') {
-      window.location.href = '/subscriptionOrderSummaryPage'
-    }
-  })
-  .catch(error => {
-    console.error('There has been a problem with your fetch operation:', error);
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        window.location.href = "/subscriptionOrderSummaryPage";
+      }
+    })
+    .catch((error) => {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
+    });
 });
 
-
-document.getElementById('buy-4-subscription').addEventListener('click', () => {
-  fetch('/buySubscription', {
-    method: 'POST',
+document.getElementById("buy-4-subscription").addEventListener("click", () => {
+  fetch("/buySubscription", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({subscriptionId: 4})
+    body: JSON.stringify({ subscriptionId: 4 }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'success') {
-      window.location.href = '/subscriptionOrderSummaryPage'
-    }
-  })
-  .catch(error => {
-    console.error('There has been a problem with your fetch operation:', error);
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        window.location.href = "/subscriptionOrderSummaryPage";
+      }
+    })
+    .catch((error) => {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
+    });
 });
