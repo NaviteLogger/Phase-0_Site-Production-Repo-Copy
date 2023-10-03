@@ -1508,6 +1508,9 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       );
     });
 
+    //Log the user's ip address
+    let ip = req.body.ip;
+
     //Create a PayU order here with the subscription price
     console.log("Creating a PayU order with the subscription price");
 
@@ -1523,6 +1526,11 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     const subscriptionPaymentNotifyUrl = process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL;
     //Construct the notifyUrl
     const notifyUrl = `https://prawokosmetyczne.pl/${subscriptionPaymentNotifyUrl}`;
+
+    //Make a request to the PayU API to create an order
+    const orderData = {
+      notifyUrl: notifyUrl,
+      customerIp: req.session.ip,
 
 
 
