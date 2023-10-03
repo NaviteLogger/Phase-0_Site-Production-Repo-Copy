@@ -175,7 +175,7 @@ app.get("/offerPage", async (req, res) => {
   //Query the database to retrieve all the available agreement from the Offers table
   await new Promise((resolve, reject) => {
     connection.query(
-      "SELECT * FROM Agreements",
+      "SELECT * FROM Agreements ORDER BY category",
       function (error, results, fields) {
         if (error) {
           reject(error);
