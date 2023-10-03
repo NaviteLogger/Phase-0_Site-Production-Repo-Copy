@@ -589,8 +589,8 @@ app.post("/buySelectedAgreements", async (req, res) => {
               reject(error);
             } else {
               //Append the selected agreement price to the array
-              console.log("Agreement price: ", results[0].agreement_price);
-              selectedAgreementsPrices.push(results[0].agreement_price);
+              console.log("Agreement price: ", results[0].agreementPrice);
+              selectedAgreementsPrices.push(results[0].agreementPrice);
               console.log(
                 "Now the array of prices contains: ",
                 selectedAgreementsPrices
@@ -1084,10 +1084,10 @@ app.post(`/${process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL}`, async (req
                     } else {
                       console.log(
                         "Bought agreement: " +
-                          results[0].file_name +
+                          results[0].fileName +
                           " has been retrieved from the database"
                       );
-                      resolve(results[0].file_name);
+                      resolve(results[0].fileName);
                     }
                   }
                 );
@@ -1243,8 +1243,8 @@ app.get(
     console.log("Received a request to the client's portal: ", userEmail);
     /*
   Using that email let\'s retrieve the client_id from the database
-  and then use that client_id to retrieve the agreement_id from the
-  Agreements_Ownerships table
+  and then use that clientId to retrieve the agreementId from the
+  AgreementsOwnerships table
   */
     try {
       const results = await new Promise((resolve, reject) => {
@@ -1272,7 +1272,7 @@ app.get(
                     userEmail
                 );
                 results.forEach((row) => {
-                  console.log(row.agreement_name);
+                  console.log(row.agreementName);
                 });
               }
               resolve(results); //if everything\'s okay, resolve the Promise with the results
@@ -1344,7 +1344,7 @@ app.get(
           `
         SELECT Agreements.agreementName, Agreements.agreementId
         FROM Agreements 
-        INNER JOIN Agreements_Ownerships ON Agreements.agreementId = AgreementsOwnerships.agreementId 
+        INNER JOIN AgreementsOwnerships ON Agreements.agreementId = AgreementsOwnerships.agreementId 
         WHERE AgreementsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
       `,
           [userEmail, currentDate, dateAfter30Days],
@@ -1378,7 +1378,7 @@ app.post(
   checkEmailConfirmation,
   async (req, res) => {
     try {
-      //Console.log the selected agreement_id for debugging purposes
+      //Console.log the selected agreementId for debugging purposes
       console.log(req.body);
 
       //Extract the selected agreement name from the request
@@ -1398,19 +1398,19 @@ app.post(
               reject(error); //if there\'s an error, reject the Promise
             } else {
               //Store the selected agreement name in the session
-              req.session.selectedAgreement = results[0].agreement_name;
+              req.session.selectedAgreement = results[0].agreementName;
               resolve(results); //if everything\'s okay, resolve the Promise with the results
             }
           }
         );
       });
 
-      req.session.selectedAgreementName = results[0].agreement_name;
+      req.session.selectedAgreementName = results[0].agreementName;
 
       //Console.log it for debugging purposes
       console.log(
         "Received a request to the fill the selected agreement page: ",
-        results[0].agreement_name
+        results[0].agreementName
       );
 
       //Handle the possible removal of the remaining files
@@ -1427,7 +1427,7 @@ app.post(
       deleteFilesInDirectory(path.join(__dirname, "interviews"), userEmail);
 
       res.render("AgreementOverviewPage", {
-        agreementName: results[0].agreement_name,
+        agreementName: results[0].agreementName,
       });
     } catch (error) {
       console.log("Error while filling the selected agreement", error);
@@ -3186,7 +3186,7 @@ app.post("/register", async (req, res) => {
         "Today's date is: " + mysqlFormattedDate + " (in the mysql date format"
       );
 
-      //Insert the client_id into the 'EmailVerifications' table
+      //Insert the clientId into the 'EmailVerifications' table
       await new Promise((resolve, reject) => {
         connection.query(
           "INSERT INTO EmailVerifications (clientId, verificationCode, isVerified, accountCreatedDate) VALUES ((SELECT clientId FROM Clients WHERE email = ?), ?, ?, ?)",
@@ -3196,7 +3196,7 @@ app.post("/register", async (req, res) => {
               reject(error);
             } else {
               console.log(
-                "The query was successful: client_id, verification_code and is_verified inserted into the EmailVerifications table"
+                "The query was successful: clientId, verificationCode and isVerified inserted into the EmailVerifications table"
               );
               resolve();
             }
