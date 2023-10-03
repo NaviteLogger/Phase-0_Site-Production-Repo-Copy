@@ -205,7 +205,7 @@ app.get("/offerPage", async (req, res) => {
     );
   });
 
-  res.render("OfferPage", { subscriptionAgreements: subscriptionAgreements }); //Render the OfferPage with the retrieved agreements
+  res.render("OfferPage", { individualAgreements: individualAgreements, subscriptionAgreements: subscriptionAgreements }); //Render the OfferPage with the retrieved agreements
 });
 
 /*********************************************************************************/
