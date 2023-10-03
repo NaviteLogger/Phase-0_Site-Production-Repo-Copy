@@ -1589,6 +1589,8 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       );
     });
 
+    //Now we need to figure out how to insert the ordered subscription's agreements into the database
+
 
   } catch (error) {
     console.log("Error while making payment for the subscription", error);
