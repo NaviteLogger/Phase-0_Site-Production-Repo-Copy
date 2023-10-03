@@ -1277,6 +1277,9 @@ app.post('buySubscription', async (req, res) => {
       );
     });
 
+    //Save it to the session as well
+    req.session.numberOfAgreementsInSubscription = numberOfAgreementsInSubscription;
+
     //Send the user to the order's summary page
     console.log("Redirecting the user to the order's summary page (for subscription)");
     res.json({ status: "success", message: "Redirecting the user" });
