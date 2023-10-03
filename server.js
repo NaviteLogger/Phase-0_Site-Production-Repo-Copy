@@ -1255,6 +1255,28 @@ app.post('buySubscription', async (req, res) => {
     //Save that subscription id in the session
     req.session.subscriptionId = subscriptionId;
 
+    //Also, save how many agreements the subscription contains
+    //Query the database for that
+    const numberOfAgreementsInSubscription = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT numberOfAgreements FROM Subscriptions WHERE subscriptionId = ?",
+        [subscriptionId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+            reject(error);
+          } else {
+            console.log(
+              "Number of agreements in subscription: " +
+                results[0].numberOfAgreements +
+                " has been retrieved from the database"
+            );
+            resolve(results[0].numberOfAgreements);
+          }
+        }
+      );
+    });
+
     //Send the user to the order's summary page
     console.log("Redirecting the user to the order's summary page (for subscription)");
     res.json({ status: "success", message: "Redirecting the user" });
