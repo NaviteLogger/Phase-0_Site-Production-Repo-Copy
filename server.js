@@ -1517,6 +1517,12 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     const emailHash = crypto.createHash("sha256").update(req.session.passport.user.email).digest("hex");
     const emailPart = emailHash.substring(0, 8);
 
+    const extOrderId = `${datePart}_${emailPart}_${randomPart}`;
+
+    //Extract the .env subscription payment notify url
+    const subscriptionPaymentNotifyUrl = process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL;
+    //Construct the notifyUrl
+    const notifyUrl = `https://prawokosmetyczne.pl/${subscriptionPaymentNotifyUrl}`;
 
 
 
