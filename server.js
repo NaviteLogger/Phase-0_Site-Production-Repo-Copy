@@ -255,12 +255,12 @@ passport.use(
 
 //This is the function which is called when a user tries to log in - it will serialize (store) the user in the session
 //The result of the serializeUser method is attached to the session as javascript
-//object: req.session.passport.user = { client_id: '...', email: '...' }.
+//object: req.session.passport.user = { clientId: '...', email: '...' }.
 passport.serializeUser((user, done) => {
   //Console.log it for debugging purposes
   console.log(
-    "serializing the user: user.client_id: " +
-      user.client_id +
+    "serializing the user: user.clientId: " +
+      user.clientId +
       " user.email: " +
       user.email
   );
@@ -321,8 +321,8 @@ function checkEmailConfirmation(req, res, next) {
         console.log("Error while querying the database", error);
       }
 
-      if (results[0].is_verified === 1) {
-        //The is_verified is of type TINYINT, so 1 means true
+      if (results[0].isVerified === 1) {
+        //The isVerified is of type TINYINT, so 1 means true
         console.log("Email: " + email + " is verified");
         console.log("");
         return next();
@@ -332,7 +332,7 @@ function checkEmailConfirmation(req, res, next) {
         res.sendFile(
           path.join(__dirname, "protected", "EmailVerificationPage.html")
         );
-        //res.json({ status: 'not_verified', message: 'Email nie został potwierdzony' });
+        //res.json({ status: 'notVerified', message: 'Email nie został potwierdzony' });
       }
     }
   );
@@ -373,7 +373,7 @@ const fillAndSaveDocument = async (
   return newFileName; //Return the generated file name for further use
 };
 
-//This is the function that will be used to retrieve the agreement file name by its agreement_id from the database
+//This is the function that will be used to retrieve the agreement file name by its agreementId from the database
 async function getAgreementFileNameById(agreementId) {
   console.log(
     "Received the request to get agreement file name by id: " +
@@ -391,12 +391,12 @@ async function getAgreementFileNameById(agreementId) {
           reject(error);
         } else {
           console.log(
-            "Agreement file name: " +
-              results[0].file_name +
-              " is associated with agreement id: " +
+            "Agreement fileName: " +
+              results[0].fileName +
+              " is associated with agreementId: " +
               agreementId
           );
-          resolve(results[0].file_name);
+          resolve(results[0].fileName);
         }
       }
     );
