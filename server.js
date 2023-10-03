@@ -1447,6 +1447,8 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     console.log("Received a request to make payment for the subscription");
     //Retrieve the selected agreements' names and prices from the request body
     let selectedAgreementsNames = req.body.selectedAgreementsNames;
+
+    
   } catch (error) {
     console.log("Error while making payment for the subscription", error);
     res
