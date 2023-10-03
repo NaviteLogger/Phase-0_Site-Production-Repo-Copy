@@ -110,7 +110,7 @@ document.getElementById('buy-3-subscription').addEventListener('click', () => {
 });
 
 
-document.getElementById('buy-1-subscription').addEventListener('click', () => {
+document.getElementById('buy-4-subscription').addEventListener('click', () => {
   fetch('/buySubscription', {
     method: 'POST',
     headers: {
