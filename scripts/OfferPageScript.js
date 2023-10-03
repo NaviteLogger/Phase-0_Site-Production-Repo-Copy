@@ -49,3 +49,22 @@ document
         );
       });
   });
+
+document.getElementById('buy-1-subscription').addEventListener('click', () => {
+  fetch('/buySubscription', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({subscriptionId: 1})
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      window.location.href = '/orderSummaryPage'
+    }
+  })
+  .catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+  });
+}
