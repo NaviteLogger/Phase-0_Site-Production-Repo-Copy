@@ -1247,7 +1247,7 @@ app.get("/orderStatus/:orderId", async (req, res) => {
 
 /*********************************************************************************/
 
-app.post('buySubscription', async (req, res) => {
+app.post('/buySubscription', async (req, res) => {
   try {
     const subscriptionId = req.body.subscriptionId;
     console.log("Subscription id: ", subscriptionId);
