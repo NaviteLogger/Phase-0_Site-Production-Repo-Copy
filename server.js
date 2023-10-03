@@ -173,7 +173,7 @@ app.get("/offerPage", async (req, res) => {
   console.log("Received request to the OfferPage");
 
   //Query the database to retrieve all the available agreement from the Offers table
-  await new Promise((resolve, reject) => {
+  const individualAgreements = await new Promise((resolve, reject) => {
     connection.query(
       "SELECT * FROM Agreements ORDER BY category",
       function (error, results, fields) {
@@ -183,12 +183,30 @@ app.get("/offerPage", async (req, res) => {
           console.log(
             "The query was successful: all the offers were retrieved from the Offers table"
           );
-          res.render("OfferPage", { files: results }); //Render the OfferPage with the retrieved agreements
-          resolve();
+          resolve(results[0]); //Resolve the promise with the retrieved offers
         }
       }
     );
   });
+
+  const subscriptionAgreements = await new Promise((resolve, reject) => {
+    connection.query(
+      "SELECT * FROM SubscriptionAgreements ORDER BY category",
+      function (error, results, fields) {
+        if (error) {
+          reject(error);
+        } else {
+          console.log(
+            "The query was successful: all the offers were retrieved from the Offers table"
+          );
+          resolve(results[0]); //Resolve the promise with the retrieved offers
+        }
+      }
+    );
+  });
+
+  res.render("OfferPage", { subscriptionAgreements: subscriptionAgreements }); //Render the OfferPage with the retrieved agreements
+  resolve();
 });
 
 /*********************************************************************************/

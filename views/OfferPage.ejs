@@ -135,7 +135,7 @@
           </tr>
         </thead>
         <tbody>
-          <% files.forEach(file=> { %>
+          <% individualAgreements.forEach(file=> { %>
           <tr>
             <td>
               <input
@@ -144,7 +144,7 @@
                 value="<%= file.agreementId %>"
               />
             </td>
-            <td><%= file.agreementName.replace(/_/g, ' ' ) %></td>
+            <td><%= individualAgreements.agreementName.replace(/_/g, ' ' ) %></td>
             <!-- td stands for table data -->
             <!--<td><%= file.agreementPrice %></td>-->
             <!--<td><%= file.agreementCategory %></td>-->
