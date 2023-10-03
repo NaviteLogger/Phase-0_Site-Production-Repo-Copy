@@ -1252,6 +1252,9 @@ app.post('buySubscription', async (req, res) => {
     const subscriptionId = req.body.subscriptionId;
     console.log("Subscription id: ", subscriptionId);
 
+    //Save that subscription id in the session
+    req.session.subscriptionId = subscriptionId;
+
   } catch (error) {
     console.log("Error while buying subscription", error);
     res
