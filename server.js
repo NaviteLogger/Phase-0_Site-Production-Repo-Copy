@@ -1247,6 +1247,19 @@ app.get("/orderStatus/:orderId", async (req, res) => {
 
 /*********************************************************************************/
 
+app.post('buySubscription', async (req, res) => {
+  try {
+
+  } catch (error) {
+    console.log("Error while buying subscription", error);
+    res
+      .status(500)
+      .json({ status: "error", message: "Internal server error: " + error });
+  }
+});
+
+/*********************************************************************************/
+
 //Handle the request to the client\'s portal page,
 app.get(
   "/clientsPortalPage",
