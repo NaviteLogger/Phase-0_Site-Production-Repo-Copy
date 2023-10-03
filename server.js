@@ -703,52 +703,52 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     let selectedAgreementsPrices = [];
 
     //For each of the selectedAgreementsNames, query the database to retrieve the price (security measures)
-    const boughtSubscriptionPromises = Object.keys(
-      selectedAgreementsNames
-    ).map((key) => {
-      return new Promise((resolve, reject) => {
-        connection.query(
-          "SELECT agreementPrice FROM Agreements WHERE agreementName = ?",
-          [selectedAgreementsNames[key]],
-          (error, results) => {
-            if (error) {
-              console.log("Error while querying the database", error);
-              reject(error);
-            } else {
-              console.log(
-                "Agreement price: ",
-                results[0].agreementPrice,
-                " for agreement name: ",
-                selectedAgreementsNames[key]
-              );
-              // Compare the retrieved price with the price from the request body
-              if (results[0].agreementPrice != selectedAgreementsPrices[key]) {
-                console.log(
-                  "The agreement price: ",
-                  results[0].agreementPrice,
-                  " does not match the price from the request body: ",
-                  selectedAgreementsPrices[key]
-                );
-                res.status(400).json({
-                  status: "error",
-                  message:
-                    "The agreement price does not match the price from the request body",
-                });
-                reject(new Error("Price mismatch")); // This will stop Promise.all from proceeding to the next step
+    const boughtSubscriptionPromises = Object.keys(selectedAgreementsNames).map(
+      (key) => {
+        return new Promise((resolve, reject) => {
+          connection.query(
+            "SELECT agreementPrice FROM Agreements WHERE agreementName = ?",
+            [selectedAgreementsNames[key]],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
               } else {
-                //selectedAgreementsPrices[key] = results[0].agreementPrice;
-                resolve(results[0].agreementPrice);
+                console.log(
+                  "Agreement price: ",
+                  results[0].agreementPrice,
+                  " for agreement name: ",
+                  selectedAgreementsNames[key]
+                );
+                // Compare the retrieved price with the price from the request body
+                if (
+                  results[0].agreementPrice != selectedAgreementsPrices[key]
+                ) {
+                  console.log(
+                    "The agreement price: ",
+                    results[0].agreementPrice,
+                    " does not match the price from the request body: ",
+                    selectedAgreementsPrices[key]
+                  );
+                  res.status(400).json({
+                    status: "error",
+                    message:
+                      "The agreement price does not match the price from the request body",
+                  });
+                  reject(new Error("Price mismatch")); // This will stop Promise.all from proceeding to the next step
+                } else {
+                  //selectedAgreementsPrices[key] = results[0].agreementPrice;
+                  resolve(results[0].agreementPrice);
+                }
               }
             }
-          }
-        );
-      });
-    });
+          );
+        });
+      }
+    );
 
     //Wait for all the promises to resolve
-    selectedAgreementsPrices = await Promise.all(
-      boughtSubscriptionPromises
-    );
+    selectedAgreementsPrices = await Promise.all(boughtSubscriptionPromises);
 
     const email = req.body.email;
     console.log("Email: ", email);
@@ -1451,6 +1451,30 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     //Retrieve the subscription id from the session
     const subscriptionId = req.session.subscriptionId;
 
+    //Verify that the passed number of agreements matches the number of agreements in the subscription
+    //The number of passed agreements is simply the length of the selectedAgreementsNames array
+    const numberOfAgreementsInSubscriptionFromDatabase = await new Promise(
+      (resolve, reject) => {
+        connection.query(
+          "SELECT numberOfAgreements FROM Subscriptions WHERE subscriptionId = ?",
+          [subscriptionId],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              console.log(
+                "Number of agreements in subscription: " +
+                  results[0].numberOfAgreements +
+                  " has been retrieved from the database"
+              );
+              resolve(results[0].numberOfAgreements);
+            }
+          }
+        );
+      }
+    );
+
     //Extract the subscription's price from the database
     const subscriptionPrice = await new Promise((resolve, reject) => {
       connection.query(
@@ -1473,7 +1497,6 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     });
 
     //Create a PayU order here with the subscription price
-
   } catch (error) {
     console.log("Error while making payment for the subscription", error);
     res
