@@ -1451,7 +1451,29 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     //Retrieve the subscription id from the session
     const subscriptionId = req.session.subscriptionId;
 
-    
+    //Extract the subscription's price from the database
+    const subscriptionPrice = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT subscriptionPrice FROM Subscriptions WHERE subscriptionId = ?",
+        [subscriptionId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+            reject(error);
+          } else {
+            console.log(
+              "Subscription price: " +
+                results[0].subscriptionPrice +
+                " has been retrieved from the database"
+            );
+            resolve(results[0].subscriptionPrice);
+          }
+        }
+      );
+    });
+
+    //Create a PayU order here with the subscription price
+
   } catch (error) {
     console.log("Error while making payment for the subscription", error);
     res
