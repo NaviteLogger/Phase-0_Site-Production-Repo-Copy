@@ -200,7 +200,6 @@ app.get("/offerPage", async (req, res) => {
             "The query was successful: all the offers were retrieved from the Offers table"
           );
           resolve(results); //Resolve the promise with the retrieved offers
-          console.log(results);
         }
       }
     );
