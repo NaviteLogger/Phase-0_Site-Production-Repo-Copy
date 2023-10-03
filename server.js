@@ -1296,7 +1296,7 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, (req, res) => {
   try {
 
   } catch (error) {
-    console.log("Error while displaying the order's summary page", error);
+    console.log("Error while displaying the subscription order's summary page", error);
     res
       .status(500)
       .json({ status: "error", message: "Internal server error: " + error });
