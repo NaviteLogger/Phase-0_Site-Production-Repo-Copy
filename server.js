@@ -1362,7 +1362,14 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, checkEmailConfirma
 });
 
 app.post('/makePaymentForSubscription', async (req, res) => {
-  
+  try {
+
+  } catch (error) {
+    console.log("Error while making payment for the subscription", error);
+    res
+      .status(500)
+      .json({ status: "error", message: "Internal server error: " + error });
+  }
 });
 
 /*********************************************************************************/
