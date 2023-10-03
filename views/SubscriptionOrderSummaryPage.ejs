@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../styles/normalize.css" rel="stylesheet" type="text/css" />
+    <link href="../styles/GlobalStyles.css" rel="stylesheet" type="text/css" />
+    <link
+      href="../styles/OfferPageStyles.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="../scripts/OfferPageScript.js" defer></script>
+    <title>Offer Page</title>
+  </head>
+
+  <body subscription-id="<%= subscriptionId %>" numberOfAgreementsInSubscription="<%= numberOfAgreementsInSubscription %>" subscriptionName="<%= subscriptionName %>" reqIp="<%= reqIp %>" availableAgreements="<%= availableAgreements %>">
+    <header>
+      <div class="left">
+        <a href="../pages/indexPage.html" class="nav-link">STRONA GŁÓWNA</a>
+        <a href="/offerPage" class="nav-link">OFERTA</a>
+        <a href="../pages/AboutUsPage.html" class="nav-link">O NAS</a>
+      </div>
+      <div class="middle">
+        <a href="../pages/indexPage.html" class="nav-link">
+          <img src="../images/logo.png" alt="Logo" id="logo" />
+        </a>
+      </div>
+      <div class="right">
+        <a href="../pages/ContactPage.html" class="nav-link nav-link-right"
+          >KONTAKT</a
+        >
+        <button type="button" class="clients-portal" id="clients-portal">
+          PANEL KLIENTA
+        </button>
+      </div>
+    </header>
+
+    <h3>Wybrana przez Ciebie subskrypcja to <%= subscriptionName %></h3>
+    <h3>W ramach subskrypcji możesz wypełnić <%= numberOfAgreementsInSubscription %> zgód on-line</h3>
+    <h3>Wybierz zgody, które mają zostać przypisane do Twojej subskrypcji (maks. <%= numberOfAgreementsInSubscription %>):</h3>
+
+    <div class="center-alignment">
+        <p>
+          Lista dostępnych zgód:
+        </p>
+      </div>
+      <form id="buy-selected-agreements-form">
+        <table class="agreements-table">
+          <thead>
+            <tr>
+              <!-- tr stands for table row -->
+              <th>Wybór</th>
+              <th>NAZWA ZGODY</th>
+              <!-- th stands for table header -->
+              <!--<th>CENA (w PLN)</th>-->
+              <!--<th>KATEGORIA</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            <% availableAgreements.forEach(file=> { %>
+            <tr>
+              <td>
+                <input
+                  type="checkbox"
+                  name="agreement"
+                  value="<%= file.agreementId %>"
+                />
+              </td>
+              <td><%= file.agreementName.replace(/_/g, ' ' ) %></td>
+              <!-- td stands for table data -->
+              <!--<td><%= file.agreementCategory %></td>-->
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </form>
+
+  </body>
+</html>
