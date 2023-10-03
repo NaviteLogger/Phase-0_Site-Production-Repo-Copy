@@ -1300,6 +1300,12 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, (req, res) => {
     const numberOfAgreementsInSubscription = req.session.numberOfAgreementsInSubscription;
     console.log("Number of agreements in subscription: ", numberOfAgreementsInSubscription);
 
+    //Log the ip address of the user
+    console.log("User's IP address: ", req.ip);
+
+    //Save it to the session
+    req.session.ip = req.ip;
+
   } catch (error) {
     console.log("Error while displaying the subscription order's summary page", error);
     res
