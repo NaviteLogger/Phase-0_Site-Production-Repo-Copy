@@ -1292,7 +1292,7 @@ app.post('buySubscription', async (req, res) => {
   }
 });
 
-app.get('/subscriptionOrderSummaryPage', checkAuthentication, (req, res) => {
+app.get('/subscriptionOrderSummaryPage', checkAuthentication, async (req, res) => {
   try {
     //Extract the necessary information from the session
     const subscriptionId = req.session.subscriptionId;
