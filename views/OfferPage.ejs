@@ -36,7 +36,7 @@
       </div>
     </header>
 
-    <div class="offer-container">
+    <!-- <div class="offer-container">
       <p>
         Oferta w formie subskrypcji (30-dniowy dostęp do wypełniania wybrancyh
         zgód on-line za pośrednictwem panelu klienta):
@@ -115,7 +115,46 @@
           </div>
         </div>
       </div>
+    </div> -->
+
+    <div class="offer-container">
+      <p>
+        Oferta w formie subskrypcji (30-dniowy dostęp do wypełniania wybrancyh
+        zgód on-line za pośrednictwem panelu klienta):
+      </p>
+      <div class="offer">
+        <% subscriptionAgreements.forEach(subscription => { %>
+        <div
+          class="box <%= subscription.numberOfAgreements === null ? 'platinum' : '' %>"
+        >
+          <div class="box-item">
+            <h3>
+              <%= subscription.numberOfAgreements === null ? 'Platinum' :
+              subscription.numberOfAgreements %>
+            </h3>
+            <p>RODO</p>
+            <p>WYWIAD</p>
+            <p>ZGODA NA ZDJĘCIE</p>
+            <p>
+              <%= subscription.numberOfAgreements === null ? 'WSZYSTKIE ZGODY
+              ZABIEGOWE' : `${subscription.numberOfAgreements} ZGÓD NA ZABIEGI`
+              %>
+            </p>
+          </div>
+          <div class="box-item">
+            <button
+              type="button"
+              class="clients-portal buy-button"
+              data-subscription-id="<%= subscription.subscriptionId %>"
+            >
+              KUP for <%= subscription.price %>$
+            </button>
+          </div>
+        </div>
+        <% }) %>
+      </div>
     </div>
+
     <div class="center-alignment">
       <p>
         Lista dostępnych zgód (po zakupie zgody zostaną wysłane automatycznie na
