@@ -1292,7 +1292,7 @@ app.post('buySubscription', async (req, res) => {
   }
 });
 
-app.get('/subscriptionOrderSummaryPage', checkAuthentication, async (req, res) => {
+app.get('/subscriptionOrderSummaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
   try {
     //Extract the necessary information from the session
     const subscriptionId = req.session.subscriptionId;
@@ -1322,6 +1322,23 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, async (req, res) =
                 " has been retrieved from the database"
             );
             resolve(results[0].subscriptionName);
+          }
+        }
+      );
+    });
+
+    //Query the database to retrieve all the available agreement from the Offers table
+    const individualAgreements = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM Agreements ORDER BY category",
+        function (error, results, fields) {
+          if (error) {
+            reject(error);
+          } else {
+            console.log(
+              "The query was successful: all the offers were retrieved from the Offers table"
+            );
+            resolve(results); //Resolve the promise with the retrieved offers
           }
         }
       );
