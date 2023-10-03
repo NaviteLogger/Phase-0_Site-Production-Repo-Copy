@@ -503,10 +503,10 @@ app.post("/verifyEmailAddress", (req, res) => {
       //Console.log it for debugging purposes
       console.log(
         "Email verification code from the database: " +
-          results[0].verification_code
+          results[0].verificationCode
       );
 
-      if (results[0].verification_code == emailVerificationCode) {
+      if (results[0].verificationCode == emailVerificationCode) {
         //The results[0] is an array of objects, so we need to access the first element of the array
         console.log("Email verification code is correct");
         //Update the database to set the is_verified column to 1
@@ -566,8 +566,8 @@ app.post("/buySelectedAgreements", async (req, res) => {
               reject(error);
             } else {
               //Append the selected agreement name to the array
-              console.log("Agreement name: ", results[0].agreement_name);
-              selectedAgreementsNames.push(results[0].agreement_name);
+              console.log("Agreement name: ", results[0].agreementName);
+              selectedAgreementsNames.push(results[0].agreementName);
               console.log(
                 "Now the array of names contains: ",
                 selectedAgreementsNames
