@@ -1306,6 +1306,13 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, (req, res) => {
     //Save it to the session
     req.session.ip = req.ip;
 
+    //Display the order's summary page
+    res.render("SubscriptionOrderSummaryPage", {
+      subscriptionId: subscriptionId,
+      numberOfAgreementsInSubscription: numberOfAgreementsInSubscription,
+      ip: req.ip,
+    });    
+
   } catch (error) {
     console.log("Error while displaying the subscription order's summary page", error);
     res
