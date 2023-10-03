@@ -1448,6 +1448,9 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     //Retrieve the selected agreements' names and prices from the request body
     let selectedAgreementsNames = req.body.selectedAgreementsNames;
 
+    //Retrieve the subscription id from the session
+    const subscriptionId = req.session.subscriptionId;
+
     
   } catch (error) {
     console.log("Error while making payment for the subscription", error);
