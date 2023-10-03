@@ -1558,7 +1558,9 @@ app.post("/makePaymentForSubscription", async (req, res) => {
         // Fill this data based on your user's information
         email: req.session.passport.user.email,
       },
-      products: 
+      products: subscriptionName,
+    };
+    console.log("Order data: ", orderData);
 
 
 
