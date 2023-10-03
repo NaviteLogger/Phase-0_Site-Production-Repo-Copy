@@ -626,7 +626,7 @@ app.post("/buySelectedAgreements", async (req, res) => {
     req.session.selectedAgreementsPrices = selectedAgreementsPrices;
 
     //Send the user to the order's summary page
-    console.log("Redirecting the user to the order's summary page");
+    console.log("Redirecting the user to the order's summary page (for invididual agreements)");
     res.json({ status: "success", message: "Redirecting the user" });
   } catch (error) {
     console.log("Error while buying selected agreements", error);
@@ -1254,6 +1254,10 @@ app.post('buySubscription', async (req, res) => {
 
     //Save that subscription id in the session
     req.session.subscriptionId = subscriptionId;
+
+    //Send the user to the order's summary page
+    console.log("Redirecting the user to the order's summary page (for subscription)");
+    res.json({ status: "success", message: "Redirecting the user" });
 
   } catch (error) {
     console.log("Error while buying subscription", error);
