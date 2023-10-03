@@ -1,8 +1,8 @@
-document.getElementById('clients-portal').addEventListener('click', () => {
-    window.location.href = '/clientsPortalPage';
-  });
+document.getElementById("clients-portal").addEventListener("click", () => {
+  window.location.href = "/clientsPortalPage";
+});
 
-  document
+document
   .getElementById("buy-selected-subscription")
   .addEventListener("click", () => {
     const form = document.getElementById("buy-selected-agreements-form"); //Get the form
@@ -22,6 +22,16 @@ document.getElementById('clients-portal').addEventListener('click', () => {
     });
 
     console.log(selectedAgreements);
+
+    const numberOfAgreementsInSubscription = parseInt(document.body.getAttribute('numberOfAgreementsInSubscription'));
+
+    // Check if the number of selected agreements matches the desired number
+    if (selectedAgreements.length !== numberOfAgreementsInSubscription) {
+      alert(
+        `Please select exactly ${numberOfAgreementsInSubscription} agreements.`
+      );
+      return; // exit the event handler early
+    }
 
     fetch("/buySelectedAgreements", {
       method: "POST",
