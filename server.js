@@ -1306,6 +1306,27 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, (req, res) => {
     //Save it to the session
     req.session.ip = req.ip;
 
+    //Query the database to extract the subscription's name
+    const subscriptionName = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT subscriptionName FROM Subscriptions WHERE subscriptionId = ?",
+        [subscriptionId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+            reject(error);
+          } else {
+            console.log(
+              "Subscription name: " +
+                results[0].subscriptionName +
+                " has been retrieved from the database"
+            );
+            resolve(results[0].subscriptionName);
+          }
+        }
+      );
+    });
+
     //Display the order's summary page
     res.render("SubscriptionOrderSummaryPage", {
       subscriptionId: subscriptionId,
