@@ -1292,6 +1292,10 @@ app.post('buySubscription', async (req, res) => {
   }
 });
 
+app.get('/subscriptionOrderSummaryPage', checkAuthentication, (req, res) => {
+  
+});
+
 /*********************************************************************************/
 
 //Handle the request to the client\'s portal page,
