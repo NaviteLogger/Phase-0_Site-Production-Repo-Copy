@@ -785,9 +785,6 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     }
     console.log("Total price: " + totalAmount);
 
-    totalAmountString = `${totalAmount}`;
-    emailString = `${email}`;
-
     const agreements = [];
 
     for (let i = 0; i < selectedAgreementsNames.length; i++) {
@@ -822,11 +819,11 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       merchantPosId: PAYU_CONFIG.POS_ID,
       description: "Zakup pojedynczych zgód",
       currencyCode: "PLN",
-      totalAmount: totalAmountString,
+      totalAmount: totalAmount,
       extOrderId: extOrderId,
       buyer: {
         // Fill this data based on your user's information
-        email: emailString,
+        email: email,
       },
       products: agreements,
     };
@@ -1494,7 +1491,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
         [subscriptionId],
         (error, results) => {
           if (error) {
-            console.log("Error while querying the database", error);
+            console.log("Error while querying the database for subscription price", error);
             reject(error);
           } else {
             console.log(
@@ -1503,6 +1500,27 @@ app.post("/makePaymentForSubscription", async (req, res) => {
                 " has been retrieved from the database"
             );
             resolve(results[0].subscriptionPrice);
+          }
+        }
+      );
+    });
+
+    //Extract the subscription's name from the database
+    const subscriptionName = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT subscriptionName FROM Subscriptions WHERE subscriptionId = ?",
+        [subscriptionId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database for subscription name", error);
+            reject(error);
+          } else {
+            console.log(
+              "Subscription name: " +
+                results[0].subscriptionName +
+                " has been retrieved from the database"
+            );
+            resolve(results[0].subscriptionName);
           }
         }
       );
@@ -1530,7 +1548,18 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     //Make a request to the PayU API to create an order
     const orderData = {
       notifyUrl: notifyUrl,
-      customerIp: req.session.ip,
+      customerIp: ip,
+      merchantPosId: PAYU_CONFIG.POS_ID,
+      description: "Zakup subskrypcji",
+      currencyCode: "PLN",
+      totalAmount: subscriptionPrice * 100,
+      extOrderId: extOrderId,
+      buyer: {
+        // Fill this data based on your user's information
+        email: req.session.passport.user.email,
+      },
+      products: 
+
 
 
 
