@@ -135,7 +135,7 @@
             <p>WYWIAD</p>
             <p>ZGODA NA ZDJĘCIE</p>
             <p>
-              <%= subscription.numberOfAgreements === null ? 'WSZYSTKIE ZGODY ZABIEGOWE' : `${subscription.numberOfAgreements} ZGÓD NA ZABIEGI` %>
+              <%= subscription.numberOfAgreements === null ? 'WSZYSTKIE ZGODY ZABIEGOWE' : `ZGÓD NA ZABIEGI: ${subscription.numberOfAgreements}` %>
             </p>
           </div>
           <div class="box-item">
@@ -144,7 +144,7 @@
               class="clients-portal buy-button"
               data-subscription-id="<%= subscription.subscriptionId %>"
             >
-              KUP za <%= subscription.price %>PLN
+              KUP za <%= subscription.price %> PLN
             </button>
           </div>
         </div>
