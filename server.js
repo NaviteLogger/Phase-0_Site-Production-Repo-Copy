@@ -62,7 +62,7 @@ const connection = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  timezone: '+02:00',
+  timezone: "+02:00",
 });
 
 //Parse JSON bodies (as sent by HTML forms)
@@ -205,7 +205,10 @@ app.get("/offerPage", async (req, res) => {
     );
   });
 
-  res.render("OfferPage", { individualAgreements: individualAgreements, subscriptionAgreements: subscriptionAgreements }); //Render the OfferPage with the retrieved agreements
+  res.render("OfferPage", {
+    individualAgreements: individualAgreements,
+    subscriptionAgreements: subscriptionAgreements,
+  }); //Render the OfferPage with the retrieved agreements
 });
 
 /*********************************************************************************/
@@ -626,7 +629,9 @@ app.post("/buySelectedAgreements", async (req, res) => {
     req.session.selectedAgreementsPrices = selectedAgreementsPrices;
 
     //Send the user to the order's summary page
-    console.log("Redirecting the user to the order's summary page (for invididual agreements)");
+    console.log(
+      "Redirecting the user to the order's summary page (for invididual agreements)"
+    );
     res.json({ status: "success", message: "Redirecting the user" });
   } catch (error) {
     console.log("Error while buying selected agreements", error);
@@ -687,12 +692,64 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       "Type of selected agreements' names: ",
       typeof selectedAgreementsNames
     );
-    let selectedAgreementsPrices = req.body.selectedAgreementsPrices;
-    console.log("Selected agreements' prices: ", selectedAgreementsPrices);
-    console.log(
-      "Type of selected agreements' prices: ",
-      typeof selectedAgreementsPrices
+
+    // let selectedAgreementsPrices = req.body.selectedAgreementsPrices;
+    // console.log("Selected agreements' prices: ", selectedAgreementsPrices);
+    // console.log(
+    //   "Type of selected agreements' prices: ",
+    //   typeof selectedAgreementsPrices
+    // );
+
+    let selectedAgreementsPrices = [];
+
+    //For each of the selectedAgreementsNames, query the database to retrieve the price (security measures)
+    const boughtSubscriptionPromises = Object.keys(
+      selectedAgreementsNames
+    ).map((key) => {
+      return new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT agreementPrice FROM Agreements WHERE agreementName = ?",
+          [selectedAgreementsNames[key]],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              console.log(
+                "Agreement price: ",
+                results[0].agreementPrice,
+                " for agreement name: ",
+                selectedAgreementsNames[key]
+              );
+              // Compare the retrieved price with the price from the request body
+              if (results[0].agreementPrice != selectedAgreementsPrices[key]) {
+                console.log(
+                  "The agreement price: ",
+                  results[0].agreementPrice,
+                  " does not match the price from the request body: ",
+                  selectedAgreementsPrices[key]
+                );
+                res.status(400).json({
+                  status: "error",
+                  message:
+                    "The agreement price does not match the price from the request body",
+                });
+                reject(new Error("Price mismatch")); // This will stop Promise.all from proceeding to the next step
+              } else {
+                //selectedAgreementsPrices[key] = results[0].agreementPrice;
+                resolve(results[0].agreementPrice);
+              }
+            }
+          }
+        );
+      });
+    });
+
+    //Wait for all the promises to resolve
+    selectedAgreementsPrices = await Promise.all(
+      boughtSubscriptionPromises
     );
+
     const email = req.body.email;
     console.log("Email: ", email);
 
@@ -753,7 +810,8 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     const extOrderId = `${datePart}_${emailPart}_${randomPart}`;
 
     //Extract the .env individual agreements payment notify url
-    const individualAgreementsPaymentNotifyUrl = process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL;
+    const individualAgreementsPaymentNotifyUrl =
+      process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL;
     //Construct the notifyUrl
     const notifyUrl = `https://prawokosmetyczne.pl/${individualAgreementsPaymentNotifyUrl}`;
 
@@ -868,163 +926,95 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 });
 
 //Handle the server-to-server notification from PayU
-app.post(`/${process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL}`, async (req, res) => {
-  try {
-    const signatureHeader = req.headers["openpayu-signature"];
+app.post(
+  `/${process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL}`,
+  async (req, res) => {
+    try {
+      const signatureHeader = req.headers["openpayu-signature"];
 
-    if (!signatureHeader) {
-      console.log("No signature header provided");
-      return res.status(400).send("No signature header provided");
-    }
+      if (!signatureHeader) {
+        console.log("No signature header provided");
+        return res.status(400).send("No signature header provided");
+      }
 
-    const headerParts = signatureHeader.split(";").reduce((acc, part) => {
-      const [key, value] = part.split("=");
-      acc[key] = value;
-      return acc;
-    }, {});
+      const headerParts = signatureHeader.split(";").reduce((acc, part) => {
+        const [key, value] = part.split("=");
+        acc[key] = value;
+        return acc;
+      }, {});
 
-    const incomingSignature = headerParts["signature"];
-    const algorithmName = headerParts["algorithm"] || "SHA-256";
+      const incomingSignature = headerParts["signature"];
+      const algorithmName = headerParts["algorithm"] || "SHA-256";
 
-    //Combine the notification body with the second_key from the config
-    const concatenatedBody = JSON.stringify(req.body) + PAYU_CONFIG.SECOND_KEY;
+      //Combine the notification body with the second_key from the config
+      const concatenatedBody =
+        JSON.stringify(req.body) + PAYU_CONFIG.SECOND_KEY;
 
-    //Generate the expected signature
-    const hash = crypto.createHash(algorithmName);
-    hash.update(concatenatedBody);
-    const expectedSignature = hash.digest("hex");
+      //Generate the expected signature
+      const hash = crypto.createHash(algorithmName);
+      hash.update(concatenatedBody);
+      const expectedSignature = hash.digest("hex");
 
-    //Compare the expected signature with the incoming signature
-    if (incomingSignature !== expectedSignature) {
-      console.log("Invalid signature");
-      return res.status(400).send("Invalid signature");
-    }
+      //Compare the expected signature with the incoming signature
+      if (incomingSignature !== expectedSignature) {
+        console.log("Invalid signature");
+        return res.status(400).send("Invalid signature");
+      }
 
-    //Handle the incoming notification as a JSON object
-    const notification = req.body;
+      //Handle the incoming notification as a JSON object
+      const notification = req.body;
 
-    //Extract the relevant information to be inserted into the database from the notification
-    const orderId = notification.order.orderId;
-    const extOrderId = notification.order.extOrderId;
-    const status = notification.order.status;
+      //Extract the relevant information to be inserted into the database from the notification
+      const orderId = notification.order.orderId;
+      const extOrderId = notification.order.extOrderId;
+      const status = notification.order.status;
 
-    //Insert the status information into the database
-    await new Promise((resolve, reject) => {
-      connection.query(
-        "UPDATE Orders SET orderId = ?, status = ? WHERE extOrderId = ?",
-        [orderId, status, extOrderId],
-        (error, results) => {
-          if (error) {
-            console.log("Error while querying the database", error);
-            reject(error);
-          } else {
-            console.log(
-              "Payment information for order with order id: " +
-                orderId +
-                " has been inserted into the Orders table"
-            );
-            resolve();
+      //Insert the status information into the database
+      await new Promise((resolve, reject) => {
+        connection.query(
+          "UPDATE Orders SET orderId = ?, status = ? WHERE extOrderId = ?",
+          [orderId, status, extOrderId],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              console.log(
+                "Payment information for order with order id: " +
+                  orderId +
+                  " has been inserted into the Orders table"
+              );
+              resolve();
+            }
           }
-        }
-      );
-    });
+        );
+      });
 
-    //Insert the order status into the OrderProducts table
-    await new Promise((resolve, reject) => {
-      connection.query(
-        "UPDATE OrderedProducts SET orderId = ? WHERE extOrderId = ?",
-        [orderId, extOrderId],
-        (error, results) => {
-          if (error) {
-            console.log("Error while querying the database: ", error);
-            reject(error);
-          } else {
-            console.log(
-              "Payment information for order with order id: " +
-                orderId +
-                " has been inserted into the OrderProducts table"
-            );
-            resolve();
+      //Insert the order status into the OrderProducts table
+      await new Promise((resolve, reject) => {
+        connection.query(
+          "UPDATE OrderedProducts SET orderId = ? WHERE extOrderId = ?",
+          [orderId, extOrderId],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database: ", error);
+              reject(error);
+            } else {
+              console.log(
+                "Payment information for order with order id: " +
+                  orderId +
+                  " has been inserted into the OrderProducts table"
+              );
+              resolve();
+            }
           }
-        }
-      );
-    });
+        );
+      });
 
-    //Manage the different statuses of the payment
-    switch (status) {
-      case "PENDING":
-        console.log("Payment is pending");
-        //Update order status in the database
-        await new Promise((resolve, reject) => {
-          connection.query(
-            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
-            [status, extOrderId],
-            (error, results) => {
-              if (error) {
-                console.log("Error while querying the database", error);
-                reject(error);
-              } else {
-                console.log(
-                  "Order with order id: " +
-                    orderId +
-                    " has been updated in the database"
-                );
-                resolve();
-              }
-            }
-          );
-        });
-        break;
-
-      case "WAITING_FOR_CONFIRMATION":
-        console.log("Payment is waiting for confirmation");
-        //Update order status in the database
-        await new Promise((resolve, reject) => {
-          connection.query(
-            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
-            [status, extOrderId],
-            (error, results) => {
-              if (error) {
-                console.log("Error while querying the database", error);
-                reject(error);
-              } else {
-                console.log(
-                  "Order with order id: " +
-                    orderId +
-                    " has been updated in the database"
-                );
-                resolve();
-              }
-            }
-          );
-        });
-        break;
-
-      case "COMPLETED":
-        //Before running this code, check is the email has been sent
-        //For that pursope, extract the 'wasSent' column value from the database
-        const wasSent = await new Promise((resolve, reject) => {
-          connection.query(
-            "SELECT wasSent FROM Orders WHERE extOrderId = ?",
-            [extOrderId],
-            (error, results) => {
-              if (error) {
-                console.log("Error while querying the database", error);
-                reject(error);
-              } else {
-                console.log(
-                  "WasSent column value for order with order id: " +
-                    orderId +
-                    " has been retrieved from the database"
-                );
-                resolve(results[0].wasSent);
-              }
-            }
-          );
-        });
-
-        if (wasSent === 0) {
-          console.log("Payment is completed");
+      //Manage the different statuses of the payment
+      switch (status) {
+        case "PENDING":
+          console.log("Payment is pending");
           //Update order status in the database
           await new Promise((resolve, reject) => {
             connection.query(
@@ -1045,11 +1035,38 @@ app.post(`/${process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL}`, async (req
               }
             );
           });
+          break;
 
-          //Retrieve from the database the email of the user who bought the agreements
-          const email = await new Promise((resolve, reject) => {
+        case "WAITING_FOR_CONFIRMATION":
+          console.log("Payment is waiting for confirmation");
+          //Update order status in the database
+          await new Promise((resolve, reject) => {
             connection.query(
-              "SELECT customerEmail FROM Orders WHERE extOrderId = ?",
+              "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+              [status, extOrderId],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Order with order id: " +
+                      orderId +
+                      " has been updated in the database"
+                  );
+                  resolve();
+                }
+              }
+            );
+          });
+          break;
+
+        case "COMPLETED":
+          //Before running this code, check is the email has been sent
+          //For that pursope, extract the 'wasSent' column value from the database
+          const wasSent = await new Promise((resolve, reject) => {
+            connection.query(
+              "SELECT wasSent FROM Orders WHERE extOrderId = ?",
               [extOrderId],
               (error, results) => {
                 if (error) {
@@ -1057,152 +1074,201 @@ app.post(`/${process.env.INDIVIDUAL_AGREEMENTS_PAYEMENT_NOTIFY_URL}`, async (req
                   reject(error);
                 } else {
                   console.log(
-                    "Email for order with order id: " +
+                    "WasSent column value for order with order id: " +
                       orderId +
                       " has been retrieved from the database"
                   );
-                  resolve(results[0].customerEmail);
+                  resolve(results[0].wasSent);
                 }
               }
             );
           });
 
-          //Retrieve from the database the agreements the user has bought
-          const boughtAgreementsNames = await new Promise((resolve, reject) => {
-            connection.query(
-              "SELECT productName FROM OrderProducts WHERE extOrderId = ?",
-              [extOrderId],
-              (error, results) => {
-                if (error) {
-                  console.log("Error while querying the database", error);
-                  reject(error);
-                } else {
-                  console.log(
-                    "Bought agreements for order with order id: " +
-                      orderId +
-                      " have been retrieved from the database"
-                  );
-                  resolve(results);
+          if (wasSent === 0) {
+            console.log("Payment is completed");
+            //Update order status in the database
+            await new Promise((resolve, reject) => {
+              connection.query(
+                "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+                [status, extOrderId],
+                (error, results) => {
+                  if (error) {
+                    console.log("Error while querying the database", error);
+                    reject(error);
+                  } else {
+                    console.log(
+                      "Order with order id: " +
+                        orderId +
+                        " has been updated in the database"
+                    );
+                    resolve();
+                  }
                 }
-              }
-            );
-          });
+              );
+            });
 
-          const boughtAgreementsPromises = boughtAgreementsNames.map(
-            (agreement) => {
-              return new Promise((resolve, reject) => {
+            //Retrieve from the database the email of the user who bought the agreements
+            const email = await new Promise((resolve, reject) => {
+              connection.query(
+                "SELECT customerEmail FROM Orders WHERE extOrderId = ?",
+                [extOrderId],
+                (error, results) => {
+                  if (error) {
+                    console.log("Error while querying the database", error);
+                    reject(error);
+                  } else {
+                    console.log(
+                      "Email for order with order id: " +
+                        orderId +
+                        " has been retrieved from the database"
+                    );
+                    resolve(results[0].customerEmail);
+                  }
+                }
+              );
+            });
+
+            //Retrieve from the database the agreements the user has bought
+            const boughtAgreementsNames = await new Promise(
+              (resolve, reject) => {
                 connection.query(
-                  "SELECT fileName FROM Agreements WHERE agreementName = ?",
-                  [agreement.productName],
+                  "SELECT productName FROM OrderProducts WHERE extOrderId = ?",
+                  [extOrderId],
                   (error, results) => {
                     if (error) {
                       console.log("Error while querying the database", error);
                       reject(error);
                     } else {
                       console.log(
-                        "Bought agreement: " +
-                          results[0].fileName +
-                          " has been retrieved from the database"
+                        "Bought agreements for order with order id: " +
+                          orderId +
+                          " have been retrieved from the database"
                       );
-                      resolve(results[0].fileName);
+                      resolve(results);
                     }
                   }
                 );
-              });
+              }
+            );
+
+            const boughtAgreementsPromises = boughtAgreementsNames.map(
+              (agreement) => {
+                return new Promise((resolve, reject) => {
+                  connection.query(
+                    "SELECT fileName FROM Agreements WHERE agreementName = ?",
+                    [agreement.productName],
+                    (error, results) => {
+                      if (error) {
+                        console.log("Error while querying the database", error);
+                        reject(error);
+                      } else {
+                        console.log(
+                          "Bought agreement: " +
+                            results[0].fileName +
+                            " has been retrieved from the database"
+                        );
+                        resolve(results[0].fileName);
+                      }
+                    }
+                  );
+                });
+              }
+            );
+
+            const boughtAgreements = await Promise.all(
+              boughtAgreementsPromises
+            );
+
+            //Console.log it for debugging purposes
+            console.log("Bought agreements: ", boughtAgreements);
+
+            //Modify the boughtAgreements agreements names into file names
+            function getFileNameFromProducts(productName) {
+              // Prepend the new prefix
+              productName = productName + ".docx";
+
+              return productName;
             }
-          );
 
-          const boughtAgreements = await Promise.all(boughtAgreementsPromises);
+            //Add the suffix to the file names
 
-          //Console.log it for debugging purposes
-          console.log("Bought agreements: ", boughtAgreements);
+            //Construct the path for each bought agreement
+            const fileNames = boughtAgreements.map((fileName) =>
+              getFileNameFromProducts(fileName)
+            );
 
-          //Modify the boughtAgreements agreements names into file names
-          function getFileNameFromProducts(productName) {
-            // Prepend the new prefix
-            productName = productName + ".docx";
+            //Create the actual attachments for the email
+            const attachments = fileNames.map((fileName) => {
+              return {
+                path: `/var/www/html/agreements/${fileName}`,
+              };
+            });
 
-            return productName;
+            //Send the bought agreements to the client using the email provided in the notification
+            let emailOptions = {
+              from: "pomoc@prawokosmetyczne.pl",
+              to: email,
+              subject: "Zakupione zgody",
+              text: "Zakupione zgody:",
+              attachments: attachments,
+            };
+
+            transporter.sendMail(emailOptions, (error, info) => {
+              if (error) {
+                console.log("Error during email sending: ", error);
+              } else {
+                console.log("Email sent: ", info.response);
+              }
+            });
+          } else {
+            console.log(
+              "Email has already been sent for oder with order id: " + orderId
+            );
           }
 
-          //Add the suffix to the file names
+          break;
 
-          //Construct the path for each bought agreement
-          const fileNames = boughtAgreements.map((fileName) =>
-            getFileNameFromProducts(fileName)
-          );
-
-          //Create the actual attachments for the email
-          const attachments = fileNames.map((fileName) => {
-            return {
-              path: `/var/www/html/agreements/${fileName}`,
-            };
-          });
-
-          //Send the bought agreements to the client using the email provided in the notification
-          let emailOptions = {
-            from: "pomoc@prawokosmetyczne.pl",
-            to: email,
-            subject: "Zakupione zgody",
-            text: "Zakupione zgody:",
-            attachments: attachments,
-          };
-
-          transporter.sendMail(emailOptions, (error, info) => {
-            if (error) {
-              console.log("Error during email sending: ", error);
-            } else {
-              console.log("Email sent: ", info.response);
-            }
-          });
-        } else {
-          console.log(
-            "Email has already been sent for oder with order id: " + orderId
-          );
-        }
-
-        break;
-
-      case "CANCELED":
-        console.log("Payment is canceled");
-        //Update order status in the database
-        await new Promise((resolve, reject) => {
-          connection.query(
-            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
-            [status, extOrderId],
-            (error, results) => {
-              if (error) {
-                console.log("Error while querying the database", error);
-                reject(error);
-              } else {
-                console.log(
-                  "Order with order id: " +
-                    orderId +
-                    " has been updated in the database"
-                );
-                resolve();
+        case "CANCELED":
+          console.log("Payment is canceled");
+          //Update order status in the database
+          await new Promise((resolve, reject) => {
+            connection.query(
+              "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+              [status, extOrderId],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Order with order id: " +
+                      orderId +
+                      " has been updated in the database"
+                  );
+                  resolve();
+                }
               }
-            }
-          );
-        });
-        break;
+            );
+          });
+          break;
 
-      default:
-        console.log("Payment status is unknown");
-        break;
+        default:
+          console.log("Payment status is unknown");
+          break;
+      }
+
+      console.log("Received a payment notification: ", notification);
+
+      console.log(
+        "Valid signature. Payment notification processed successfully."
+      );
+      return res.status(200).send("Notification processed");
+    } catch (error) {
+      console.error("Error processing payment notification:", error);
+      return res.status(500).send("Internal server error");
     }
-
-    console.log("Received a payment notification: ", notification);
-
-    console.log(
-      "Valid signature. Payment notification processed successfully."
-    );
-    return res.status(200).send("Notification processed");
-  } catch (error) {
-    console.error("Error processing payment notification:", error);
-    return res.status(500).send("Internal server error");
   }
-});
+);
 
 app.get("/orderStatus/:orderId", async (req, res) => {
   try {
@@ -1247,7 +1313,7 @@ app.get("/orderStatus/:orderId", async (req, res) => {
 
 /*********************************************************************************/
 
-app.post('/buySubscription', async (req, res) => {
+app.post("/buySubscription", async (req, res) => {
   try {
     const subscriptionId = req.body.subscriptionId;
     console.log("Subscription id: ", subscriptionId);
@@ -1257,33 +1323,37 @@ app.post('/buySubscription', async (req, res) => {
 
     //Also, save how many agreements the subscription contains
     //Query the database for that
-    const numberOfAgreementsInSubscription = await new Promise((resolve, reject) => {
-      connection.query(
-        "SELECT numberOfAgreements FROM Subscriptions WHERE subscriptionId = ?",
-        [subscriptionId],
-        (error, results) => {
-          if (error) {
-            console.log("Error while querying the database", error);
-            reject(error);
-          } else {
-            console.log(
-              "Number of agreements in subscription: " +
-                results[0].numberOfAgreements +
-                " has been retrieved from the database"
-            );
-            resolve(results[0].numberOfAgreements);
+    const numberOfAgreementsInSubscription = await new Promise(
+      (resolve, reject) => {
+        connection.query(
+          "SELECT numberOfAgreements FROM Subscriptions WHERE subscriptionId = ?",
+          [subscriptionId],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              console.log(
+                "Number of agreements in subscription: " +
+                  results[0].numberOfAgreements +
+                  " has been retrieved from the database"
+              );
+              resolve(results[0].numberOfAgreements);
+            }
           }
-        }
-      );
-    });
+        );
+      }
+    );
 
     //Save it to the session as well
-    req.session.numberOfAgreementsInSubscription = numberOfAgreementsInSubscription;
+    req.session.numberOfAgreementsInSubscription =
+      numberOfAgreementsInSubscription;
 
     //Send the user to the order's summary page
-    console.log("Redirecting the user to the order's summary page (for subscription)");
+    console.log(
+      "Redirecting the user to the order's summary page (for subscription)"
+    );
     res.json({ status: "success", message: "Redirecting the user" });
-
   } catch (error) {
     console.log("Error while buying subscription", error);
     res
@@ -1292,78 +1362,91 @@ app.post('/buySubscription', async (req, res) => {
   }
 });
 
-app.get('/subscriptionOrderSummaryPage', checkAuthentication, checkEmailConfirmation, async (req, res) => {
-  try {
-    //Extract the necessary information from the session
-    const subscriptionId = req.session.subscriptionId;
-    console.log("Subscription id: ", subscriptionId);
-    const numberOfAgreementsInSubscription = req.session.numberOfAgreementsInSubscription;
-    console.log("Number of agreements in subscription: ", numberOfAgreementsInSubscription);
-
-    //Log the ip address of the user
-    console.log("User's IP address: ", req.ip);
-
-    //Save it to the session
-    req.session.ip = req.ip;
-
-    //Query the database to extract the subscription's name
-    const subscriptionName = await new Promise((resolve, reject) => {
-      connection.query(
-        "SELECT subscriptionName FROM Subscriptions WHERE subscriptionId = ?",
-        [subscriptionId],
-        (error, results) => {
-          if (error) {
-            console.log("Error while querying the database", error);
-            reject(error);
-          } else {
-            console.log(
-              "Subscription name: " +
-                results[0].subscriptionName +
-                " has been retrieved from the database"
-            );
-            resolve(results[0].subscriptionName);
-          }
-        }
+app.get(
+  "/subscriptionOrderSummaryPage",
+  checkAuthentication,
+  checkEmailConfirmation,
+  async (req, res) => {
+    try {
+      //Extract the necessary information from the session
+      const subscriptionId = req.session.subscriptionId;
+      console.log("Subscription id: ", subscriptionId);
+      const numberOfAgreementsInSubscription =
+        req.session.numberOfAgreementsInSubscription;
+      console.log(
+        "Number of agreements in subscription: ",
+        numberOfAgreementsInSubscription
       );
-    });
 
-    //Query the database to retrieve all the available agreement from the Offers table
-    const availableAgreements = await new Promise((resolve, reject) => {
-      connection.query(
-        "SELECT * FROM Agreements ORDER BY category",
-        function (error, results, fields) {
-          if (error) {
-            reject(error);
-          } else {
-            console.log(
-              "The query was successful: all the offers were retrieved from the Offers table"
-            );
-            resolve(results); //Resolve the promise with the retrieved offers
+      //Log the ip address of the user
+      console.log("User's IP address: ", req.ip);
+
+      //Save it to the session
+      req.session.ip = req.ip;
+
+      //Query the database to extract the subscription's name
+      const subscriptionName = await new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT subscriptionName FROM Subscriptions WHERE subscriptionId = ?",
+          [subscriptionId],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              console.log(
+                "Subscription name: " +
+                  results[0].subscriptionName +
+                  " has been retrieved from the database"
+              );
+              resolve(results[0].subscriptionName);
+            }
           }
-        }
+        );
+      });
+
+      //Query the database to retrieve all the available agreement from the Offers table
+      const availableAgreements = await new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT * FROM Agreements ORDER BY category",
+          function (error, results, fields) {
+            if (error) {
+              reject(error);
+            } else {
+              console.log(
+                "The query was successful: all the offers were retrieved from the Offers table"
+              );
+              resolve(results); //Resolve the promise with the retrieved offers
+            }
+          }
+        );
+      });
+
+      //Display the order's summary page
+      res.render("SubscriptionOrderSummaryPage", {
+        subscriptionId: subscriptionId,
+        numberOfAgreementsInSubscription: numberOfAgreementsInSubscription,
+        subscriptionName: subscriptionName,
+        availableAgreements: availableAgreements,
+        ip: req.ip,
+      });
+    } catch (error) {
+      console.log(
+        "Error while displaying the subscription order's summary page",
+        error
       );
-    });
+      res
+        .status(500)
+        .json({ status: "error", message: "Internal server error: " + error });
+    }
+  }
+);
 
-    //Display the order's summary page
-    res.render("SubscriptionOrderSummaryPage", {
-      subscriptionId: subscriptionId,
-      numberOfAgreementsInSubscription: numberOfAgreementsInSubscription,
-      subscriptionName: subscriptionName,
-      availableAgreements: availableAgreements,
-      ip: req.ip,
-    });    
-
-  } catch (error) {
-    console.log("Error while displaying the subscription order's summary page", error);
-    res
-      .status(500)
-      .json({ status: "error", message: "Internal server error: " + error });
-  }  
-});
-
-app.post('/makePaymentForSubscription', async (req, res) => {
+app.post("/makePaymentForSubscription", async (req, res) => {
   try {
-
+    console.log("Received a request to make payment for the subscription");
+    //Retrieve the selected agreements' names and prices from the request body
+    let selectedAgreementsNames = req.body.selectedAgreementsNames;
   } catch (error) {
     console.log("Error while making payment for the subscription", error);
     res
