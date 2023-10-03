@@ -61,7 +61,7 @@ document.getElementById("buy-1-subscription").addEventListener("click", () => {
     .then((response) => response.json())
     .then((data) => {
       if (data.status === "success") {
-        window.location.href = "/orderSummaryPage";
+        window.location.href = "/subscriptionOrderSummaryPage";
       }
     })
     .catch((error) => {
@@ -83,7 +83,7 @@ document.getElementById("buy-2-subscription").addEventListener("click", () => {
     .then((response) => response.json())
     .then((data) => {
       if (data.status === "success") {
-        window.location.href = "/subscriptionOrderSummaryPage";
+        window.location.href = '/subscriptionOrderSummaryPage';
       }
     })
     .catch((error) => {
@@ -105,7 +105,7 @@ document.getElementById("buy-3-subscription").addEventListener("click", () => {
     .then((response) => response.json())
     .then((data) => {
       if (data.status === "success") {
-        window.location.href = "/subscriptionOrderSummaryPage";
+        window.location.href = '/subscriptionOrderSummaryPage';
       }
     })
     .catch((error) => {
@@ -127,7 +127,7 @@ document.getElementById("buy-4-subscription").addEventListener("click", () => {
     .then((response) => response.json())
     .then((data) => {
       if (data.status === "success") {
-        window.location.href = "/subscriptionOrderSummaryPage";
+        window.location.href = '/subscriptionOrderSummaryPage';
       }
     })
     .catch((error) => {
