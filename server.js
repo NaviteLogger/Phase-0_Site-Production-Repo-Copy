@@ -1562,7 +1562,32 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     };
     console.log("Order data: ", orderData);
 
-
+    //Insert the order into the database
+    await new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, totalAmount) VALUES (?, ?, ?, ?, ?)",
+        [
+          extOrderId,
+          new Date().toISOString().slice(0, 19).replace("T", " "),
+          ip,
+          req.session.passport.user.email,
+          subscriptionPrice * 100,
+        ],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database: ", error);
+            reject(error);
+          } else {
+            console.log(
+              "Order with order id: " +
+                extOrderId +
+                " has been inserted into the database"
+            );
+            resolve();
+          }
+        }
+      );
+    });
 
 
   } catch (error) {
