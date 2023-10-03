@@ -37,7 +37,7 @@
     </header>
 
     <h3>Wybrana przez Ciebie subskrypcja to <%= subscriptionName %></h3>
-    <h3>W ramach subskrypcji możesz wypełnić <%= numberOfAgreementsInSubscription %> zgód on-line</h3>
+    <h3>W ramach subskrypcji możesz wypełnić zgód on-line: <%= numberOfAgreementsInSubscription ? `maks. ${numberOfAgreementsInSubscription}` : 'wszystkie dostępne' %></h3>
     <h3>Wybierz zgody, które mają zostać przypisane do Twojej subskrypcji ( <%= numberOfAgreementsInSubscription ? `maks. ${numberOfAgreementsInSubscription}` : 'Wszystkie dostępne' %> ):</h3>
 
     <div class="center-alignment">
