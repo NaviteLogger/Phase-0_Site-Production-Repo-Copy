@@ -28,7 +28,7 @@ document
     // Check if the number of selected agreements matches the desired number
     if (selectedAgreements.length !== numberOfAgreementsInSubscription) {
       alert(
-        `Please select exactly ${numberOfAgreementsInSubscription} agreements.`
+        `Proszę wybrać dokładnie ${numberOfAgreementsInSubscription} zgody.`
       );
       return; // exit the event handler early
     }
