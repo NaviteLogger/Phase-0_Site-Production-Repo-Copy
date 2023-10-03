@@ -191,7 +191,7 @@ app.get("/offerPage", async (req, res) => {
 
   const subscriptionAgreements = await new Promise((resolve, reject) => {
     connection.query(
-      "SELECT * FROM SubscriptionAgreements ORDER BY category",
+      "SELECT * FROM Subscriptions",
       function (error, results, fields) {
         if (error) {
           reject(error);
@@ -206,7 +206,6 @@ app.get("/offerPage", async (req, res) => {
   });
 
   res.render("OfferPage", { subscriptionAgreements: subscriptionAgreements }); //Render the OfferPage with the retrieved agreements
-  resolve();
 });
 
 /*********************************************************************************/
