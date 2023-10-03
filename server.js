@@ -1331,6 +1331,7 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, async (req, res) =
     res.render("SubscriptionOrderSummaryPage", {
       subscriptionId: subscriptionId,
       numberOfAgreementsInSubscription: numberOfAgreementsInSubscription,
+      subscriptionName: subscriptionName,
       ip: req.ip,
     });    
 
