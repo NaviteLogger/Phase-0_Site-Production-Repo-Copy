@@ -1294,6 +1294,11 @@ app.post('buySubscription', async (req, res) => {
 
 app.get('/subscriptionOrderSummaryPage', checkAuthentication, (req, res) => {
   try {
+    //Extract the necessary information from the session
+    const subscriptionId = req.session.subscriptionId;
+    console.log("Subscription id: ", subscriptionId);
+    const numberOfAgreementsInSubscription = req.session.numberOfAgreementsInSubscription;
+    console.log("Number of agreements in subscription: ", numberOfAgreementsInSubscription);
 
   } catch (error) {
     console.log("Error while displaying the subscription order's summary page", error);
