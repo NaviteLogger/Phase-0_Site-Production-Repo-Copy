@@ -1345,7 +1345,7 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, checkEmailConfirma
     });
 
     //Display the order's summary page
-    res.render('SubscriptionOrderSummaryPage', {
+    res.render("SubscriptionOrderSummaryPage", {
       subscriptionId: subscriptionId,
       numberOfAgreementsInSubscription: numberOfAgreementsInSubscription,
       subscriptionName: subscriptionName,
