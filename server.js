@@ -1361,6 +1361,10 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, checkEmailConfirma
   }  
 });
 
+app.post('/makePaymentForSubscription', async (req, res) => {
+  
+});
+
 /*********************************************************************************/
 
 //Handle the request to the client\'s portal page,
