@@ -129,8 +129,7 @@
         >
           <div class="box-item">
             <h3>
-              <%= subscription.numberOfAgreements === null ? 'Platinum' :
-              subscription.numberOfAgreements %>
+              <%= subscription.subscriptionName %>
             </h3>
             <p>RODO</p>
             <p>WYWIAD</p>
@@ -145,7 +144,7 @@
               class="clients-portal buy-button"
               data-subscription-id="<%= subscription.subscriptionId %>"
             >
-              KUP for <%= subscription.price %>$
+              KUP za <%= subscription.price %>PLN
             </button>
           </div>
         </div>
