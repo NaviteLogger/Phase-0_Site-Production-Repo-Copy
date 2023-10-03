@@ -1328,7 +1328,7 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, checkEmailConfirma
     });
 
     //Query the database to retrieve all the available agreement from the Offers table
-    const individualAgreements = await new Promise((resolve, reject) => {
+    const availableAgreements = await new Promise((resolve, reject) => {
       connection.query(
         "SELECT * FROM Agreements ORDER BY category",
         function (error, results, fields) {
@@ -1349,6 +1349,7 @@ app.get('/subscriptionOrderSummaryPage', checkAuthentication, checkEmailConfirma
       subscriptionId: subscriptionId,
       numberOfAgreementsInSubscription: numberOfAgreementsInSubscription,
       subscriptionName: subscriptionName,
+      availableAgreements: availableAgreements,
       ip: req.ip,
     });    
 
