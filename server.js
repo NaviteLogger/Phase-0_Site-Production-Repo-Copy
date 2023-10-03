@@ -264,7 +264,7 @@ passport.serializeUser((user, done) => {
       " user.email: " +
       user.email
   );
-  done(null, { id: user.client_id, email: user.email }); //Keeps the client_id and email in the session for further use
+  done(null, { id: user.clientId, email: user.email }); //Keeps the client_id and email in the session for further use
 });
 
 //This is the function which is called when a user tries to access a page - it will deserialize (retrieve) the user from the session
