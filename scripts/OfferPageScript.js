@@ -67,4 +67,4 @@ document.getElementById('buy-1-subscription').addEventListener('click', () => {
   .catch(error => {
     console.error('There has been a problem with your fetch operation:', error);
   });
-}
+});
