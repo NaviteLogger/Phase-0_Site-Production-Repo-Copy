@@ -1655,6 +1655,13 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       },
       maxRedirects: 0,
     };
+
+    try {
+      const response = await axios.post(
+        `${PAYU_CONFIG.BASE_URL}/api/v2_1/orders/`,
+        orderData,
+        config
+      );
     
 
   } catch (error) {
