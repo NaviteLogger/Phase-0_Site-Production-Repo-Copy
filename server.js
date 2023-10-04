@@ -1566,16 +1566,20 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     };
     console.log("Order data: ", orderData);
 
+    //Prepare the order type to be inserted into the database
+    const orderType = "SUBSCRIPTION";
+
     //Insert the order into the database
     await new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, totalAmount) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, totalAmount, orderType) VALUES (?, ?, ?, ?, ?, ?)",
         [
           extOrderId,
           new Date().toISOString().slice(0, 19).replace("T", " "),
           ip,
           req.session.passport.user.email,
           subscriptionPrice * 100,
+          orderType,
         ],
         (error, results) => {
           if (error) {
