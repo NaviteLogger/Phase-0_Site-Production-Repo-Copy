@@ -45,7 +45,7 @@ document
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
-          window.location.href = "/makePaymentForSubscription";
+          window.location.href = "/subscriptionOrderSummaryPage";
         }
       })
       .catch((error) => {
