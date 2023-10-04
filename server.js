@@ -1949,32 +1949,14 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
             );
           });
 
-          //Assign the agreements to the user's account (email reference)
-          //First, retrieve the clientId from the database
-          const clientId = await new Promise((resolve, reject) => {
-            connection.query(
-              "SELECT clientId FROM Clients WHERE email = ?",
-              [buyerEmail],
-              (error, results) => {
-                if (error) {
-                  console.log("Error while querying the database", error);
-                  reject(error);
-                } else {
-                  console.log(
-                    "Client id for user with email: " +
-                      req.session.passport.user.email +
-                      " has been retrieved from the database"
-                  );
-                  resolve(results[0].clientId);
-                }
-              }
-            );
-          });
-
-          console.log("Inserting the data in to SubscriptionsOwnerships table");
-          connection.query(
-            "INSERT INTO SubscriptionsOwnerships (subscriptionId, clientId) VALUES (?, (SELECT clientId FROM Clients WHERE email = ?))",
-          )
+          //Send the user an email with the confirmation about the bought subscription
+          //Set the email options
+          let emailOptions = {
+            from: "pomoc@prawokosmetyczne.pl",
+            to: buyerEmail,
+            subject: "Zakup subskrypcji",
+            text: "Zakupiono subskrypcję: " + subscriptionName,
+          };
 
         } else {
 
