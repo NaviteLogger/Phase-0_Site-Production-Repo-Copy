@@ -1844,6 +1844,8 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
           );
         });
 
+        
+
         if (wasSent === 0) {
           console.log("Payment is completed");
           //Update order status in the database
@@ -1866,6 +1868,8 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
               }
             );
           });
+
+          //
 
         } else {
 
