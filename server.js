@@ -1848,6 +1848,10 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
         });
         break;
 
+      default:
+        console.log("Payment status is unknown");
+        break;
+
   } catch (error) {
     console.error("Error processing payment notification:", error);
     return res.status(500).send("Internal server error");
