@@ -1751,6 +1751,27 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
       );
     });
 
+    //Insert the order status into the OrderProducts table
+    await new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE OrderedProducts SET orderId = ? WHERE extOrderId = ?",
+        [orderId, extOrderId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database: ", error);
+            reject(error);
+          } else {
+            console.log(
+              "Payment information for order with order id: " +
+                orderId +
+                " has been inserted into the OrderProducts table"
+            );
+            resolve();
+          }
+        }
+      );
+    });
+
   } catch (error) {
     console.error("Error processing payment notification:", error);
     return res.status(500).send("Internal server error");
