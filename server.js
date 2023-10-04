@@ -1226,7 +1226,6 @@ app.post(
               "Email has already been sent for oder with order id: " + orderId
             );
           }
-
           break;
 
         case "CANCELED":
@@ -1848,8 +1847,9 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
         if (wasSent === 0) {
 
         } else {
-          
+
         }
+        break;
       
       case "CANCELED":
         console.log("Payment is canceled");
@@ -1878,7 +1878,15 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
       default:
         console.log("Payment status is unknown");
         break;
+    }
 
+    console.log("Received a payment notification: ", notification);
+
+    console.log(
+      "Valid signature. Payment notification processed successfully."
+    );
+
+    return res.status(200).send("Notification processed");
   } catch (error) {
     console.error("Error processing payment notification:", error);
     return res.status(500).send("Internal server error");
