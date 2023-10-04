@@ -852,7 +852,7 @@ app.post("/makePaymentForAgreements", async (req, res) => {
             console.log(
               "Order with order id: " +
                 extOrderId +
-                " has been inserted into the database"
+                " has been inserted into the database (for individual agreements)"
             );
             resolve();
           }
@@ -1589,7 +1589,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
             console.log(
               "Order with order id: " +
                 extOrderId +
-                " has been inserted into the database"
+                " has been inserted into the database (subscription)"
             );
             resolve();
           }
