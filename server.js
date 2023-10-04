@@ -1597,7 +1597,26 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       );
     });
 
-    //Now we need to figure out how to insert the ordered subscription's agreements into the database
+    //Insert the ordered subscription into the database
+    await new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO OrderedProducts (extOrderId, productName, unitPrice, quantity) VALUES (?, ?, ?, 1)",
+        [extOrderId, subscriptionName, subscriptionPrice * 100],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database: ", error);
+            reject(error);
+          } else {
+            console.log(
+              "Subscription with name: " +
+                subscriptionName +
+                " has been inserted into the database"
+            );
+            resolve();
+          }
+        }
+      );
+    });
     
 
   } catch (error) {
