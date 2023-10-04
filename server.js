@@ -829,16 +829,20 @@ app.post("/makePaymentForAgreements", async (req, res) => {
     };
     console.log("Order data: ", orderData);
 
+    //Prepare the order type to be inserted into the database
+    const orderType = "INDIVIDUAL";
+
     //Insert the order into the database
     await new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, totalAmount) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO Orders (extOrderId, orderCreateDate, customerIp, customerEmail, totalAmount, orderType) VALUES (?, ?, ?, ?, ?, ?)",
         [
           extOrderId,
           new Date().toISOString().slice(0, 19).replace("T", " "),
           req.ip,
           email,
           totalAmount,
+          orderType,
         ],
         (error, results) => {
           if (error) {
