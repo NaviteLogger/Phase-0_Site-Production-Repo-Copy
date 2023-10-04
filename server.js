@@ -1728,6 +1728,7 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
     const orderId = notification.order.orderId;
     const extOrderId = notification.order.extOrderId;
     const status = notification.order.status;
+    const buyerEmail = notification.order.buyer.email;
 
     //Insert the status information into the database
     await new Promise((resolve, reject) => {
@@ -1893,9 +1894,62 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
             );
           });
 
+          //Set the day after 30 days from now as the expiration date for the subscription
+          const expirationDate = new Date();
+          expirationDate.setDate(expirationDate.getDate() + 30);
+
+          //Make that date MySQL-friendly
+          const expirationDateMySQL = expirationDate
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ");
+
+          //Insert those agreements into the AgreementsOwnerships table
+          for (let i = 0; i < associatedAgreements.length; i++) {
+            await new Promise((resolve, reject) => {
+              connection.query(
+                "INSERT INTO AgreementsOwnerships (agreementId, clientId, accessExpiresDate) VALUES ((SELECT agreementId FROM Agreements WHERE agreementName = ?), (SELECT clientId FROM Clients WHERE email = ?), ?)",
+                [associatedAgreements[i].productName, buyerEmail, expirationDateMySQL],
+                (error, results) => {
+                  if (error) {
+                    console.log("Error while querying the database", error);
+                    reject(error);
+                  } else {
+                    console.log(
+                      "Associated agreement: " +
+                        associatedAgreements[i].productName +
+                        " has been inserted into the AgreementsOwnerships table"
+                    );
+                    resolve();
+                  }
+                }
+              );
+            });
+          }
+
+          //Insert the subscription info into the SubscriptionsOwnerships table
+
           //Assign the agreements to the user's account (email reference)
           //First, retrieve the clientId from the database
-          
+          const clientId = await new Promise((resolve, reject) => {
+            connection.query(
+              "SELECT clientId FROM Clients WHERE email = ?",
+              [buyerEmail],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Client id for user with email: " +
+                      req.session.passport.user.email +
+                      " has been retrieved from the database"
+                  );
+                  resolve(results[0].clientId);
+                }
+              }
+            );
+          });
 
           console.log("Inserting the data in to SubscriptionsOwnerships table");
           connection.query(
