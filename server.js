@@ -1844,6 +1844,12 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
             }
           );
         });
+
+        if (wasSent === 0) {
+
+        } else {
+          
+        }
       
       case "CANCELED":
         console.log("Payment is canceled");
