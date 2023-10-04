@@ -1797,7 +1797,32 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
           );
         });
         break;
-        
+
+      case "WAITING_FOR_CONFIRMATION":
+        console.log("Payment is waiting for confirmation");
+        //Update order status in the database
+        await new Promise((resolve, reject) => {
+          connection.query(
+            "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+            [status, extOrderId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "Order with order id: " +
+                    orderId +
+                    " has been updated in the database"
+                );
+                resolve();
+              }
+            }
+          );
+        });
+        break;
+
+
 
   } catch (error) {
     console.error("Error processing payment notification:", error);
