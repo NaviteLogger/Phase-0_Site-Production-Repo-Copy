@@ -1844,8 +1844,6 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
           );
         });
 
-        
-
         if (wasSent === 0) {
           console.log("Payment is completed");
           //Update order status in the database
@@ -1869,7 +1867,10 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
             );
           });
 
-          //
+          //Once the order is completed, 3 things have to be done: 
+          //1. Insert the info about the bought subscription into the SubscriptionsOwnerships table
+          //2. Insert the info about the bought agreements into the AgreementsOwnerships table
+          //3. Send the user an email with the confirmation about the bought subscription
 
         } else {
 
