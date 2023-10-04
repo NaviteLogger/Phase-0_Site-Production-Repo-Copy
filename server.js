@@ -1716,6 +1716,15 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
     hash.update(concatenatedBody);
     const expectedSignature = hash.digest("hex");
 
+    //Compare the expected signature with the incoming signature
+    if (incomingSignature !== expectedSignature) {
+      console.log("Invalid signature");
+      return res.status(400).send("Invalid signature");
+    }
+
+    //Handle the incoming notification as a JSON object
+    const notification = req.body;
+
   } catch (error) {
     console.error("Error processing payment notification:", error);
     return res.status(500).send("Internal server error");
