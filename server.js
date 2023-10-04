@@ -1707,6 +1707,15 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
     const incomingSignature = headerParts["signature"];
     const algorithmName = headerParts["algorithm"] || "SHA-256";
 
+    //Combine the notification body with the second_key from the config
+    const concatenatedBody =
+      JSON.stringify(req.body) + PAYU_CONFIG.SECOND_KEY;
+
+    //Generate the expected signature
+    const hash = crypto.createHash(algorithmName);
+    hash.update(concatenatedBody);
+    const expectedSignature = hash.digest("hex");
+
   } catch (error) {
     console.error("Error processing payment notification:", error);
     return res.status(500).send("Internal server error");
