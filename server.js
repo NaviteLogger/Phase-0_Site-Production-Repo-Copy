@@ -1730,7 +1730,26 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
     const extOrderId = notification.order.extOrderId;
     const status = notification.order.status;
 
-    
+    //Insert the status information into the database
+    await new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE Orders SET orderId = ?, status = ? WHERE extOrderId = ?",
+        [orderId, status, extOrderId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+            reject(error);
+          } else {
+            console.log(
+              "Payment information for order with order id: " +
+                orderId +
+                " has been inserted into the Orders table"
+            );
+            resolve();
+          }
+        }
+      );
+    });
 
   } catch (error) {
     console.error("Error processing payment notification:", error);
