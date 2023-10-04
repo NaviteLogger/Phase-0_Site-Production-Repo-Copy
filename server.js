@@ -1688,6 +1688,11 @@ app.post("/makePaymentForSubscription", async (req, res) => {
   }
 });
 
+//Handle the server-to-server notification from PayU
+app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) => {
+  
+});
+
 /*********************************************************************************/
 
 //Handle the request to the client\'s portal page,
