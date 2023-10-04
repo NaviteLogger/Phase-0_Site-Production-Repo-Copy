@@ -1063,7 +1063,7 @@ app.post(
           break;
 
         case "COMPLETED":
-          //Before running this code, check is the email has been sent
+          //Before running this code, check if the email has been sent
           //For that pursope, extract the 'wasSent' column value from the database
           const wasSent = await new Promise((resolve, reject) => {
             connection.query(
@@ -1823,6 +1823,27 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
         break;
 
       case "COMPLETED":
+        //Before running this code, check if the email has been sent
+        //For that pursope, extract the 'wasSent' column value from the database
+        const wasSent = await new Promise((resolve, reject) => {
+          connection.query(
+            "SELECT wasSent FROM Orders WHERE extOrderId = ?",
+            [extOrderId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "WasSent column value for order with order id: " +
+                    orderId +
+                    " has been retrieved from the database"
+                );
+                resolve(results[0].wasSent);
+              }
+            }
+          );
+        });
       
       case "CANCELED":
         console.log("Payment is canceled");
