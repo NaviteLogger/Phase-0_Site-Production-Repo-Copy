@@ -35,7 +35,7 @@ document
       return; // exit the event handler early
     }
 
-    fetch("/buySelectedAgreements", {
+    fetch("/makePaymentForSubscription", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +45,7 @@ document
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
-          window.location.href = "/subscriptionOrderSummaryPage";
+          window.location.href = data.redirectUri;
         }
       })
       .catch((error) => {
