@@ -1698,6 +1698,12 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
       return res.status(400).send("No signature header provided");
     }
 
+    const headerParts = signatureHeader.split(";").reduce((acc, part) => {
+      const [key, value] = part.split("=");
+      acc[key] = value;
+      return acc;
+    }, {});
+
   } catch (error) {
     console.error("Error processing payment notification:", error);
     return res.status(500).send("Internal server error");
