@@ -1530,7 +1530,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     });
 
     //Log the user's ip address
-    let ip = req.body.ip;
+    let ip = req.session.ip;
 
     //Create a PayU order here with the subscription price
     console.log("Creating a PayU order with the subscription price");
@@ -1871,6 +1871,31 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
           //1. Insert the info about the bought subscription into the SubscriptionsOwnerships table
           //2. Insert the info about the bought agreements into the AgreementsOwnerships table
           //3. Send the user an email with the confirmation about the bought subscription
+
+          //First, retrieve the associaded agreements with the subscription from the database
+          const associatedAgreements = await new Promise((resolve, reject) => {
+            connection.query(
+              "SELECT productName FROM OrderedProducts WHERE extOrderId = ?",
+              [extOrderId],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Associated agreements for subscription with id: " +
+                      subscriptionId +
+                      " have been retrieved from the database"
+                  );
+                  resolve(results);
+                }
+              }
+            );
+          });
+
+          //Assign the agreements to the user's account (email reference)
+          //First, retrieve the clientId from the database
+          
 
           console.log("Inserting the data in to SubscriptionsOwnerships table");
           connection.query(
