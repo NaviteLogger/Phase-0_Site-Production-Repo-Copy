@@ -1668,6 +1668,18 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       //Store the redirectUri in the session
       const redirectUri = response.data.location;
       res.json({ status: "success", redirectUri: redirectUri });
+    } catch (error) {
+      if (error.response && error.response.status === 302) {
+        const redirectUri = error.response.headers.location;
+        res.json({ status: "success", redirectUri: redirectUri });
+      } else {
+        console.log("Error while making payment for the subscription: ", error);
+        res.status(500).json({
+          status: "error",
+          message: "Internal server error: " + error,
+        });
+      }
+    }
   } catch (error) {
     console.log("Error while making payment for the subscription", error);
     res
