@@ -1955,8 +1955,17 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
             from: "pomoc@prawokosmetyczne.pl",
             to: buyerEmail,
             subject: "Zakup subskrypcji",
-            text: "Zakupiono subskrypcję: " + subscriptionName,
+            text: "Zakupiono subskrypcję: " + subscriptionName + ". Numer zamówienia: " + extOrderId + ".",
           };
+
+          //Send the email
+          transporter.sendMail(emailOptions, (error, info) => {
+            if (error) {
+              console.log("Error during email sending: ", error);
+            } else {
+              console.log("Email sent: ", info.response);
+            }
+          });
 
         } else {
 
