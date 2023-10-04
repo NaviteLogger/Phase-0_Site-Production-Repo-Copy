@@ -1704,6 +1704,9 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
       return acc;
     }, {});
 
+    const incomingSignature = headerParts["signature"];
+    const algorithmName = headerParts["algorithm"] || "SHA-256";
+
   } catch (error) {
     console.error("Error processing payment notification:", error);
     return res.status(500).send("Internal server error");
