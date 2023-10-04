@@ -1662,8 +1662,12 @@ app.post("/makePaymentForSubscription", async (req, res) => {
         orderData,
         config
       );
-    
 
+      console.log("Response from PayU: ", response.data);
+
+      //Store the redirectUri in the session
+      const redirectUri = response.data.location;
+      res.json({ status: "success", redirectUri: redirectUri });
   } catch (error) {
     console.log("Error while making payment for the subscription", error);
     res
