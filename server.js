@@ -1845,6 +1845,27 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
         });
 
         if (wasSent === 0) {
+          console.log("Payment is completed");
+          //Update order status in the database
+          await new Promise((resolve, reject) => {
+            connection.query(
+              "UPDATE Orders SET status = ? WHERE extOrderId = ?",
+              [status, extOrderId],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Order with order id: " +
+                      orderId +
+                      " has been updated in the database"
+                  );
+                  resolve();
+                }
+              }
+            );
+          });
 
         } else {
 
