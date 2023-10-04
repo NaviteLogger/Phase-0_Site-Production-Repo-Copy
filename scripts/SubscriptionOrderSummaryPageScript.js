@@ -26,7 +26,9 @@ document
     const numberOfAgreementsInSubscription = parseInt(document.body.getAttribute('numberOfAgreementsInSubscription'));
 
     // Check if the number of selected agreements matches the desired number
-    if (selectedAgreements.length !== numberOfAgreementsInSubscription) {
+    if (selectedAgreements.length === 0) {
+      console.log("'Platinum' subscription.");
+    } else if (selectedAgreements.length !== numberOfAgreementsInSubscription) {
       alert(
         `Proszę wybrać dokładnie ${numberOfAgreementsInSubscription} zgody.`
       );

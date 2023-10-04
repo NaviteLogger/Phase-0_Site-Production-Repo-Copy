@@ -1872,6 +1872,11 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
           //2. Insert the info about the bought agreements into the AgreementsOwnerships table
           //3. Send the user an email with the confirmation about the bought subscription
 
+          console.log("Inserting the data in to SubscriptionsOwnerships table");
+          connection.query(
+            "INSERT INTO SubscriptionsOwnerships (subscriptionId, clientId) VALUES (?, (SELECT clientId FROM Clients WHERE email = ?))",
+          )
+
         } else {
 
         }
