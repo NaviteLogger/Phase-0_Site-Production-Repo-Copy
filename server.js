@@ -1690,7 +1690,18 @@ app.post("/makePaymentForSubscription", async (req, res) => {
 
 //Handle the server-to-server notification from PayU
 app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) => {
-  
+  try {
+    const signatureHeader = req.headers["openpayu-signature"];
+
+    if (!signatureHeader) {
+      console.log("No signature header provided");
+      return res.status(400).send("No signature header provided");
+    }
+
+  } catch (error) {
+    console.error("Error processing payment notification:", error);
+    return res.status(500).send("Internal server error");
+  }    
 });
 
 /*********************************************************************************/
