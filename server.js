@@ -1645,7 +1645,16 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       });
     }
 
-    
+    const token = await getPayUToken();
+
+    //Set up the headers and other config for the request
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      maxRedirects: 0,
+    };
     
 
   } catch (error) {
