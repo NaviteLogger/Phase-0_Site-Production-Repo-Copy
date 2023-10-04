@@ -1729,6 +1729,7 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
     const extOrderId = notification.order.extOrderId;
     const status = notification.order.status;
     const buyerEmail = notification.order.buyer.email;
+    const subscriptionName = notification.order.products[0].name;
 
     //Insert the status information into the database
     await new Promise((resolve, reject) => {
@@ -1928,6 +1929,25 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
           }
 
           //Insert the subscription info into the SubscriptionsOwnerships table
+          await new Promise((resolve, reject) => {
+            connection.query(
+              "INSERT INTO SubscriptionsOwnerships (clientId, subscriptionId, purchaseDate, accessExpiresDate) VALUES ((SELECT clientId FROM Clients WHERE email = ?), (SELECT subscriptionId FROM Subscriptions WHERE subscriptionName = ?), ?, ?)",
+              [buyerEmail, subscriptionName, new Date().toISOString().slice(0, 19).replace("T", " "), expirationDateMySQL],
+              (error, results) => {
+                if (error) {
+                  console.log("Error while querying the database", error);
+                  reject(error);
+                } else {
+                  console.log(
+                    "Subscription: " +
+                      subscriptionName +
+                      " has been inserted into the SubscriptionsOwnerships table"
+                  );
+                  resolve();
+                }
+              }
+            );
+          });
 
           //Assign the agreements to the user's account (email reference)
           //First, retrieve the clientId from the database
