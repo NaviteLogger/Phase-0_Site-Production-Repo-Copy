@@ -1725,6 +1725,13 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
     //Handle the incoming notification as a JSON object
     const notification = req.body;
 
+    //Extract the relevant information to be inserted into the database from the notification
+    const orderId = notification.order.orderId;
+    const extOrderId = notification.order.extOrderId;
+    const status = notification.order.status;
+
+    
+
   } catch (error) {
     console.error("Error processing payment notification:", error);
     return res.status(500).send("Internal server error");
