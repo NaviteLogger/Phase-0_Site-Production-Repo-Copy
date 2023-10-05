@@ -2206,8 +2206,9 @@ app.get(
         FROM Agreements 
         INNER JOIN AgreementsOwnerships ON Agreements.agreementId = AgreementsOwnerships.agreementId 
         WHERE AgreementsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
-      `,
-          [userEmail, currentDate, dateAfter30Days],
+        AND AgreementsOwnerships.accessExpiresDate BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY)
+          `,
+          [userEmail],
           (error, results) => {
             if (error) {
               console.log("Error while querying the database", error);
