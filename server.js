@@ -1669,7 +1669,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
           [
             extOrderId,
             selectedAgreementsNames[i],
-            selectedAgreementsPrices[i],
+            subscriptionPrice * 100,
           ],
           (error, results) => {
             if (error) {
