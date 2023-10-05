@@ -2033,10 +2033,10 @@ app.get(
   AgreementsOwnerships table
   */
     try {
-      const results = await new Promise((resolve, reject) => {
+      const agreements = await new Promise((resolve, reject) => {
         connection.query(
           `
-        SELECT Agreements.agreementName
+        SELECT Agreements.agreementName, Agreements.accessExpiresDate
         FROM Agreements 
         INNER JOIN AgreementsOwnerships ON Agreements.agreementId = AgreementsOwnerships.agreementId 
         WHERE AgreementsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
@@ -2094,7 +2094,7 @@ app.get(
 
       //Send the client\'s portal page, iff the user is authenticated
       res.render("ClientsPortalPage", {
-        agreements: results,
+        agreements: agreements,
         email: userEmail,
       });
     } catch (error) {
