@@ -1601,7 +1601,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     });
 
     //Log the user's ip address
-    let ip = req.body.ip;
+    let ip = "127.0.0.1";
     console.log("User's IP address: ", ip);
 
     //Create a PayU order here with the subscription price

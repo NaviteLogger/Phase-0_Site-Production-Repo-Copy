@@ -31,7 +31,7 @@ document.getElementById("payment-button").addEventListener("click", () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.status === 'success') {
+      if (data.status === "success") {
         setTimeout(() => {
           window.location.href = data.redirectUri; // Redirect to the choice
         }, 1000);
