@@ -2102,7 +2102,7 @@ app.post(
                   "INSERT INTO AgreementsOwnerships (agreementId, clientId, accessExpiresDate) VALUES ((SELECT agreementId FROM Agreements WHERE agreementName = ?), (SELECT clientId FROM Clients WHERE email = ?), ?)",
                   [
                     associatedAgreements[i].productName,
-                    buyerEmail,
+                    email,
                     expirationDateMySQL,
                   ],
                   (error, results) => {
@@ -2152,7 +2152,7 @@ app.post(
             //Set the email options
             let emailOptions = {
               from: "pomoc@prawokosmetyczne.pl",
-              to: buyerEmail,
+              to: email,
               subject: "Zakup subskrypcji",
               text:
                 "Zakupiono subskrypcję: " +
