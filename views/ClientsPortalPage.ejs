@@ -66,15 +66,29 @@
       </h3>
       <div class="agreements-list">
         <% if (agreements.length==0) { %>
-        <!-- <%  %> is embedded JavaScript code into the HTML file -->
-        <p>Nie posiadasz zakupionych zgód</p>
-        <% } else { %>
-        <ol>
-          <% agreements.forEach(agreement=> { %>
-          <li><%= agreement.agreementName.replace(/_/g, ' ' ) %></li>
-          <% }) %>
-        </ol>
-        <% } %>
+          <p>Nie posiadasz zakupionych zgód</p>
+          <% } else { %>
+            <table>
+              <thead>
+                <tr>
+                  <th>Agreement Name</th>
+                  <th>Access Expiry Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% agreements.forEach(agreement=> { %>
+                  <tr>
+                    <td>
+                      <%= agreement.agreementName.replace(/_/g, ' ' ) %>
+                    </td>
+                    <td>
+                      <%= agreement.accessExpiresDate %>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+            <% } %>
       </div>
       <br />
       <div class="buttons-container">
