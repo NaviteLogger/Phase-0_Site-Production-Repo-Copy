@@ -1839,6 +1839,7 @@ app.post(
 
       //Handle the incoming notification as a JSON object
       const notification = req.body;
+      console.log("Notification: ", notification);
 
       //Extract the relevant information to be inserted into the database from the notification
       const orderId = notification.order.orderId;
