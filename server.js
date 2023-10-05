@@ -1868,25 +1868,56 @@ app.post(
       });
 
       //Extract the subscription's name from the database using the extOrderId and the user's email
-      const subscriptionName = await new Promise((resolve, reject) => {
-        connection.query(
-          "SELECT productName FROM OrderedProducts WHERE extOrderId = ? AND customerEmail = ?",
-          [extOrderId, email],
-          (error, results) => {
-            if (error) {
-              console.log("Error while querying the database", error);
-              reject(error);
-            } else {
-              console.log(
-                "Subscription name: " +
-                  results[0].productName +
-                  " has been retrieved from the database"
-              );
-              resolve(results[0].productName);
+      const subscriptionName = await new Promise(
+        (outerResolve, outerReject) => {
+          // First, fetch the valid product names from the Subscriptions table
+          connection.query(
+            "SELECT subscriptionName FROM Subscriptions",
+            [],
+            (error, results) => {
+              if (error) {
+                console.log(
+                  "Error while querying the Subscriptions table",
+                  error
+                );
+                outerReject(error);
+              } else {
+                // Extract subscription names from the results
+                const validProductNames = results.map(
+                  (row) => row.subscriptionName
+                );
+
+                // Now, using the retrieved product names, query the OrderedProducts table
+                connection.query(
+                  "SELECT productName FROM OrderedProducts WHERE extOrderId = ? AND productName IN (?)",
+                  [extOrderId, validProductNames],
+                  (innerError, innerResults) => {
+                    if (innerError) {
+                      console.log(
+                        "Error while querying the OrderedProducts table",
+                        innerError
+                      );
+                      outerReject(innerError);
+                    } else if (innerResults.length === 0) {
+                      console.log(
+                        "No matching subscription found for the given extOrderId and product names"
+                      );
+                      outerReject(new Error("No matching subscription found"));
+                    } else {
+                      console.log(
+                        "Subscription name: " +
+                          innerResults[0].productName +
+                          " has been retrieved from the database"
+                      );
+                      outerResolve(innerResults[0].productName);
+                    }
+                  }
+                );
+              }
             }
-          }
-        );
-      });
+          );
+        }
+      );
 
       //Insert the status information into the database
       await new Promise((resolve, reject) => {
