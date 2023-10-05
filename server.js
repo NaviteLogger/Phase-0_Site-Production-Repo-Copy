@@ -2052,7 +2052,7 @@ app.post(`/${process.env.SUBSCRIPTION_PAYEMENT_NOTIFY_URL}`, async (req, res) =>
 
 /*********************************************************************************/
 
-//Handle the request to the client\'s portal page,
+//Handle the request to the client's portal page,
 app.get(
   "/clientsPortalPage",
   checkAuthentication,
@@ -2064,7 +2064,7 @@ app.get(
     //Console.log it for debugging purposes
     console.log("Received a request to the client's portal: ", userEmail);
     /*
-  Using that email let\'s retrieve the client_id from the database
+  Using that email let's retrieve the client_id from the database
   and then use that clientId to retrieve the agreementId from the
   AgreementsOwnerships table
   */
@@ -2072,7 +2072,7 @@ app.get(
       const agreements = await new Promise((resolve, reject) => {
         connection.query(
           `
-        SELECT Agreements.agreementName, Agreements.accessExpiresDate
+        SELECT Agreements.agreementName, AgreementsOwnerships.accessExpiresDate
         FROM Agreements 
         INNER JOIN AgreementsOwnerships ON Agreements.agreementId = AgreementsOwnerships.agreementId 
         WHERE AgreementsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
@@ -2107,7 +2107,7 @@ app.get(
       const subscriptionInfo = await new Promise((resolve, reject) => {
         connection.query(
           `
-        SELECT Subscriptions.subscriptionName, Subscriptions.accessExpiresDate
+        SELECT Subscriptions.subscriptionName, SubscriptionsOwnerships.accessExpiresDate
         FROM Subscriptions
         INNER JOIN SubscriptionsOwnerships ON Subscriptions.subscriptionId = SubscriptionsOwnerships.subscriptionId
         WHERE SubscriptionsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
