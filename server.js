@@ -1516,10 +1516,10 @@ app.post("/makePaymentForSubscription", async (req, res) => {
           } else {
             console.log(
               "Subscription price: " +
-                results[0].subscriptionPrice +
+                results[0].price +
                 " has been retrieved from the database"
             );
-            resolve(results[0].subscriptionPrice);
+            resolve(results[0].price);
           }
         }
       );
