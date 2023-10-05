@@ -1462,7 +1462,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
   try {
     console.log("Received a request to make payment for the subscription");
     //Retrieve the selected agreements' names and prices from the request body
-    let selectedAgreementsNames = req.body.selectedAgreements;
+    let selectedAgreementsIds = req.body.selectedAgreements;
     console.log("Selected agreements' names: ", selectedAgreementsNames);
 
     //Retrieve the subscription id from the session
@@ -1493,7 +1493,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     );
 
     //Check if the number of passed agreements matches the number of agreements in the subscription
-    if (selectedAgreementsNames.length != numberOfAgreementsInSubscriptionFromDatabase) {
+    if (selectedAgreementsIds.length != numberOfAgreementsInSubscriptionFromDatabase) {
       console.log(
         "The number of passed agreements does not match the number of agreements in the subscription"
       );
