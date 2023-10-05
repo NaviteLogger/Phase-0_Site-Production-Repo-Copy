@@ -59,8 +59,35 @@
       <p class="headings">
         W tym miejscu możesz zobaczyć swoje aktywne subskrypcje:
       </p>
-      <h3 id="active-subscriptions">Brak aktywnych subskrypcji</h3>
-      <br />
+      <div class="subscriptions-list">
+        <% if (subscriptionInfo.length==0) { %>
+          <p>Nie posiadasz zakupionych subskrypcji.</p>
+          <% } else { %>
+            <table>
+              <thead>
+                <tr>
+                  <th>Nazwa subskrypcji:</th>
+                  <th>Dostęp wygasa:</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% subscriptionInfo.forEach(subscription=> {
+                  let rawDate = new Date(subscription.accessExpiresDate);
+                  let formattedDate = `${rawDate.getDate()}/${rawDate.getMonth() + 1}/${rawDate.getFullYear()}`;
+                  %>
+                  <tr>
+                    <td>
+                      <%= subscription.subscriptionName.replace(/_/g, ' ' ) %>
+                    </td>
+                    <td>
+                      <%= formattedDate %>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+            <% } %>
+      </div>
       <h3 class="headings">
         W tym miejscu możesz zobaczyć swoje zakupione zgody:
       </h3>
@@ -71,8 +98,8 @@
             <table>
               <thead>
                 <tr>
-                  <th>Nazwa Zgody</th>
-                  <th>Dostęp Zgody</th>
+                  <th>Nazwa zgody:</th>
+                  <th>Dostęp wygaza:</th>
                 </tr>
               </thead>
               <tbody>
