@@ -3128,7 +3128,7 @@ app.get("/displayInterview", checkAuthentication, async (req, res) => {
     );
 
     //Query the database to retrieve the interview questions
-    const results = await new Promise((resolve, reject) => {
+    const questions = await new Promise((resolve, reject) => {
       connection.query(
         `
         SELECT * 
@@ -3156,7 +3156,7 @@ app.get("/displayInterview", checkAuthentication, async (req, res) => {
     });
 
     console.log("Rendering the interview page");
-    res.render("InterviewPage", { questions: results });
+    res.render("InterviewPage", { questions: questions });
   } catch (error) {
     console.log("Error while loading the display interview page", error);
     res
