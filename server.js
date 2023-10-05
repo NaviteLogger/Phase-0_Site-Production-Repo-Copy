@@ -1604,6 +1604,15 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     let ip = "127.0.0.1";
     console.log("User's IP address: ", ip);
 
+    //Create a single-element array containing just the subscription
+    const products = [
+      {
+        name: subscriptionName,
+        unitPrice: subscriptionPrice * 100,
+        quantity: 1,
+      },
+    ];
+
     //Create a PayU order here with the subscription price
     console.log("Creating a PayU order with the subscription price");
 
@@ -1640,7 +1649,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
         // Fill this data based on your user's information
         email: email,
       },
-      products: subscriptionName,
+      products: products,
     };
     console.log("Order data: ", orderData);
 
