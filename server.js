@@ -1668,7 +1668,20 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       console.log("Response from PayU: ", response.data);
 
       //Send the user the email with the order details
+      let emailOptions = {
+        from: "pomoc@prawokosmetyczne.pl",
+        to: email,
+        subject: "Zakup subskrypcji",
+        text: "Dziękujemy za złożenie zamówienia w naszym serwisie internetowym. Numer zamówienia: " + extOrderId + "W przypadku pytań prosimy o kontakt na adres:" + "pomoc@prawokosmetyczne.pl",
+      };
 
+      transporter.sendMail(emailOptions, (error, info) => {
+        if (error) {
+          console.log("Error during email sending regarding subscription order: ", error);
+        } else {
+          console.log("Email regarding subscription order sent: ", info.response);
+        }
+      });
 
       //Store the redirectUri in the session
       const redirectUri = response.data.location;
