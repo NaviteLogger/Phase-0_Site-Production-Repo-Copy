@@ -1546,6 +1546,27 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       );
     });
 
+    //Extract the selected agreements' names from the database
+    const selectedAgreementsNames = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT agreementName FROM Agreements WHERE agreementId IN (?)",
+        [selectedAgreementsIds],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database for selected agreements' names", error);
+            reject(error);
+          } else {
+            console.log(
+              "Selected agreements' names: " +
+                results[0].agreementName +
+                " have been retrieved from the database"
+            );
+            resolve(results);
+          }
+        }
+      );
+    });
+
     //Log the user's ip address
     let ip = req.session.ip;
 
