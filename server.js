@@ -2075,7 +2075,7 @@ app.post(
                     } else {
                       console.log(
                         "Associated agreements for subscription with id: " +
-                          subscriptionId +
+                          extOrderId +
                           " have been retrieved from the database"
                       );
                       resolve(results);
