@@ -1845,8 +1845,28 @@ app.post(
       const orderId = notification.order.orderId;
       const extOrderId = notification.order.extOrderId;
       const status = notification.order.status;
-      const buyerEmail = notification.order.buyer.email;
       const subscriptionName = notification.order.products[0].name;
+
+      //Extract the user's email from the database using the extOrderId
+      const email = await new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT customerEmail FROM Orders WHERE extOrderId = ?",
+          [extOrderId],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              console.log(
+                "Email for order with order id: " +
+                  orderId +
+                  " has been retrieved from the database"
+              );
+              resolve(results[0].customerEmail);
+            }
+          }
+        );
+      });
 
       //Insert the status information into the database
       await new Promise((resolve, reject) => {
