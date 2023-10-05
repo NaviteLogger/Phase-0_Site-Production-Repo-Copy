@@ -1507,7 +1507,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     //Extract the subscription's price from the database
     const subscriptionPrice = await new Promise((resolve, reject) => {
       connection.query(
-        "SELECT subscriptionPrice FROM Subscriptions WHERE subscriptionId = ?",
+        "SELECT price FROM Subscriptions WHERE subscriptionId = ?",
         [subscriptionId],
         (error, results) => {
           if (error) {
