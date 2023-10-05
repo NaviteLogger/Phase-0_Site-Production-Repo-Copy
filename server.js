@@ -1525,6 +1525,9 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       );
     });
 
+    //Console.log it for debugging purposes
+    console.log("Subscription price: ", subscriptionPrice);
+
     //Extract the subscription's name from the database
     const subscriptionName = await new Promise((resolve, reject) => {
       connection.query(
