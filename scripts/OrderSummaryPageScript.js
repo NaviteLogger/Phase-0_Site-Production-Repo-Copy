@@ -14,7 +14,7 @@ document.getElementById("payment-button").addEventListener("click", () => {
   const email = document.getElementById("email").value;
 
   //Get the IP of the client
-  const ip = document.getElementById("ip").value;
+  const ip = document.body.getAttribute("ip");
 
   //The payment is processed by the server for security reasons
   fetch("/makePaymentForAgreements", {
