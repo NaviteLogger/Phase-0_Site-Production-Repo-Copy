@@ -1462,7 +1462,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
   try {
     console.log("Received a request to make payment for the subscription");
     //Retrieve the selected agreements' names and prices from the request body
-    let selectedAgreementsIds = req.body.selectedAgreements;
+    let selectedAgreementsIds = req.body;
     console.log("Selected agreements' Ids: ", selectedAgreementsIds);
 
     //Retrieve the subscription id from the session
