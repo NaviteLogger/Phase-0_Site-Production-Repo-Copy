@@ -1602,6 +1602,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
 
     //Log the user's ip address
     let ip = req.body.ip;
+    console.log("User's IP address: ", ip);
 
     //Create a PayU order here with the subscription price
     console.log("Creating a PayU order with the subscription price");
