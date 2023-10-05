@@ -702,7 +702,16 @@ app.post("/makePaymentForAgreements", async (req, res) => {
 
     let selectedAgreementsPrices = [];
 
-    //For each of the selectedAgreementsNames, query the database to retrieve the price (security measures)
+    //Parse the selectedAgreementsNames into an array
+    if (typeof selectedAgreementsNames === "string") {
+      try {
+        selectedAgreementsNames = selectedAgreementsNames.split(",");
+        //selectedAgreementsNames = JSON.parse(selectedAgreementsNames);
+      } catch (err) {
+        console.error("Error parsing selectedAgreementsNames:", err);
+      }
+    }
+
     //For each of the selectedAgreementsNames, query the database to retrieve the price (security measures)
     const boughtSubscriptionPromises = selectedAgreementsNames.map(
       (agreementName, index) => {
