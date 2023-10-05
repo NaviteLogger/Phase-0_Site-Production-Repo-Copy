@@ -1548,6 +1548,9 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     //Construct the notifyUrl
     const notifyUrl = `https://prawokosmetyczne.pl/${subscriptionPaymentNotifyUrl}`;
 
+    //Extract the email from the session
+    const email = req.session.passport.user.email;
+
     //Make a request to the PayU API to create an order
     const orderData = {
       notifyUrl: notifyUrl,
@@ -1559,7 +1562,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       extOrderId: extOrderId,
       buyer: {
         // Fill this data based on your user's information
-        email: req.session.passport.user.email,
+        email: email,
       },
       products: subscriptionName,
     };
@@ -1663,6 +1666,9 @@ app.post("/makePaymentForSubscription", async (req, res) => {
       );
 
       console.log("Response from PayU: ", response.data);
+
+      //Send the user the email with the order details
+
 
       //Store the redirectUri in the session
       const redirectUri = response.data.location;
