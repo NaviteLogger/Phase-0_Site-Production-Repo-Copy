@@ -2127,7 +2127,7 @@ app.post(
               connection.query(
                 "INSERT INTO SubscriptionsOwnerships (clientId, subscriptionId, purchaseDate, accessExpiresDate) VALUES ((SELECT clientId FROM Clients WHERE email = ?), (SELECT subscriptionId FROM Subscriptions WHERE subscriptionName = ?), ?, ?)",
                 [
-                  buyerEmail,
+                  email,
                   subscriptionName,
                   new Date().toISOString().slice(0, 19).replace("T", " "),
                   expirationDateMySQL,
