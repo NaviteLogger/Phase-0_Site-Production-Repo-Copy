@@ -2076,6 +2076,7 @@ app.get(
         FROM Agreements 
         INNER JOIN AgreementsOwnerships ON Agreements.agreementId = AgreementsOwnerships.agreementId 
         WHERE AgreementsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
+        AND AgreementsOwnerships.accessExpiresDate BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY)
         `,
           [userEmail],
           (error, results) => {
@@ -2111,6 +2112,7 @@ app.get(
         FROM Subscriptions
         INNER JOIN SubscriptionsOwnerships ON Subscriptions.subscriptionId = SubscriptionsOwnerships.subscriptionId
         WHERE SubscriptionsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
+        AND SubscriptionsOwnerships.accessExpiresDate BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY)
         `,
           [userEmail],
           (error, results) => {
