@@ -2129,6 +2129,7 @@ app.get(
 
       //Send the client\'s portal page, iff the user is authenticated
       res.render("ClientsPortalPage", {
+        subscriptionInfo: subscriptionInfo,
         agreements: agreements,
         email: userEmail,
       });
