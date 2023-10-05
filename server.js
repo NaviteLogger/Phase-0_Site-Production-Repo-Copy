@@ -1740,7 +1740,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
         config
       );
 
-      console.log("Response from PayU: ", response.data);
+      console.log("Response from PayU: ", response);
 
       //Send the user the email with the order details
       let emailOptions = {
