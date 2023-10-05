@@ -736,6 +736,9 @@ app.post("/makePaymentForAgreements", async (req, res) => {
                   " for agreement name: ",
                   agreementName
                 );
+                //Put the price into the selectedAgreementsPrices array
+                selectedAgreementsPrices.push(results[0].agreementPrice);
+
                 // Compare the retrieved price with the price from the request body
                 if (
                   results[0].agreementPrice !== selectedAgreementsPrices[index]
