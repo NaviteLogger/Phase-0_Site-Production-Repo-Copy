@@ -1845,7 +1845,6 @@ app.post(
       const orderId = notification.order.orderId;
       const extOrderId = notification.order.extOrderId;
       const status = notification.order.status;
-      const subscriptionName = notification.order.products[0].name;
 
       //Extract the user's email from the database using the extOrderId
       const email = await new Promise((resolve, reject) => {
@@ -1869,27 +1868,25 @@ app.post(
       });
 
       //Extract the subscription's name from the database using the extOrderId and the user's email
-      const subscriptionNameFromDatabase = await new Promise(
-        (resolve, reject) => {
-          connection.query(
-            "SELECT productName FROM OrderedProducts WHERE extOrderId = ? AND customerEmail = ?",
-            [extOrderId, email],
-            (error, results) => {
-              if (error) {
-                console.log("Error while querying the database", error);
-                reject(error);
-              } else {
-                console.log(
-                  "Subscription name: " +
-                    results[0].productName +
-                    " has been retrieved from the database"
-                );
-                resolve(results[0].productName);
-              }
+      const subscriptionName = await new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT productName FROM OrderedProducts WHERE extOrderId = ? AND customerEmail = ?",
+          [extOrderId, email],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error);
+            } else {
+              console.log(
+                "Subscription name: " +
+                  results[0].productName +
+                  " has been retrieved from the database"
+              );
+              resolve(results[0].productName);
             }
-          );
-        }
-      );
+          }
+        );
+      });
 
       //Insert the status information into the database
       await new Promise((resolve, reject) => {
