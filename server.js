@@ -2064,21 +2064,45 @@ app.post(
 
             //First, retrieve the associaded agreements with the subscription from the database
             const associatedAgreements = await new Promise(
-              (resolve, reject) => {
+              (outerResolve, outerReject) => {
+                // First, fetch the product names to be excluded from the Subscriptions table
                 connection.query(
-                  "SELECT productName FROM OrderedProducts WHERE extOrderId = ?",
-                  [extOrderId],
+                  "SELECT subscriptionName FROM Subscriptions",
+                  [],
                   (error, results) => {
                     if (error) {
-                      console.log("Error while querying the database", error);
-                      reject(error);
-                    } else {
                       console.log(
-                        "Associated agreements for subscription with id: " +
-                          extOrderId +
-                          " have been retrieved from the database"
+                        "Error while querying the Subscriptions table",
+                        error
                       );
-                      resolve(results);
+                      outerReject(error);
+                    } else {
+                      // Extract subscription names from the results
+                      const excludeProductNames = results.map(
+                        (row) => row.subscriptionName
+                      );
+
+                      // Now, using the retrieved product names, query the OrderedProducts table
+                      connection.query(
+                        "SELECT productName FROM OrderedProducts WHERE extOrderId = ? AND productName NOT IN (?)",
+                        [extOrderId, excludeProductNames],
+                        (innerError, innerResults) => {
+                          if (innerError) {
+                            console.log(
+                              "Error while querying the OrderedProducts table",
+                              innerError
+                            );
+                            outerReject(innerError);
+                          } else {
+                            console.log(
+                              "Associated agreements for subscription with id: " +
+                                extOrderId +
+                                " have been retrieved from the database"
+                            );
+                            outerResolve(innerResults);
+                          }
+                        }
+                      );
                     }
                   }
                 );
