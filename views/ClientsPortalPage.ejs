@@ -76,13 +76,16 @@
                 </tr>
               </thead>
               <tbody>
-                <% agreements.forEach(agreement=> { %>
+                <% agreements.forEach(agreement=> { 
+                  let rawDate = new Date(agreement.accessExpiresDate);
+                  let formattedDate = `${rawDate.getDate()} ${monthNames[rawDate.getMonth()]} ${rawDate.getFullYear()}`;
+                %>
                   <tr>
                     <td>
                       <%= agreement.agreementName.replace(/_/g, ' ' ) %>
                     </td>
                     <td>
-                      <%= agreement.accessExpiresDate %>
+                      <%= formattedDate %>
                     </td>
                   </tr>
                   <% }) %>
