@@ -2067,6 +2067,41 @@ app.get(
         );
       });
 
+      //Extract the user's subscription info from the database
+      const subscriptionInfo = await new Promise((resolve, reject) => {
+        connection.query(
+          `
+        SELECT Subscriptions.subscriptionName, Subscriptions.accessExpiresDate
+        FROM Subscriptions
+        INNER JOIN SubscriptionsOwnerships ON Subscriptions.subscriptionId = SubscriptionsOwnerships.subscriptionId
+        WHERE SubscriptionsOwnerships.clientId = (SELECT clientId FROM Clients WHERE email = ?)
+        `,
+          [userEmail],
+          (error, results) => {
+            if (error) {
+              console.log("Error while querying the database", error);
+              reject(error); //if there\'s an error, reject the Promise
+            } else {
+              if (results.length === 0) {
+                console.log(
+                  "Found no subscriptions associated with the account: " +
+                    userEmail
+                );
+              } else {
+                console.log(
+                  "Found the following subscriptions associated with the account: " +
+                    userEmail
+                );
+                results.forEach((row) => {
+                  console.log(row.subscriptionName);
+                });
+              }
+              resolve(results); //if everything\'s okay, resolve the Promise with the results
+            }
+          }
+        );
+      });
+      
       //Console.log it for debugging purposes
       console.log(
         "Received a request to the client's portal, agreements' lookup query run successfully: ",
