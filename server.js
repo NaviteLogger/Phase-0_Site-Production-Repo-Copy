@@ -1668,7 +1668,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
           "INSERT INTO OrderedProducts (extOrderId, productName, unitPrice, quantity) VALUES (?, ?, ?, 1)",
           [
             extOrderId,
-            selectedAgreementsNames[i],
+            selectedAgreementsNames[i].agreementName,
             subscriptionPrice * 100,
           ],
           (error, results) => {
