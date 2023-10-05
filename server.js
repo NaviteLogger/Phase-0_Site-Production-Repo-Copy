@@ -2194,6 +2194,27 @@ app.post(
                 console.log("Email sent: ", info.response);
               }
             });
+
+            //Change the wasSent column value to 1
+            await new Promise((resolve, reject) => {
+              connection.query(
+                "UPDATE Orders SET wasSent = ? WHERE extOrderId = ?",
+                [1, extOrderId],
+                (error, results) => {
+                  if (error) {
+                    console.log("Error while querying the database", error);
+                    reject(error);
+                  } else {
+                    console.log(
+                      "WasSent column value for order with order id: " +
+                        orderId +
+                        " has been updated in the database"
+                    );
+                    resolve();
+                  }
+                }
+              );
+            });
           } else {
           }
           break;
