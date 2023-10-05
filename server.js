@@ -1025,7 +1025,7 @@ app.post(
         );
       });
 
-      //Insert the order status into the OrderProducts table
+      //Insert the order status into the OrderedProducts table
       await new Promise((resolve, reject) => {
         connection.query(
           "UPDATE OrderedProducts SET orderId = ? WHERE extOrderId = ?",
@@ -1038,7 +1038,7 @@ app.post(
               console.log(
                 "Payment information for order with order id: " +
                   orderId +
-                  " has been inserted into the OrderProducts table"
+                  " has been inserted into the OrderedProducts table"
               );
               resolve();
             }
@@ -1167,7 +1167,7 @@ app.post(
             const boughtAgreementsNames = await new Promise(
               (resolve, reject) => {
                 connection.query(
-                  "SELECT productName FROM OrderProducts WHERE extOrderId = ?",
+                  "SELECT productName FROM OrderedProducts WHERE extOrderId = ?",
                   [extOrderId],
                   (error, results) => {
                     if (error) {
@@ -1858,7 +1858,7 @@ app.post(
         );
       });
 
-      //Insert the order status into the OrderProducts table
+      //Insert the order status into the OrderedProducts table
       await new Promise((resolve, reject) => {
         connection.query(
           "UPDATE OrderedProducts SET orderId = ? WHERE extOrderId = ?",
