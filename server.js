@@ -2540,7 +2540,7 @@ app.get(
 //Handle the incoming filled overview page
 app.post("/postAgreementData", checkAuthentication, async (req, res) => {
   try {
-    const dataToFill = {
+    let dataToFill = {
       clientFullName: req.body.clientFullName,
       employeeFullName: req.body.employeeFullName,
     };
@@ -2580,6 +2580,9 @@ app.post("/postAgreementData", checkAuthentication, async (req, res) => {
     }-${currentDate.getDate()}_${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
     req.session.formattedDate = formattedDate;
     console.log(`The formatted date is ${formattedDate}`);
+
+    //Add the formatted date to the data to fill
+    dataToFill.formattedDate = formattedDate;
 
     //Fill and save RODO agreement
     const filledRODOFileName = await fillAndSaveDocument(
