@@ -2582,8 +2582,17 @@ app.post("/postAgreementData", checkAuthentication, async (req, res) => {
     req.session.formattedDate = formattedDate;
     console.log(`The formatted date is ${formattedDate}`);
 
+    //For filling the documents, create a more readable date:
+    const formattedDateForFilling = `${String(currentDate.getDate()).padStart(
+      2,
+      "0"
+    )}-${String(currentDate.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${currentDate.getFullYear()}`;
+
     //Modify the dataToFill object to include the formatted date
-    dataToFill.formattedDate = formattedDate;
+    dataToFill.formattedDate = formattedDateForFilling;
 
     //Fill and save RODO agreement
     const filledRODOFileName = await fillAndSaveDocument(
