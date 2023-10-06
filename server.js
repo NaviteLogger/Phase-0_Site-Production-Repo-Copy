@@ -2543,6 +2543,7 @@ app.post("/postAgreementData", checkAuthentication, async (req, res) => {
     let dataToFill = {
       clientFullName: req.body.clientFullName,
       employeeFullName: req.body.employeeFullName,
+      formattedDate: "",
     };
     console.log("Data to fill has been received");
 
@@ -2581,7 +2582,7 @@ app.post("/postAgreementData", checkAuthentication, async (req, res) => {
     req.session.formattedDate = formattedDate;
     console.log(`The formatted date is ${formattedDate}`);
 
-    //Add the formatted date to the data to fill
+    //Modify the dataToFill object to include the formatted date
     dataToFill.formattedDate = formattedDate;
 
     //Fill and save RODO agreement
