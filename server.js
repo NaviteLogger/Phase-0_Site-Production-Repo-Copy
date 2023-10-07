@@ -177,7 +177,10 @@ app.get("/offerPage", async (req, res) => {
       "SELECT * FROM Agreements ORDER BY category",
       function (error, results, fields) {
         if (error) {
-          reject(error);
+          reject(
+            "Error while querying the database for individual agreements: ",
+            error
+          );
         } else {
           console.log(
             "The query was successful: all the offers were retrieved from the Offers table"
@@ -525,7 +528,10 @@ app.post("/verifyEmailAddress", (req, res) => {
     [email],
     (error, results) => {
       if (error) {
-        console.log("Error while querying the database", error);
+        console.log(
+          "Error while querying the database for the email verificationCode: ",
+          error
+        );
       }
 
       //Console.log it for debugging purposes
@@ -543,7 +549,7 @@ app.post("/verifyEmailAddress", (req, res) => {
           [email],
           (error, results) => {
             if (error) {
-              console.log("Error while querying the database", error);
+              console.log("Error while querying the database: ", error);
             }
             console.log("Email: " + email + " is now verified");
             res.json({
