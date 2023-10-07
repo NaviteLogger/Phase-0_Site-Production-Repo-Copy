@@ -355,7 +355,6 @@ function checkEmailConfirmation(req, res, next) {
         res.sendFile(
           path.join(__dirname, "protected", "EmailVerificationPage.html")
         );
-        //res.json({ status: 'notVerified', message: 'Email nie został potwierdzony' });
       }
     }
   );
