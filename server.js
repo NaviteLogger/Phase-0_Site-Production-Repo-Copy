@@ -474,7 +474,7 @@ async function countPDFPages(pdfBuffer) {
 function deleteFilesInDirectory(directory, keyword) {
   fs.readdir(directory, (error, files) => {
     if (error) {
-      console.log("Error while reading the directory", error);
+      console.log("Error while reading the directory: ", error);
       return;
     }
 
@@ -484,7 +484,7 @@ function deleteFilesInDirectory(directory, keyword) {
       const filePath = path.join(directory, file);
       fs.unlink(filePath, (error) => {
         if (error) {
-          console.log("Error while deleting the file", error);
+          console.log("Error while deleting the file: ", error);
           return;
         }
         console.log("File: " + filePath + " has been deleted");
