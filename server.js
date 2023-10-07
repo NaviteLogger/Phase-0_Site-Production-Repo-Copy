@@ -188,6 +188,7 @@ app.get("/offerPage", async (req, res) => {
     );
   });
 
+  //Query the database to retrieve all the available agreement from the Offers table
   const subscriptionAgreements = await new Promise((resolve, reject) => {
     connection.query(
       "SELECT * FROM Subscriptions",
