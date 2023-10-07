@@ -368,6 +368,8 @@ const fillAndSaveDocument = async (
   formattedDate,
   prefix
 ) => {
+  console.log("Received a request to fill and save the document: " + fileName);
+
   //Load the docx file as a binary
   const docPath = path.join(__dirname, "agreements", fileName);
   const content = await fsPromises.readFile(docPath, "binary");
