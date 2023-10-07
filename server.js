@@ -2222,7 +2222,7 @@ app.post(
             //Send the user an email with the confirmation about the bought subscription
             //Set the email options
             let emailOptions = {
-              from: "pomoc@prawokosmetyczne.pl",
+              from: process.env.DEFAULT_EMAIL,
               to: email,
               subject: "Zakup subskrypcji",
               text:
