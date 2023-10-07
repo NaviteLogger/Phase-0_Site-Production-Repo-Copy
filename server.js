@@ -344,7 +344,10 @@ function checkEmailConfirmation(req, res, next) {
     [email],
     (error, results) => {
       if (error) {
-        console.log("Error while querying the database", error);
+        console.log(
+          "Error while querying the database for the specific email (by clientId): ",
+          error
+        );
       }
 
       if (results[0].isVerified === 1) {
