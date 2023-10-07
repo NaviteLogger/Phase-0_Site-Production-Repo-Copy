@@ -1801,7 +1801,7 @@ app.post("/makePaymentForSubscription", async (req, res) => {
 
       //Send the user the email with the order details
       let emailOptions = {
-        from: "pomoc@prawokosmetyczne.pl",
+        from: process.env.DEFAULT_EMAIL,
         to: email,
         subject: "Zakup subskrypcji",
         text:
