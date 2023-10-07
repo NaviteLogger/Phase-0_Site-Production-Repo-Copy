@@ -458,6 +458,7 @@ async function convertDocxToPDF(docxPath) {
         reject(error);
       }
       console.log("pdfPath: " + pdfPath + " has been created");
+      console.log("");
       resolve(pdfPath);
     });
   });
