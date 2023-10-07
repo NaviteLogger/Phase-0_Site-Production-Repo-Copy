@@ -552,7 +552,11 @@ app.post("/verifyEmailAddress", (req, res) => {
           [email],
           (error, results) => {
             if (error) {
-              console.log("Error while querying the database: ", error);
+              console.log(
+                "Error while querying the database: setting isVerified to 1 for email: " +
+                  email,
+                error
+              );
             }
             console.log("Email: " + email + " is now verified");
             res.json({
