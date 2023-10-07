@@ -302,6 +302,7 @@ passport.deserializeUser((user, done) => {
     [id],
     (error, rows) => {
       //If the user is not found, return an error message, otherwise return the user object
+      console.log("Deserialized user: ", rows[0]);
       done(error, rows[0]);
     }
   );
