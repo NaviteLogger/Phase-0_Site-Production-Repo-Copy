@@ -311,8 +311,9 @@ passport.deserializeUser((user, done) => {
 
 //This is the function which checks if the user is authenticated
 function checkAuthentication(req, res, next) {
-  console.log("Checking authentication, calling checkAuthentication()");
-  console.log("User is authenticated: " + req.isAuthenticated());
+  console.log(
+    "Checking whether the user is authenticated: " + req.isAuthenticated()
+  );
   console.log("");
   if (req.isAuthenticated()) {
     //If the user is authenticated (the res.isAuthenticated() status is true), call next()
@@ -695,13 +696,6 @@ app.post("/makePaymentForAgreements", async (req, res) => {
       "Type of selected agreements' names: ",
       typeof selectedAgreementsNames
     );
-
-    // let selectedAgreementsPrices = req.body.selectedAgreementsPrices;
-    // console.log("Selected agreements' prices: ", selectedAgreementsPrices);
-    // console.log(
-    //   "Type of selected agreements' prices: ",
-    //   typeof selectedAgreementsPrices
-    // );
 
     let selectedAgreementsPrices = [];
 
