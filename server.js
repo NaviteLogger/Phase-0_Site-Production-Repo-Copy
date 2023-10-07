@@ -157,7 +157,7 @@ const PAYU_CONFIG = {
 
 //Handle the incoming GET request to the home page
 app.get("/", (req, res) => {
-  console.log("Home page rendered");
+  console.log("Received a request to '/' route: Rendering the home page");
   res.redirect("/pages/indexPage.html"); //Redirect to main page
 });
 
