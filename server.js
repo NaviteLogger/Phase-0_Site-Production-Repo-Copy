@@ -394,6 +394,7 @@ const fillAndSaveDocument = async (
   //Console.log it for debugging purposes
   console.log(`The filled ${fileName} has been written as ${newFileName}`);
 
+  console.log("");
   return newFileName; //Return the generated file name for further use
 };
 
