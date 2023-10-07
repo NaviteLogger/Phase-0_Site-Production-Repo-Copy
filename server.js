@@ -1241,7 +1241,7 @@ app.post(
 
             //Send the bought agreements to the client using the email provided in the notification
             let emailOptions = {
-              from: "pomoc@prawokosmetyczne.pl",
+              from: process.env.DEFAULT_EMAIL,
               to: email,
               subject: "Zakupione zgody",
               text: "Zakupione zgody:",
