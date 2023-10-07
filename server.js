@@ -3880,7 +3880,7 @@ app.get(
       if (req.session.photoConsent === true) {
         //This email will contain the photo consent as well
         let emailOptions = {
-          from: "pomoc@prawokosmetyczne.pl",
+          from: process.env.EMAIL_ADDRESS,
           to: req.session.passport.user.email,
           subject: "Zgody dnia " + req.session.formattedDate,
           text:
