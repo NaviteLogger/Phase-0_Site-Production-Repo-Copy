@@ -416,7 +416,8 @@ async function getAgreementFileNameById(agreementId) {
       (error, results) => {
         if (error) {
           console.log(
-            "Error while querying the database for the fileName (get by Id): ", error);
+            "Error while querying the database for the fileName (get by Id): ",
+            error
           );
           reject(error);
         } else {
