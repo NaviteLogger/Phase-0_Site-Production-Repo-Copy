@@ -163,7 +163,7 @@ app.get("/", (req, res) => {
 
 //Handle the incoming GET request to the home page
 app.get("/pages/indexPage.html", (req, res) => {
-  console.log("Home page rendered"); //Console.log it for debugging purposes
+  console.log("Received a request to '/' route: Rendering the home page"); //Console.log it for debugging purposes
   res.redirect("/pages/indexPage.html"); //Redirect to main page
 });
 
