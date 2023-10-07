@@ -1486,6 +1486,28 @@ app.post("/makePaymentForSubscription", async (req, res) => {
     //Retrieve the subscription id from the session
     const subscriptionId = req.session.subscriptionId;
 
+    //Now, a check need to be done regarding the best subscription - if the user has selected the best subscription, then the number of agreements' Ids will not matter
+    //Given that we already retrieved the subscription id from the session, we can query the database to check if the subscription is the best one
+    const isBestSubscription = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT isBestSubscription FROM Subscriptions WHERE subscriptionId = ?",
+        [subscriptionId],
+        (error, results) => {
+          if (error) {
+            console.log("Error while querying the database", error);
+            reject(error);
+          } else {
+            console.log(
+              "Is best subscription: " +
+                results[0].isBestSubscription +
+                " has been retrieved from the database"
+            );
+            resolve(results[0].isBestSubscription);
+          }
+        }
+      );
+    });
+
     //Verify that the passed number of agreements matches the number of agreements in the subscription
     //The number of passed agreements is simply the length of the selectedAgreementsNames array
     const numberOfAgreementsInSubscriptionFromDatabase = await new Promise(
