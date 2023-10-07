@@ -491,6 +491,7 @@ function deleteFilesInDirectory(directory, keyword) {
       });
     });
   });
+  console.log("");
 }
 
 async function getPayUToken() {
