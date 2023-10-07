@@ -325,7 +325,7 @@ function checkAuthentication(req, res, next) {
   }
 }
 
-//This is the function that will check if the user\'s mail is verified
+//This is the function that will check if the user's email is verified
 function checkEmailConfirmation(req, res, next) {
   const email = req.session.passport.user.email;
 
