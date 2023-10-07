@@ -1531,6 +1531,21 @@ app.post("/makePaymentForSubscription", async (req, res) => {
           }
         );
       });
+    } else {
+      //Check if the number of passed agreements matches the number of agreements in the subscription
+      if (
+        selectedAgreementsIds.length !=
+        numberOfAgreementsInSubscriptionFromDatabase
+      ) {
+        console.log(
+          "The number of passed agreements does not match the number of agreements in the subscription"
+        );
+        res.status(400).json({
+          status: "error",
+          message:
+            "The number of passed agreements does not match the number of agreements in the subscription",
+        });
+      }
     }
 
     //Verify that the passed number of agreements matches the number of agreements in the subscription
@@ -1556,21 +1571,6 @@ app.post("/makePaymentForSubscription", async (req, res) => {
         );
       }
     );
-
-    //Check if the number of passed agreements matches the number of agreements in the subscription
-    if (
-      selectedAgreementsIds.length !=
-      numberOfAgreementsInSubscriptionFromDatabase
-    ) {
-      console.log(
-        "The number of passed agreements does not match the number of agreements in the subscription"
-      );
-      res.status(400).json({
-        status: "error",
-        message:
-          "The number of passed agreements does not match the number of agreements in the subscription",
-      });
-    }
 
     //Extract the subscription's price from the database
     const subscriptionPrice = await new Promise((resolve, reject) => {
