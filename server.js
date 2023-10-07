@@ -318,7 +318,6 @@ function checkAuthentication(req, res, next) {
   if (req.isAuthenticated()) {
     //If the user is authenticated (the res.isAuthenticated() status is true), call next()
     //if user is looged in, req.isAuthenticated() will return true
-    //console.log('User is authenticated');
     return next(); //As this will act as a middleware, we must call next() to pass the request to the next function
   } else {
     //console.log('User is not authenticated');
