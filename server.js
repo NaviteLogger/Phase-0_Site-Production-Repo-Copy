@@ -4339,7 +4339,7 @@ app.post("/register", async (req, res) => {
 
       //Set up the email options
       const mailOptions = {
-        from: "pomoc@prawokosmetyczne.pl",
+        from: process.env.EMAIL_ADDRESS,
         to: email,
         subject: "Potwierdzenie rejestracji adresu email",
         text: "Twój kod potwierdzający adres email to: " + verificationCode,
