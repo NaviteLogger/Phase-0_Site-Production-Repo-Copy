@@ -4369,7 +4369,10 @@ app.post("/register", async (req, res) => {
       //Send test email
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.log("Error occurred while sending email:" + error.message);
+          console.log(
+            "Error occurred while sending email with email confirmation code:" +
+              error.message
+          );
         } else {
           console.log("Email sent successfully!", info.response);
         }
