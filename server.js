@@ -1532,6 +1532,30 @@ app.post("/makePaymentForSubscription", async (req, res) => {
         );
       });
     } else {
+      //Verify that the passed number of agreements matches the number of agreements in the subscription
+      //The number of passed agreements is simply the length of the selectedAgreementsNames array
+      const numberOfAgreementsInSubscriptionFromDatabase = await new Promise(
+        (resolve, reject) => {
+          connection.query(
+            "SELECT numberOfAgreements FROM Subscriptions WHERE subscriptionId = ?",
+            [subscriptionId],
+            (error, results) => {
+              if (error) {
+                console.log("Error while querying the database", error);
+                reject(error);
+              } else {
+                console.log(
+                  "Number of agreements in subscription: " +
+                    results[0].numberOfAgreements +
+                    " has been retrieved from the database"
+                );
+                resolve(results[0].numberOfAgreements);
+              }
+            }
+          );
+        }
+      );
+
       //Check if the number of passed agreements matches the number of agreements in the subscription
       if (
         selectedAgreementsIds.length !=
@@ -1547,30 +1571,6 @@ app.post("/makePaymentForSubscription", async (req, res) => {
         });
       }
     }
-
-    //Verify that the passed number of agreements matches the number of agreements in the subscription
-    //The number of passed agreements is simply the length of the selectedAgreementsNames array
-    const numberOfAgreementsInSubscriptionFromDatabase = await new Promise(
-      (resolve, reject) => {
-        connection.query(
-          "SELECT numberOfAgreements FROM Subscriptions WHERE subscriptionId = ?",
-          [subscriptionId],
-          (error, results) => {
-            if (error) {
-              console.log("Error while querying the database", error);
-              reject(error);
-            } else {
-              console.log(
-                "Number of agreements in subscription: " +
-                  results[0].numberOfAgreements +
-                  " has been retrieved from the database"
-              );
-              resolve(results[0].numberOfAgreements);
-            }
-          }
-        );
-      }
-    );
 
     //Extract the subscription's price from the database
     const subscriptionPrice = await new Promise((resolve, reject) => {
