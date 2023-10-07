@@ -163,14 +163,13 @@ app.get("/", (req, res) => {
 
 //Handle the incoming GET request to the home page
 app.get("/pages/indexPage.html", (req, res) => {
-  console.log("Received a request to '/' route: Rendering the home page"); //Console.log it for debugging purposes
+  console.log("Received a request to '/' route: Rendering the home page");
   res.redirect("/pages/indexPage.html"); //Redirect to main page
 });
 
 //Handle the incoming GET request to the OfferPage
 app.get("/offerPage", async (req, res) => {
-  //if there is a href='/offerPage' in the html file, then this function will be executed
-  console.log("Received request to the OfferPage");
+  console.log("Received a request to '/offerPage' route");
 
   //Query the database to retrieve all the available agreement from the Offers table
   const individualAgreements = await new Promise((resolve, reject) => {
