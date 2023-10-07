@@ -284,6 +284,7 @@ passport.serializeUser((user, done) => {
       " user.email: " +
       user.email
   );
+  console.log("");
   done(null, { id: user.clientId, email: user.email }); //Keeps the client_id and email in the session for further use
 });
 
