@@ -6,13 +6,14 @@ Welcome to our Law Firm's Cosmetics Consents platform. Designed exclusively for 
 
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Setting Up a Virtual Environment](#setting-up-a-virtual-environment)
+  - [Setting Up The MySQL Database](#setting-up-a-virtual-environment)
   - [Installing Dependencies](#installing-dependencies)
   - [Database Setup](#database-setup)
 - [Usage](#usage)
-  - [Running the Web Scraper](#running-the-web-scraper)
-  - [Summarizing News Articles](#summarizing-news-articles)
+  - [Running the Web Server](#running-the-web-scraper)
+- [Security](#security)
 - [Contributing](#contributing)
+- [Support](#support)
 - [License](#license)
 
 ## Getting Started
@@ -24,7 +25,7 @@ Follow these steps to set up and run CodeNews on your local machine.
 - Node.js & npm installed
 - MySQL server up and running
 
-### Setting Up a Virtual Environment
+### Setting Up The MySQL Database
 
 1. Clone this repository:
 
