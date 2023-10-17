@@ -61,7 +61,7 @@ DB_PASSWORD="your_password"
 
 ## Usage
 
-### Running the Web Scrapper:
+### Running the Web Server:
 
 1. Start the web server using the command:
 
