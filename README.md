@@ -58,7 +58,33 @@ DB_PORT="your_port"
 DB_DATABASE="your_database"
 DB_USER="your_username"
 DB_PASSWORD="your_password"
+SENDGRID_USERNAME="your_sendgrid_username"
+SENDGRID_API_KEY="your_sendgrid_api_key"
+SESSION_SECTER="your_session_secret"
+POS_ID="your_pos_id"
+SECOND_KEY="your_second_key"
+CLIENT_ID="your_client_id"
+CLIENT_SECRET="your_client_secret"
+INDIVIDUAL_AGREEMENTS_PAYMENT_NOTIFY_URL="your_individual_agreements_payment_notify_url"
+SUBSCRIPTION_PAYMENT_NOTIFY_URL="your_subscription_payment_notify_url"
+DEFAULT_EMAIL="your_default_email"
 ```
+
+2. The database schema looks like this:
++--------------------------+
+| Tables_in_CosmeticsLawDB |
++--------------------------+
+| Admins                   |
+| Agreements               |
+| AgreementsOwnerships     |
+| Clients                  |
+| EmailVerifications       |
+| OrderedProducts          |
+| Orders                   |
+| Questions                |
+| Subscriptions            |
+| SubscriptionsOwnerships  |
++--------------------------+
 
 ## Usage
 
