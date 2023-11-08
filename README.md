@@ -112,7 +112,7 @@ Contributions are welcome! Feel free to submit issues, suggest improvements, or 
 
 ## Support
 
-If you have any questions or concerns, please contact us at [pomoc@prawokosmetyczne.pl](mailto:prawokosmetyczne.pl).
+If you have any questions or concerns, please contact us at [kacprzakmarek92@gmail.com](mailto:kacprzakmarek92@gmail.com).
 
 ## License
 
